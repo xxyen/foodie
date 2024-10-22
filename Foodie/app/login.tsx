@@ -9,7 +9,6 @@ import {
   GestureResponderEvent,
   Pressable,
   TextInput,
-  TouchableOpacity,
 } from "react-native";
 import { useRouter } from "expo-router";
 
@@ -90,7 +89,7 @@ export default function LoginScreen() {
           </View>
           <View style={styles.container_footer}>
             <View style={styles.container_remember}>
-              <TouchableOpacity
+              <Pressable
                 onPress={() => {
                   setChecked(!isChecked);
                 }}
@@ -102,7 +101,7 @@ export default function LoginScreen() {
                   color="black"
                 />
                 <Text style={styles.rememberme}>Remember me</Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
             <Pressable onPress={onPressForgotPassword}>
               <Text>Forgot Password?</Text>

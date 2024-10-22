@@ -9,7 +9,6 @@ import {
   GestureResponderEvent,
   Pressable,
   TextInput,
-  TouchableOpacity,
 } from "react-native";
 import { useRouter } from "expo-router";
 
