@@ -7,6 +7,7 @@ import {
     StyleSheet,
     GestureResponderEvent,
     Pressable,
+    Platform,
   } from "react-native";
   
   
@@ -85,21 +86,20 @@ import {
       width: 118,
       height: 166,
       position: "absolute",
-      top: 30,
       left: 90
     },
     img2: {
       width: 124,
       height: 98,
       position: "absolute",
-      top: 160,
+      top: 150,
       right: 40,
     },
     img3: {
       width: 137,
       height: 118,
       position: "absolute",
-      top: 300,
+      top: 280,
       left: 140,
     },
     later: {
@@ -108,7 +108,7 @@ import {
       fontWeight: "bold",
       textAlign: "right",
       marginRight: 20,
-      marginTop: 80,
+      marginTop: Platform.OS === 'ios' ? 30: 80,
     },
     text: {
       fontSize: 28,
