@@ -18,6 +18,13 @@ export default function LoginScreen() {
   // navigation
   const router = useRouter();
 
+  // states
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [isPasswordVisible, setPasswordVisibility] = useState(false);
+  const [isChecked, setChecked] = useState(false);
+
+  // backend functions
   function onChangeUserName(text: string): void {
     throw new Error("Function not implemented.");
   }
@@ -43,11 +50,6 @@ export default function LoginScreen() {
     console.log("user: press sign up btn");
     router.push("./signup");
   }
-
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [isPasswordVisible, setPasswordVisibility] = useState(false);
-  const [isChecked, setChecked] = useState(false);
 
   return (
     <>
