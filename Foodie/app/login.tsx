@@ -25,6 +25,11 @@ export default function LoginScreen() {
   const [isChecked, setChecked] = useState(false);
 
   // backend functions
+  function onPressLater(event: GestureResponderEvent): void {
+    console.log("user: press later");
+    router.push("/home");
+  }
+
   function onChangeUserName(text: string): void {
     throw new Error("Function not implemented.");
   }
@@ -54,6 +59,9 @@ export default function LoginScreen() {
   return (
     <>
       <SafeAreaView style={styles.safearea}>
+        <Pressable onPress={onPressLater}>
+          <Text style={styles.later}>Later</Text>
+        </Pressable>
         <View style={styles.container}>
           <Text style={styles.title_welcome}>Welcome!</Text>
           <View style={styles.container_header}>
@@ -218,5 +226,13 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  later: {
+    color: "#042628",
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "right",
+    marginRight: "10%",
+    marginTop: "15%",
   },
 });
