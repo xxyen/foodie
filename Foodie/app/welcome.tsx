@@ -19,7 +19,7 @@ export default function WelcomeScreen() {
   const img_path_2 = "../assets/burger.png";
   const img_path_3 = "../assets/orange.png";
 
-  // backend functions
+  // functions
   function onPressLater(event: GestureResponderEvent): void {
     console.log("user: press later");
     router.push("/home")

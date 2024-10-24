@@ -7,13 +7,21 @@ import {
   Platform,
   ScrollView,
   Pressable,
+  GestureResponderEvent,
 } from "react-native";
 
 export default function Home() {
   // states
   const [isSelected, setIsSelected] = useState<Number>(0);
+  const [tag, setTag] = useState<String>("breakfast");
 
   // functions
+  function changeTag(num: Number, tag: String): void {
+    setIsSelected(num);
+    setTag(tag);
+  }
+
+  
 
 
   return (
@@ -22,16 +30,16 @@ export default function Home() {
       <View style={styles.container}>
         <ScrollView horizontal={true} style={{width: "90%"}}>
           <View style={styles.container_topbar}>
-            <Pressable style={isSelected === 0? styles.tag_selected : styles.tag_unselected} onPress={()=>setIsSelected(0)}>
+            <Pressable style={isSelected === 0? styles.tag_selected : styles.tag_unselected} onPress={()=>changeTag(0, "breakfast")}>
               <Text style={isSelected === 0? styles.tagtext_selected: styles.tagtext_unselected}>Breakfast</Text>
             </Pressable>
-            <Pressable style={isSelected === 1? styles.tag_selected : styles.tag_unselected} onPress={()=>setIsSelected(1)}>
+            <Pressable style={isSelected === 1? styles.tag_selected : styles.tag_unselected} onPress={()=>changeTag(1, "lunch")}>
               <Text style={isSelected === 1? styles.tagtext_selected: styles.tagtext_unselected}>Lunch</Text>
             </Pressable>
-            <Pressable style={isSelected === 2? styles.tag_selected : styles.tag_unselected} onPress={()=>setIsSelected(2)}>
+            <Pressable style={isSelected === 2? styles.tag_selected : styles.tag_unselected} onPress={()=>changeTag(2, "dinner")}>
               <Text style={isSelected === 2? styles.tagtext_selected: styles.tagtext_unselected}>Dinner</Text>
             </Pressable>
-            <Pressable style={isSelected === 3? styles.tag_selected : styles.tag_unselected} onPress={()=>setIsSelected(3)}>
+            <Pressable style={isSelected === 3? styles.tag_selected : styles.tag_unselected} onPress={()=>changeTag(3, "snack")}>
               <Text style={isSelected === 3? styles.tagtext_selected: styles.tagtext_unselected}>Snacks</Text>
             </Pressable>
           </View>

@@ -24,7 +24,7 @@ export default function LoginScreen() {
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
   const [isChecked, setChecked] = useState(false);
 
-  // backend functions
+  // functions
   function onPressLater(event: GestureResponderEvent): void {
     console.log("user: press later");
     router.push("/home");

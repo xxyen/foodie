@@ -24,7 +24,7 @@ export default function SignUpScreen() {
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
-  // backend functions
+  // functions
   function onPressLater(event: GestureResponderEvent): void {
     console.log("user: press later");
     router.push("/home");
