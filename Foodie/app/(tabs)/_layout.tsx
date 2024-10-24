@@ -13,7 +13,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="cocktails"
+        name="drink"
         options={{
           title: "drink",
           tabBarIcon: ({ color }) => <MaterialCommunityIcons size={30} name="glass-cocktail" color={color} />,
