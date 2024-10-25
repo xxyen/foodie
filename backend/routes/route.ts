@@ -1,23 +1,8 @@
 import * as dbfunlib from "../db/functions";
+import * as mgsfunlib from "../db/mgslib";
 import {Router} from "express";
 
 const router = Router();
-
-// router.get("/", async (req,res) => {
-//     const spots = await dbspot.getAll();
-//     res.json(spots);
-// });
-
-// router.get("/:id", async (req,res) => {
-//     const {id} = req.params;
-//     try{
-//         const spot = await dbspot.get(Number(id));
-//         res.status(201).json(spot);
-//     }
-//     catch{
-//         res.status(400).send("cannot get the value");
-//     }
-// });
 
 router.post("/resgiter", async (req,res) => {
     console.log("Posting request to create a user");
@@ -27,7 +12,7 @@ router.post("/resgiter", async (req,res) => {
         return;
     }
 
-    const uid = await dbfunlib.create(data.username,data.email,data.password);
+    const uid = await mgsfunlib.create(data.username,data.email,data.password);
     if(uid!==-1 && uid!==-2){
         return res.status(201).json({ message: "User created successfully", userId: uid });
     }
@@ -48,7 +33,7 @@ router.get("/login", async (req,res) => {
         return;
     }
 
-    const code = await dbfunlib.login(data.username,data.password);
+    const code = await mgsfunlib.login(data.username,data.password);
     if(code===1){
         return res.status(201).json({ message: "User loggin successfully."});
     }
@@ -57,6 +42,37 @@ router.get("/login", async (req,res) => {
     }
     else{
         return res.status(401).send("Bad Request");
+    }
+
+});
+
+router.get("/:userId", async (req,res) => {
+    console.log("Get Profile request");
+    const {userId} = req.params;
+
+    const user = await mgsfunlib.get(userId);
+    if(user){
+        return res.status(200).json({ user, message: "User profile is retrieved successfully. "});
+    }
+    else{
+        return res.status(404).json({ message: "The user with the specified userId does not exist."});
+    }
+
+});
+
+router.put("/:userId", async (req,res) => {
+    console.log("Update request");
+    const {userId} = req.params;
+    const data = req.body;
+    const code = await mgsfunlib.update(userId, data);
+    if(code===1){
+        return res.status(200).json({ message: "User profile is updated successfully. "});
+    }
+    else if(code===-1){
+        return res.status(404).json({ message: "The user with the specified userId does not exist."});
+    }
+    else{
+        return res.status(400).json({ message: "Bad Request: Wrong userId format or Connection failure"});
     }
 
 });
