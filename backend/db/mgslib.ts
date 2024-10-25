@@ -88,3 +88,9 @@ export const update = async (uid: string, userInfo: UserInfo) => {
         return res;
     }
 }
+
+process.on('SIGINT', async () => {
+    await mongoose.disconnect();
+    console.log('DB Connection closed by shutting down the server');
+    process.exit(0);
+});
