@@ -4,7 +4,7 @@ import {Router} from "express";
 
 const router = Router();
 
-router.post("/resgiter", async (req,res) => {
+router.post("/register", async (req,res) => {
     console.log("Posting request to create a user");
     const data = req.body;
     if(!data || !data.username || !data.email || !data.password){
@@ -25,14 +25,13 @@ router.post("/resgiter", async (req,res) => {
 
 });
 
-router.get("/login", async (req,res) => {
+router.post("/login", async (req,res) => {
     console.log("Log in request");
     const data = req.body;
     if(!data || !data.username || !data.password){
-        res.status(401).send("Bad Request: Some information is null, it requires username/email and password");
+        res.status(401).json({message:"Bad Request: Some information is null, it requires username/email and password"});
         return;
     }
-
     const code = await mgsfunlib.login(data.username,data.password);
     if(code===1){
         return res.status(201).json({ message: "User loggin successfully."});
