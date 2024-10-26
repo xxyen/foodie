@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   View,
@@ -31,15 +31,18 @@ export default function SignUpScreen() {
   }
 
   function onChangeUserName(text: string): void {
-    throw new Error("Function not implemented.");
+    // throw new Error("Function not implemented.");
+    setUsername(text);
   }
 
   function onChangeEmail(text: string): void {
-    throw new Error("Function not implemented.");
+    // throw new Error("Function not implemented.");
+    setEmail(text);
   }
 
   function onChangePassword(text: string): void {
-    throw new Error("Function not implemented.");
+    // throw new Error("Function not implemented.");
+    setPassword(text);
   }
 
   function onChangePasswordVisibility(event: GestureResponderEvent): void {
@@ -53,7 +56,64 @@ export default function SignUpScreen() {
 
   function onPressRegister(event: GestureResponderEvent): void {
     console.log("user: press sign up btn");
-    throw new Error("Function not implemented.");
+    // throw new Error("Function not implemented.");
+    if(validateEmail(email)){
+      if(validPassword(password)){
+        registerHelper();
+      }
+      else{
+        alert("Invalid Password, please contain at least 8 characters including one lower/upper letter, one digit and one special character.");
+      }
+    }
+    else{
+      alert("Invalid Email Address");
+    }
+  }
+
+  const registerHelper = async () => {
+    const config = {
+      method : 'POST',
+      headers : {
+        'Content-Type': 'application/json'
+      },
+      body : JSON.stringify({
+        'username' : username,
+        'email' : email,
+        'password' : password
+      })
+    };
+    try{
+      const response = await fetch(`http://localhost:4000/users/register`, config);
+      const body = await response.json();
+      if(response.status!=201){
+        alert(body.message);
+      }
+      else{
+        alert(body.message);//TODO: You can customize a success modal/dialog!
+      }
+    } catch(err){
+      alert(err);
+    }
+    
+  }
+
+  const validateEmail = (input:string) => {
+    const regex = /^\w+@(\w+.)+[a-zA-Z]+$/;
+    return regex.test(input);
+  }
+
+  const validPassword = (input:string) => {
+    const cap = /[A-Z]+/;
+    const dgt = /[0-9]+/;
+    const low = /[a-z]+/;
+    const spc = /[^A-Za-z0-9]+/;
+    if(input.length>=8 && cap.test(input) && dgt.test(input) && low.test(input) && spc.test(input)){
+      return true;
+    }
+    else{
+      return false;
+    }
+
   }
 
   return (
