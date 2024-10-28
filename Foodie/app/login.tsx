@@ -31,11 +31,13 @@ export default function LoginScreen() {
   }
 
   function onChangeUserName(text: string): void {
-    throw new Error("Function not implemented.");
+    // throw new Error("Function not implemented.");
+    setUsername(text);
   }
 
   function onChangePassword(text: string): void {
-    throw new Error("Function not implemented.");
+    // throw new Error("Function not implemented.");
+    setPassword(text);
   }
 
   function onChangePasswordVisibility(event: GestureResponderEvent): void {
@@ -48,7 +50,34 @@ export default function LoginScreen() {
 
   function onPressLogin(event: GestureResponderEvent): void {
     console.log("user: press login btn");
-    throw new Error("Function not implemented.");
+    // throw new Error("Function not implemented.");
+    loginHelper();
+  }
+
+  const loginHelper = async () => {
+    const config = {
+      method : 'POST',
+      headers : {
+        'Content-Type': 'application/json'
+      },
+      body : JSON.stringify({
+        'username' : username,
+        'password' : password
+      })
+    };
+    try{
+      const response = await fetch(`http://localhost:4000/users/login`, config);
+      const body = await response.json();
+      if(response.status!=200){
+        alert(body.message);
+      }
+      else{
+        alert(body.message);//TODO: You can customize a success modal/dialog!
+      }
+    } catch(err){
+      alert(err);
+    }
+    
   }
 
   function onPressSignUp(event: GestureResponderEvent): void {
