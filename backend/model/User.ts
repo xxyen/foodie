@@ -28,7 +28,7 @@ export interface UserInfo extends Document{
 }
 
 const UserCredentialSchema: Schema<UserCredential> = new mongoose.Schema({
-    googleId: { type: String, required: true, unique: true },
+    googleId: { type: String, unique: true },
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },

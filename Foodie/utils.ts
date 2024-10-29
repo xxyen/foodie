@@ -1,3 +1,5 @@
+import {Buffer} from 'buffer';
+
 export async function getRandomFoodRecipe(
   tag: string
 ): Promise<undefined | IApiFoodRecipeData> {
@@ -27,4 +29,37 @@ export async function getRandomCocktailRecipe(
     // TODO: Random choose 4 drink if data has more than 4drinks
 
     return data;
+  }
+
+  export const getProfile = async (id:string) => {
+    const config = {
+      method : 'GET',
+      headers : {
+        'Content-Type': 'application/json'
+      }
+    };
+    try{
+      const response = await fetch(`http://localhost:4000/users/${id}`, config);
+      const body = await response.json();
+      if(response.status!=200){
+        alert(body.message);
+        return null;
+      }
+      else{
+        const user: IUserInfo = body.user;//TODO: set everything
+        return user;
+      }
+    } catch(err){
+      alert(err);
+    }
+  }
+
+  export const parseImage = (buffer: Buffer| undefined) => {
+    if (buffer){
+      const b64 = Buffer.from(buffer).toString('base64');
+      const mimeType = 'image/png';
+      const uri = `data:${mimeType};base64,${b64}`;
+      return uri;
+    }
+   
   }

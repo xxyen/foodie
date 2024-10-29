@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAppContext } from "@/context/contexts";
+import { getProfile } from "@/utils";
 
 export default function LoginScreen() {
   const {username, onChangeUsername, onChangeId} = useAppContext();
@@ -102,26 +103,7 @@ export default function LoginScreen() {
     router.push("./signup");
   }
 
-  const getProfile = async (id:string) => {
-    const config = {
-      method : 'GET',
-      headers : {
-        'Content-Type': 'application/json'
-      }
-    };
-    try{
-      const response = await fetch(`http://localhost:4000/users/${id}`, config);
-      const body = await response.json();
-      if(response.status!=200){
-        alert(body.message);
-      }
-      else{
-        const user: UserInfo = body.user;//TODO: set everything
-      }
-    } catch(err){
-      alert(err);
-    }
-  }
+ 
 
   return (
     <>

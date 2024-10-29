@@ -2,7 +2,7 @@ import { createContext } from "react";
 import { useContext, useState } from "react";
 
 
-const AppContext = createContext<AppContextType|undefined>(undefined);
+const AppContext = createContext<IAppContextType|undefined>(undefined);
 
 export const ContextProvider = ({ children }: { children: any }) => {
     const [email, setEmail] = useState<string|undefined>(undefined);

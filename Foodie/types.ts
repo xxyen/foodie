@@ -93,7 +93,7 @@ interface IApiFoodRecipeData {
     spoonacularSourceUrl: string;
   }[];
 }
-interface UserInfo{
+interface IUserInfo{
   id: string,
   username: string,
   email: string,
@@ -104,7 +104,7 @@ interface UserInfo{
   ingredients: string[],
   icon: Buffer
 }
-interface AppContextType{
+interface IAppContextType{
   username: string|undefined;
   email: string|undefined;
   id: string|undefined;
