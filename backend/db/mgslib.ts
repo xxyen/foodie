@@ -2,8 +2,9 @@ import mongoose from "mongoose";
 import { User , UserProfile, UserInfo, UserCredential} from "../model/User";
 import fs from 'fs';
 import { userInfo } from "os";
+import "dotenv/config";
 
-const uri = "mongodb+srv://new-user:5lCV5NvTTPCaIFNT@echos.eojk4.mongodb.net/?retryWrites=true&w=majority&appName=Echos";
+const uri = process.env.MONGODB_URI as string;
 
 mongoose.connect(uri, {dbName: 'User', serverSelectionTimeoutMS: 5000});
 

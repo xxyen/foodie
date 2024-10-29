@@ -9,12 +9,12 @@ export default function Tab() {
 
 
   useEffect(() => {
-    if (!username) {
+    if (!id) {
       router.push('/welcome'); 
     }
   }, []); 
 
-  if (!username) {
+  if (!id) {
     return null; 
   }
 

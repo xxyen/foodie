@@ -3,6 +3,7 @@ import { Schema, Document, Model } from "mongoose";
 
 export interface UserCredential extends Document{
     _id: mongoose.Types.ObjectId,
+    googleId: string,
     username: string,
     email: string,
     password: string,
@@ -27,6 +28,7 @@ export interface UserInfo extends Document{
 }
 
 const UserCredentialSchema: Schema<UserCredential> = new mongoose.Schema({
+    googleId: { type: String, required: true, unique: true },
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },

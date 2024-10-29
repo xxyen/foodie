@@ -12,13 +12,59 @@ import {
 } from "react-native";
 import { getRandomFoodRecipe } from "../../utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import * as Linking from 'expo-linking';
+import { useAppContext } from "@/context/contexts";
 
 export default function Home() {
+
+  const {id, onChangeId} = useAppContext();
+
   // states
   const [isSelected, setIsSelected] = useState<number>(0);
   const [tag, setTag] = useState<string>("breakfast");
   const [data, setData] = useState<IApiFoodRecipeData | undefined>(undefined);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  // const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getUserIdFromUrl = async () => {
+      const url = await Linking.getInitialURL();
+      console.log("url: ", url);
+      if (url) {
+        const { queryParams } = Linking.parse(url);
+        console.log("queryParams.userId: ", queryParams?.userId);
+        if (queryParams?.userId) {
+          if(typeof queryParams.userId === 'string'){
+            onChangeId(queryParams.userId);
+          }
+        }
+      }
+    };
+
+    // Initial check for the deep link URL when the component mounts
+    getUserIdFromUrl();
+
+    // Listener for any incoming links while the app is open
+    const urlListener = Linking.addEventListener("url", (event) => {
+      const { queryParams } = Linking.parse(event.url);
+      if (queryParams?.userId) {
+        if(typeof queryParams.userId === 'string'){
+          onChangeId(queryParams.userId);
+        }
+      }
+    });
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      urlListener.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (id) {
+      console.log("Updated userId: ", id);
+    }
+  }, [id]);
 
   // functions
   function changeTag(num: number, tag: string): void {
