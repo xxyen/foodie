@@ -264,5 +264,6 @@ const styles = StyleSheet.create({
   },
   fav_icon_unselected: {
     padding: 10,
+    color: "#F1F5F5"
   },
 });
