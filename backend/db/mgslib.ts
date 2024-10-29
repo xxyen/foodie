@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { User , UserProfile, UserInfo} from "../model/User";
+import { User , UserProfile, UserInfo, UserCredential} from "../model/User";
 import fs from 'fs';
 import { userInfo } from "os";
 import "dotenv/config";
@@ -31,23 +31,23 @@ export const create = async (username : string, email: string, password: string)
 };
 
 export const login = async (username : string, password: string) => {
-    let res = -1;
+    let res = '-1';
     try{
-        const user = await User.findOne({
+        const user:UserCredential|null = await User.findOne({
             $or: [{ username }, { email: username }],
             password: password
         });
         if(user){
             console.log("You have successfully logged in, ", user.username );
-            res = 1;
+            res = user._id.toString();
         }
         else{
-            res = -1;
+            res = '-1';
         }
         
     } catch (err) {
         console.error('Error occurred:', err);
-        res = -2;
+        res = '-2';
     } finally {
         return res;
     }

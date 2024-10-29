@@ -93,3 +93,34 @@ interface IApiFoodRecipeData {
     spoonacularSourceUrl: string;
   }[];
 }
+interface UserInfo{
+  id: string,
+  username: string,
+  email: string,
+  allergies: string[],
+  favFoods: number[],
+  favDrinks: number[],
+  weeklyCalories: number[],
+  ingredients: string[],
+  icon: Buffer
+}
+interface AppContextType{
+  username: string|undefined;
+  email: string|undefined;
+  id: string|undefined;
+  allergies: string[];
+  favFoods: number[];
+  favDrinks: number[];
+  weeklyCalories: number[];
+  ingredients: string[];
+  icon: Buffer|undefined;
+  onChangeUsername: (username: string) => void;
+  onChangeEmail: (email:string) =>void;
+  onChangeId: (id: string|undefined) =>void;
+  onChangeAllergies: (allergies: string[]) => void;
+  onChangeFavFoods: (favFoods: number[]) => void;
+  onChangeFavDrinks: (favDrinks: number[]) => void;
+  onChangeWeeklyCalories: (weeklyCalories: number[]) => void;
+  onChangeIngredients: (ingredients: string[]) => void;
+  onChangeBuffer: (icon:Buffer|undefined) => void;
+}

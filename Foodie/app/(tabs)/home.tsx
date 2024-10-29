@@ -13,14 +13,18 @@ import {
 import { getRandomFoodRecipe } from "../../utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Linking from 'expo-linking';
+import { useAppContext } from "@/context/contexts";
 
 export default function Home() {
+
+  const {id, onChangeId} = useAppContext();
+
   // states
   const [isSelected, setIsSelected] = useState<number>(0);
   const [tag, setTag] = useState<string>("breakfast");
   const [data, setData] = useState<IApiFoodRecipeData | undefined>(undefined);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
-  const [userId, setUserId] = useState<string | null>(null);
+  // const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const getUserIdFromUrl = async () => {
@@ -30,7 +34,9 @@ export default function Home() {
         const { queryParams } = Linking.parse(url);
         console.log("queryParams.userId: ", queryParams?.userId);
         if (queryParams?.userId) {
-          setUserId(queryParams?.userId);
+          if(typeof queryParams.userId === 'string'){
+            onChangeId(queryParams.userId);
+          }
         }
       }
     };
@@ -42,7 +48,9 @@ export default function Home() {
     const urlListener = Linking.addEventListener("url", (event) => {
       const { queryParams } = Linking.parse(event.url);
       if (queryParams?.userId) {
-        setUserId(queryParams.userId);
+        if(typeof queryParams.userId === 'string'){
+          onChangeId(queryParams.userId);
+        }
       }
     });
 
@@ -53,10 +61,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (userId) {
-      console.log("Updated userId: ", userId);
+    if (id) {
+      console.log("Updated userId: ", id);
     }
-  }, [userId]);
+  }, [id]);
 
   // functions
   function changeTag(num: number, tag: string): void {
