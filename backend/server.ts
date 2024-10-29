@@ -46,9 +46,17 @@ app.get(
 app.get(
   "/auth/google/callback",
   passport.authenticate("google"),
+  // (req, res) => {
+  //   res.redirect("/");
+  // }
+
   (req, res) => {
-    res.redirect("/");
+    if (req.user) {
+      const userId = (req.user as any)._id;
+      res.redirect(`exp://127.0.0.1:8081/--/home?userId=${userId}`);
+    }
   }
+  
 );
 
 app.get("/api/logout", (req, res) => {
