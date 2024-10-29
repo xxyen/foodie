@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { Schema, Document, Model } from "mongoose";
 
 export interface UserCredential extends Document{
+    _id: mongoose.Types.ObjectId,
     username: string,
     email: string,
     password: string,
@@ -14,6 +15,7 @@ export interface UserCredential extends Document{
 }
 
 export interface UserInfo extends Document{
+    id: string,
     username: string,
     email: string,
     allergies: string[],

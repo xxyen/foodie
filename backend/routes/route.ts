@@ -33,14 +33,14 @@ router.post("/login", async (req,res) => {
         return;
     }
     const code = await mgsfunlib.login(data.username,data.password);
-    if(code===1){
-        return res.status(201).json({ message: "User loggin successfully."});
+    if(code==='-2'){
+        return res.status(401).send("Bad Request");
     }
-    else if(code===-1){
+    else if(code==='-1'){
         return res.status(400).json({ message: "The username/email or password is incorrect."});
     }
     else{
-        return res.status(401).send("Bad Request");
+        return res.status(200).json({ id: code, message: "User loggin successfully."});
     }
 
 });

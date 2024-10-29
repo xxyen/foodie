@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { useRouter,useNavigation } from "expo-router";
 import React from "react";
 import {
   View,
@@ -14,6 +14,7 @@ import {
 export default function WelcomeScreen() {
   // navigation
   const router = useRouter();
+  const navigation = useNavigation();
 
   // hardcode variables
   const img_path_1 = "../assets/cone.png";
@@ -23,7 +24,7 @@ export default function WelcomeScreen() {
   // functions
   function onPressLater(event: GestureResponderEvent): void {
     console.log("user: press later");
-    router.push("/home")
+    router.push("/home");
   }
 
   function onPressLogin(event: GestureResponderEvent): void {

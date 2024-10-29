@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import {
@@ -12,18 +12,23 @@ import {
   TextInput,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { useAppContext } from "@/context/contexts";
 
 export default function LoginScreen() {
+  const {username, onChangeUsername, onChangeId} = useAppContext();
+  
   const img_path = "../assets/rasberry.png";
 
   // navigation
   const router = useRouter();
 
   // states
-  const [username, setUsername] = useState("");
+
+  // const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
   const [isChecked, setChecked] = useState(false);
+
 
   // functions
   function onPressLater(event: GestureResponderEvent): void {
@@ -32,10 +37,10 @@ export default function LoginScreen() {
     router.push("/home");
   }
 
-  function onChangeUserName(text: string): void {
-    // throw new Error("Function not implemented.");
-    setUsername(text);
-  }
+  // function onChangeUserName(text: string): void {
+  //   // throw new Error("Function not implemented.");
+  //   setUsername(text);
+  // }
 
   function onChangePassword(text: string): void {
     // throw new Error("Function not implemented.");
@@ -51,10 +56,15 @@ export default function LoginScreen() {
     throw new Error("Function not implemented.");
   }
 
-  function onPressLogin(event: GestureResponderEvent): void {
+  async function onPressLogin(event: GestureResponderEvent): Promise<void> {
     console.log("user: press login btn");
     // throw new Error("Function not implemented.");
-    loginHelper();
+    const res = await loginHelper();
+    if(res){
+      getProfile(res);
+      router.dismissAll();
+      router.push('/home');
+    }
   }
 
   const loginHelper = async () => {
@@ -73,12 +83,16 @@ export default function LoginScreen() {
       const body = await response.json();
       if(response.status!=200){
         alert(body.message);
+        return null;
       }
       else{
+        onChangeId(body.id);
         alert(body.message);//TODO: You can customize a success modal/dialog!
+        return body.id;
       }
     } catch(err){
       alert(err);
+      return null;
     }
     
   }
@@ -86,6 +100,27 @@ export default function LoginScreen() {
   function onPressSignUp(event: GestureResponderEvent): void {
     console.log("user: press sign up btn");
     router.push("./signup");
+  }
+
+  const getProfile = async (id:string) => {
+    const config = {
+      method : 'GET',
+      headers : {
+        'Content-Type': 'application/json'
+      }
+    };
+    try{
+      const response = await fetch(`http://localhost:4000/users/${id}`, config);
+      const body = await response.json();
+      if(response.status!=200){
+        alert(body.message);
+      }
+      else{
+        const user: UserInfo = body.user;//TODO: set everything
+      }
+    } catch(err){
+      alert(err);
+    }
   }
 
   return (
@@ -107,7 +142,7 @@ export default function LoginScreen() {
             <Text style={styles.text}>User Name</Text>
             <TextInput
               style={styles.input}
-              onChangeText={onChangeUserName}
+              onChangeText={onChangeUsername}
               value={username}
               placeholder="Enter your user name"
             />

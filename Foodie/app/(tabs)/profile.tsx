@@ -1,6 +1,23 @@
 import { View, Text, StyleSheet, SafeAreaView } from "react-native";
+import { useAppContext } from "@/context/contexts";
+import { Redirect,useRouter } from "expo-router";
+import { useEffect } from "react";
 
 export default function Tab() {
+  const { username, id } = useAppContext();
+  const router = useRouter();
+
+
+  useEffect(() => {
+    if (!username) {
+      router.push('/welcome'); 
+    }
+  }, []); 
+
+  if (!username) {
+    return null; 
+  }
+
   return (
     <SafeAreaView style={styles.safearea}>
       <View style={styles.container}>
@@ -8,7 +25,9 @@ export default function Tab() {
       </View>
     </SafeAreaView>
   );
+
 }
+
 
 const styles = StyleSheet.create({
   safearea: {
