@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
+import React from "react";
 import {
   View,
   Text,
@@ -27,6 +28,7 @@ export default function SignUpScreen() {
   // functions
   function onPressLater(event: GestureResponderEvent): void {
     console.log("user: press later");
+    router.back();
     router.push("/home");
   }
 
@@ -46,7 +48,8 @@ export default function SignUpScreen() {
   }
 
   function onChangePasswordVisibility(event: GestureResponderEvent): void {
-    throw new Error("Function not implemented.");
+    // throw new Error("Function not implemented.");
+    setPasswordVisibility(!isPasswordVisible);
   }
 
   function onPressLogin(event: GestureResponderEvent): void {
@@ -157,6 +160,7 @@ export default function SignUpScreen() {
                 value={password}
                 secureTextEntry={!isPasswordVisible}
                 placeholder="Enter your password"
+                style={{flex:1}}
               />
               <Pressable onPress={onChangePasswordVisibility}>
                 <MaterialIcons
