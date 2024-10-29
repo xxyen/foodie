@@ -8,14 +8,18 @@ import {
   ScrollView,
   Pressable,
   Image,
+  ImageBackground,
+  GestureResponderEvent,
 } from "react-native";
 import { getRandomCocktailRecipe } from "../../utils";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function Home() {
   // states
   const [isSelected, setIsSelected] = useState<number>(0);
   const [tag, setTag] = useState<string>("Gin");
   const [data, setData] = useState<IApiDrinkIdData | undefined>(undefined);
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
   // functions
   function changeTag(num: number, tag: string): void {
@@ -31,6 +35,10 @@ export default function Home() {
     };
     fetchData();
   }, [tag]);
+
+  function onPressAddFav(event: GestureResponderEvent): void {
+    throw new Error("Function not implemented.");
+  }
 
   return (
     <SafeAreaView style={styles.safearea}>
@@ -107,21 +115,49 @@ export default function Home() {
         <ScrollView style={styles.container_recipes}>
           <View style={styles.container_drinkrow}>
             <Pressable style={styles.container_recipes_img}>
-              <Image
-                source={{ uri: data && data?.drinks[0]?.strDrinkThumb }}
-                style={styles.img}
-                resizeMode="cover"
-              />
+              <View style={styles.img_wrapper}>
+                <ImageBackground
+                  source={{ uri: data && data?.drinks[0]?.strDrinkThumb }}
+                  style={styles.img}
+                  resizeMode="cover"
+                >
+                  <Pressable onPress={onPressAddFav}>
+                    <MaterialCommunityIcons
+                      name={isFavorite ? "heart" : "heart-plus"}
+                      size={24}
+                      style={
+                        isFavorite
+                          ? styles.fav_icon_selected
+                          : styles.fav_icon_unselected
+                      }
+                    />
+                  </Pressable>
+                </ImageBackground>
+              </View>
               {/* <Text style={styles.text}>
                 {data && data?.drinks[0]?.strDrink}
               </Text> */}
             </Pressable>
             <Pressable style={styles.container_recipes_img}>
-              <Image
-                source={{ uri: data && data?.drinks[1]?.strDrinkThumb }}
-                style={styles.img}
-                resizeMode="cover"
-              />
+            <View style={styles.img_wrapper}>
+                <ImageBackground
+                  source={{ uri: data && data?.drinks[1]?.strDrinkThumb }}
+                  style={styles.img}
+                  resizeMode="cover"
+                >
+                  <Pressable onPress={onPressAddFav}>
+                    <MaterialCommunityIcons
+                      name={isFavorite ? "heart" : "heart-plus"}
+                      size={24}
+                      style={
+                        isFavorite
+                          ? styles.fav_icon_selected
+                          : styles.fav_icon_unselected
+                      }
+                    />
+                  </Pressable>
+                </ImageBackground>
+              </View>
               {/* <Text style={styles.text}>
                 {data && data?.drinks[1]?.strDrink}
               </Text> */}
@@ -129,21 +165,49 @@ export default function Home() {
           </View>
           <View style={styles.container_drinkrow}>
             <Pressable style={styles.container_recipes_img}>
-              <Image
-                source={{ uri: data && data?.drinks[2]?.strDrinkThumb }}
-                style={styles.img}
-                resizeMode="cover"
-              />
+            <View style={styles.img_wrapper}>
+                <ImageBackground
+                  source={{ uri: data && data?.drinks[2]?.strDrinkThumb }}
+                  style={styles.img}
+                  resizeMode="cover"
+                >
+                  <Pressable onPress={onPressAddFav}>
+                    <MaterialCommunityIcons
+                      name={isFavorite ? "heart" : "heart-plus"}
+                      size={24}
+                      style={
+                        isFavorite
+                          ? styles.fav_icon_selected
+                          : styles.fav_icon_unselected
+                      }
+                    />
+                  </Pressable>
+                </ImageBackground>
+              </View>
               {/* <Text style={styles.text}>
                 {data && data?.drinks[2]?.strDrink}
               </Text> */}
             </Pressable>
             <Pressable style={styles.container_recipes_img}>
-              <Image
-                source={{ uri: data && data?.drinks[3]?.strDrinkThumb }}
-                style={styles.img}
-                resizeMode="cover"
-              />
+            <View style={styles.img_wrapper}>
+                <ImageBackground
+                  source={{ uri: data && data?.drinks[3]?.strDrinkThumb }}
+                  style={styles.img}
+                  resizeMode="cover"
+                >
+                  <Pressable onPress={onPressAddFav}>
+                    <MaterialCommunityIcons
+                      name={isFavorite ? "heart" : "heart-plus"}
+                      size={24}
+                      style={
+                        isFavorite
+                          ? styles.fav_icon_selected
+                          : styles.fav_icon_unselected
+                      }
+                    />
+                  </Pressable>
+                </ImageBackground>
+              </View>
               {/* <Text style={styles.text}>
                 {data && data?.drinks[3]?.strDrink}
               </Text> */}
@@ -151,21 +215,49 @@ export default function Home() {
           </View>
           <View style={styles.container_drinkrow}>
             <Pressable style={styles.container_recipes_img}>
-              <Image
-                source={{ uri: data && data?.drinks[4]?.strDrinkThumb }}
-                style={styles.img}
-                resizeMode="cover"
-              />
+            <View style={styles.img_wrapper}>
+                <ImageBackground
+                  source={{ uri: data && data?.drinks[4]?.strDrinkThumb }}
+                  style={styles.img}
+                  resizeMode="cover"
+                >
+                  <Pressable onPress={onPressAddFav}>
+                    <MaterialCommunityIcons
+                      name={isFavorite ? "heart" : "heart-plus"}
+                      size={24}
+                      style={
+                        isFavorite
+                          ? styles.fav_icon_selected
+                          : styles.fav_icon_unselected
+                      }
+                    />
+                  </Pressable>
+                </ImageBackground>
+              </View>
               {/* <Text style={styles.text}>
                 {data && data?.drinks[4]?.strDrink}
               </Text> */}
             </Pressable>
             <Pressable style={styles.container_recipes_img}>
-              <Image
-                source={{ uri: data && data?.drinks[5]?.strDrinkThumb }}
-                style={styles.img}
-                resizeMode="cover"
-              />
+            <View style={styles.img_wrapper}>
+                <ImageBackground
+                  source={{ uri: data && data?.drinks[5]?.strDrinkThumb }}
+                  style={styles.img}
+                  resizeMode="cover"
+                >
+                  <Pressable onPress={onPressAddFav}>
+                    <MaterialCommunityIcons
+                      name={isFavorite ? "heart" : "heart-plus"}
+                      size={24}
+                      style={
+                        isFavorite
+                          ? styles.fav_icon_selected
+                          : styles.fav_icon_unselected
+                      }
+                    />
+                  </Pressable>
+                </ImageBackground>
+              </View>
               {/* <Text style={styles.text}>
                 {data && data?.drinks[5]?.strDrink}
               </Text> */}
@@ -246,10 +338,24 @@ const styles = StyleSheet.create({
     height: 180,
     width: "100%",
     borderRadius: 10,
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
   },
   text: {
     fontSize: 18,
     fontWeight: "bold",
     marginVertical: 5,
+  },
+  img_wrapper: {
+    borderRadius: 20,
+    overflow: "hidden",
+  },
+  fav_icon_selected: {
+    padding: 10,
+    color: "red",
+  },
+  fav_icon_unselected: {
+    padding: 10,
+    color: "#F1F5F5"
   },
 });
