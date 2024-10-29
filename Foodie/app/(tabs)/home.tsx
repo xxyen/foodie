@@ -28,10 +28,9 @@ export default function Home() {
       console.log("url: ", url);
       if (url) {
         const { queryParams } = Linking.parse(url);
-        console.log("queryParams: ", queryParams);
+        console.log("queryParams.userId: ", queryParams?.userId);
         if (queryParams?.userId) {
-          setUserId(queryParams.userId as string);
-          console.log("userId: ", userId);
+          setUserId(queryParams?.userId);
         }
       }
     };
@@ -43,7 +42,7 @@ export default function Home() {
     const urlListener = Linking.addEventListener("url", (event) => {
       const { queryParams } = Linking.parse(event.url);
       if (queryParams?.userId) {
-        setUserId(queryParams.userId as string);
+        setUserId(queryParams.userId);
       }
     });
 
@@ -52,6 +51,12 @@ export default function Home() {
       urlListener.remove();
     };
   }, []);
+
+  useEffect(() => {
+    if (userId) {
+      console.log("Updated userId: ", userId);
+    }
+  }, [userId]);
 
   // functions
   function changeTag(num: number, tag: string): void {
