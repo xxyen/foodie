@@ -95,6 +95,7 @@ interface IApiFoodRecipeData {
 }
 interface IUserInfo{
   id: string,
+  googleId: string,
   username: string,
   email: string,
   allergies: string[],
