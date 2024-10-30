@@ -32,6 +32,7 @@ export async function getRandomCocktailRecipe(
   }
 
   export const getProfile = async (id:string) => {
+
     const config = {
       method : 'GET',
       headers : {
