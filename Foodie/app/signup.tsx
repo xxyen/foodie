@@ -10,6 +10,7 @@ import {
   GestureResponderEvent,
   Pressable,
   TextInput,
+  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
 
@@ -92,7 +93,7 @@ export default function SignUpScreen() {
         alert(body.message);
       }
       else{
-        alert(body.message);//TODO: You can customize a success modal/dialog!
+        Alert.alert("Congratulate!", "You have successfully registered.");//TODO: You can customize a success modal/dialog!
       }
     } catch(err){
       alert(err);

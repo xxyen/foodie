@@ -10,6 +10,7 @@ import {
   GestureResponderEvent,
   Pressable,
   TextInput,
+  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAppContext } from "@/context/contexts";
@@ -96,7 +97,7 @@ export default function LoginScreen() {
         return null;
       } else {
         onChangeId(body.id);
-        alert(body.message); //TODO: You can customize a success modal/dialog!
+        Alert.alert("Congratulate!", "You have logged in successfully."); //TODO: You can customize a success modal/dialog!
         return body.id;
       }
     } catch (err) {
