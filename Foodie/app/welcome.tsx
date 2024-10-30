@@ -1,4 +1,4 @@
-import { useRouter,useNavigation } from "expo-router";
+import { useRouter, useNavigation } from "expo-router";
 import React from "react";
 import {
   View,
@@ -10,7 +10,7 @@ import {
   Pressable,
   Platform,
 } from "react-native";
-import * as Linking from 'expo-linking';
+
 
 export default function WelcomeScreen() {
   // navigation
@@ -38,10 +38,7 @@ export default function WelcomeScreen() {
     router.push("/signup");
   }
 
-  async function onPressGoogleLogin(event: GestureResponderEvent): Promise<void> {
-    console.log("user: press continue with google");
-    await Linking.openURL("http://localhost:4000/auth/google");
-  }
+  
 
   return (
     <>
@@ -64,9 +61,6 @@ export default function WelcomeScreen() {
               <Pressable style={styles.btn_signup} onPress={onPressSignUp}>
                 <Text style={styles.btn_signup_text}>Sign Up</Text>
               </Pressable>
-              <Pressable style={styles.btn_google} onPress={onPressGoogleLogin}>
-              <Text style={styles.btn_google_text}>Continue with Google</Text>
-            </Pressable>
             </View>
           </View>
         </View>
@@ -99,7 +93,7 @@ const styles = StyleSheet.create({
   container_img: {
     position: "relative",
     height: "60%",
-    width: "80%"
+    width: "80%",
   },
   img1: {
     width: 118,
@@ -128,7 +122,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "right",
     marginRight: "10%",
-    marginTop: "15%"
+    marginTop: "15%",
   },
   text: {
     fontSize: 28,
@@ -159,20 +153,6 @@ const styles = StyleSheet.create({
   },
   btn_signup_text: {
     color: "#042628",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  btn_google: {
-    height: 55,
-    width: "80%",
-    backgroundColor: "#4285F4",
-    borderRadius: 16,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 20,
-  },
-  btn_google_text: {
-    color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "bold",
   },

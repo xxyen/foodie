@@ -14,11 +14,14 @@ import {
 import { useRouter } from "expo-router";
 import { useAppContext } from "@/context/contexts";
 import { getProfile } from "@/utils";
+import * as Linking from "expo-linking";
 
 export default function LoginScreen() {
-  const {username, onChangeUsername, onChangeId} = useAppContext();
-  
+  const { username, onChangeUsername, onChangeId } = useAppContext();
+
+  // variables
   const img_path = "../assets/rasberry.png";
+  const google_icon_path = "../assets/google_icon.png";
 
   // navigation
   const router = useRouter();
@@ -30,12 +33,18 @@ export default function LoginScreen() {
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
   const [isChecked, setChecked] = useState(false);
 
-
   // functions
   function onPressLater(event: GestureResponderEvent): void {
     console.log("user: press later");
     router.back();
     router.push("/home");
+  }
+
+  async function onPressGoogleLogin(
+    event: GestureResponderEvent
+  ): Promise<void> {
+    console.log("user: press continue with google");
+    await Linking.openURL("http://localhost:4000/auth/google");
   }
 
   // function onChangeUserName(text: string): void {
@@ -61,49 +70,45 @@ export default function LoginScreen() {
     console.log("user: press login btn");
     // throw new Error("Function not implemented.");
     const res = await loginHelper();
-    if(res){
+    if (res) {
       getProfile(res);
       router.dismissAll();
-      router.push('/home');
+      router.push("/home");
     }
   }
 
   const loginHelper = async () => {
     const config = {
-      method : 'POST',
-      headers : {
-        'Content-Type': 'application/json'
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-      body : JSON.stringify({
-        'username' : username,
-        'password' : password
-      })
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      }),
     };
-    try{
+    try {
       const response = await fetch(`http://localhost:4000/users/login`, config);
       const body = await response.json();
-      if(response.status!=200){
+      if (response.status != 200) {
         alert(body.message);
         return null;
-      }
-      else{
+      } else {
         onChangeId(body.id);
-        alert(body.message);//TODO: You can customize a success modal/dialog!
+        alert(body.message); //TODO: You can customize a success modal/dialog!
         return body.id;
       }
-    } catch(err){
+    } catch (err) {
       alert(err);
       return null;
     }
-    
-  }
+  };
 
   function onPressSignUp(event: GestureResponderEvent): void {
     console.log("user: press sign up btn");
     router.push("./signup");
   }
-
- 
 
   return (
     <>
@@ -137,7 +142,7 @@ export default function LoginScreen() {
                 value={password}
                 secureTextEntry={!isPasswordVisible}
                 placeholder="Enter your password"
-                style={{flex:1}}
+                style={{ flex: 1 }}
               />
               <Pressable onPress={onChangePasswordVisibility}>
                 <MaterialIcons
@@ -169,6 +174,10 @@ export default function LoginScreen() {
           </View>
           <Pressable style={styles.btn_login} onPress={onPressLogin}>
             <Text style={styles.btn_login_text}>Login</Text>
+          </Pressable>
+          <Pressable style={styles.btn_google} onPress={onPressGoogleLogin}>
+            <Image source={require(google_icon_path)} style={styles.icon_google} resizeMode="contain"/>
+            <Text style={styles.btn_google_text}>Continue with Google</Text>
           </Pressable>
           <View style={styles.container_register}>
             <Text style={styles.text}>Don’t have an Account? </Text>
@@ -270,7 +279,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: 20,
   },
   btn_login_text: {
     color: "#FFFFFF",
@@ -285,4 +293,24 @@ const styles = StyleSheet.create({
     marginRight: "10%",
     marginTop: "15%",
   },
+  btn_google: {
+    height: 55,
+    width: "100%",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 10,
+    borderWidth: 1
+  },
+  btn_google_text: {
+    color: "black",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  icon_google: {
+    height: 16,
+    width: 16
+  }
 });
