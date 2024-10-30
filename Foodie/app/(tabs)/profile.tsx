@@ -7,6 +7,7 @@ import {
   Pressable,
   GestureResponderEvent,
   Dimensions,
+  Linking,
 } from "react-native";
 import { useAppContext } from "@/context/contexts";
 import { Redirect, useRouter } from "expo-router";
@@ -55,19 +56,15 @@ export default function Tab() {
 
   // functions
   async function onPressLoginOut(event: GestureResponderEvent): Promise<void> {
-    // throw new Error("Function not implemented.");
-    const config = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
+    if(userInfo?.googleId){
+      try{
+        const response = await Linking.openURL(`http://localhost:4000/api/logout`);
       }
-    };
-    try{
-      const response = await fetch(`http://localhost:4000/api/logout`, config);
+      catch(err){
+        console.log(err);
+      }
     }
-    catch(err){
-      console.log(err);
-    }
+      
     logout();
     setUserInfo(undefined);
   }

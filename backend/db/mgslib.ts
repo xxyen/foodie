@@ -56,7 +56,7 @@ export const login = async (username : string, password: string) => {
 
 export const get = async (uid : string) => {
     try{
-        const user = await UserProfile.findById(uid).select('username email allergies favFoods favDrinks weeklyCalories ingredients icon');
+        const user = await UserProfile.findById(uid).select('username googleId email allergies favFoods favDrinks weeklyCalories ingredients icon');
         if(user){
             return user;
         }
