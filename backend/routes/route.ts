@@ -45,7 +45,6 @@ router.post("/login", async (req,res) => {
 });
 
 router.get("/:userId", async (req,res) => {
-    console.log("Get Profile request");
     const {userId} = req.params;
 
     const user = await mgsfunlib.get(userId);
