@@ -55,6 +55,7 @@ export async function getRandomCocktailRecipe(
   }
 
   export const parseImage = (buffer: Buffer| undefined) => {
+    // refer: https://stackoverflow.com/questions/62708802/how-to-convert-buffer-into-image-using-nodejs
     if (buffer){
       const b64 = Buffer.from(buffer).toString('base64');
       const mimeType = 'image/png';

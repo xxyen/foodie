@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet, SafeAreaView, Image } from "react-native";
+import { View, Text, StyleSheet, SafeAreaView, Image, Pressable, GestureResponderEvent } from "react-native";
 import { useAppContext } from "@/context/contexts";
-import { Redirect,useRouter } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   LineChart,
@@ -17,7 +17,7 @@ export default function Tab() {
 
   // variables
   const img_path = "../../assets/18.png";
-  const img_path1 = "../../assets/burger.png"; 
+  const img_path1 = "../../assets/burger.png";
   const img_path2 = "../../assets/rasberry.png";
   const img_path3 = "../../assets/peanut.png";
 
@@ -28,8 +28,8 @@ export default function Tab() {
       {
         data: [20, 45, 28, 80, 99, 43],
         // color: (opacity = 1) => `rgba(2, 65, 244, ${opacity})`, // optional
-        strokeWidth: 4 // optional
-      }
+        strokeWidth: 4, // optional
+      },
     ],
   };
 
@@ -40,60 +40,69 @@ export default function Tab() {
     color: (opacity = 1) => `rgba(217, 217, 217, ${opacity})`,
     strokeWidth: 2, // optional, default 3
     barPercentage: 0.5,
-    useShadowColorFromDataset: false // optional
+    useShadowColorFromDataset: false, // optional
   };
 
   // state
-  const [userInfo, setUserInfo] = useState<IUserInfo|undefined>(undefined);
-
+  const [userInfo, setUserInfo] = useState<IUserInfo | undefined>(undefined);
 
   // Render
   useEffect(() => {
     const fetchData = async () => {
       if (id) {
         const userData = await getProfile(id);
-        if (userData){
+        if (userData) {
           setUserInfo(userData);
         }
       }
     };
     fetchData();
-
   }, [userInfo]);
 
-  // functions
+  function onPressLoginOut(event: GestureResponderEvent): void {
+    throw new Error("Function not implemented.");
+  }
 
-  
+  // functions
 
   return (
     <SafeAreaView style={styles.safearea}>
       <View style={styles.container}>
-        <Image source={{uri: parseImage(userInfo?.icon)}} style={styles.avatar} resizeMode="contain" />
+        <Image
+          source={{ uri: parseImage(userInfo?.icon) }}
+          style={styles.avatar}
+          resizeMode="contain"
+        />
         <Text style={styles.title}>{userInfo?.username}</Text>
         <View style={styles.shopping_list}>
           <Text style={styles.title}>My Shopping List</Text>
-          <View style={styles.container_row}>
-          </View>
+          <View style={styles.container_row}></View>
         </View>
         <View style={styles.shopping_list}>
           <Text style={styles.title}>Calorie intake</Text>
           <LineChart
-  data={data}
-  width={300}
-  height={100}
-  chartConfig={chartConfig}
-/>
+            data={data}
+            width={300}
+            height={100}
+            chartConfig={chartConfig}
+          />
         </View>
         <View style={styles.shopping_list}>
           <Text style={styles.title}>My Food allergies</Text>
           <View style={styles.container_row}>
-            <Image source={require(img_path3)} style={styles.img} resizeMode="contain" /> 
+            <Image
+              source={require(img_path3)}
+              style={styles.img}
+              resizeMode="contain"
+            />
           </View>
         </View>
+        <Pressable style={styles.btn} onPress={onPressLoginOut}>
+            <Text style={styles.btn_text}>Log Out</Text>
+          </Pressable>
       </View>
     </SafeAreaView>
   );
-
 }
 
 const styles = StyleSheet.create({
@@ -105,13 +114,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    gap: 20
+    gap: 20,
   },
   container_row: {
     flexDirection: "row",
     gap: 30,
     alignItems: "center",
-    justifyContent: "flex-start"
+    justifyContent: "flex-start",
   },
   title: {
     fontSize: 20,
@@ -119,13 +128,13 @@ const styles = StyleSheet.create({
     color: "black",
   },
   avatar: {
-    height: 120,
-    width: 120,
-    borderRadius: 120/2,
+    height: 80,
+    width: 80,
+    borderRadius: 80 / 2,
   },
   img: {
-    height: 90,
-    width: 90,
+    height: 50,
+    width: 50,
     borderRadius: 20,
   },
   shopping_list: {
@@ -133,6 +142,20 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     height: "20%",
     width: "90%",
-    padding: 20
-  }
+    padding: 20,
+  },
+  btn: {
+    height: 55,
+    width: "90%",
+    backgroundColor: "#042628",
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20
+  },
+  btn_text: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
 });
