@@ -44,7 +44,7 @@ export default function Home() {
     <SafeAreaView style={styles.safearea}>
       <Text style={styles.title}>Today's Pick</Text>
       <View style={styles.container}>
-        <ScrollView horizontal={true} style={{ width: "90%" }}>
+        <ScrollView horizontal={true} style={{ width: "90%" }} showsHorizontalScrollIndicator={false}>
           <View style={styles.container_topbar}>
             <Pressable
               style={
@@ -376,8 +376,8 @@ const styles = StyleSheet.create({
 
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.15,
-    shadowRadius: 10,
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
 
     elevation: 20, // TODO: seems like not work
   },
@@ -402,7 +402,7 @@ const styles = StyleSheet.create({
     width: 100,
   },
   tagtext_selected: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#FFFFFF",
     padding: 10,
     textAlign: "center",
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
     width: 100,
   },
   tagtext_unselected: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#0A2533",
     padding: 10,
     textAlign: "center",
