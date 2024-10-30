@@ -13,9 +13,12 @@ import {
   Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
+import * as Linking from "expo-linking";
 
 export default function SignUpScreen() {
+  // variables
   const img_path = "../assets/chickenleg.png";
+  const google_icon_path = "../assets/google_icon.png";
 
   // navigation
   const router = useRouter();
@@ -72,6 +75,13 @@ export default function SignUpScreen() {
     else{
       alert("Invalid Email Address");
     }
+  }
+
+  async function onPressGoogleLogin(
+    event: GestureResponderEvent
+  ): Promise<void> {
+    console.log("user: press continue with google");
+    await Linking.openURL("http://localhost:4000/auth/google");
   }
 
   const registerHelper = async () => {
@@ -171,8 +181,12 @@ export default function SignUpScreen() {
               </Pressable>
             </View>
           </View>
-          <Pressable style={styles.btn_login} onPress={onPressRegister}>
-            <Text style={styles.btn_login_text}>Register</Text>
+          <Pressable style={styles.btn_signup} onPress={onPressRegister}>
+            <Text style={styles.btn_signup_text}>Register</Text>
+          </Pressable>
+          <Pressable style={styles.btn_google} onPress={onPressGoogleLogin}>
+            <Image source={require(google_icon_path)} style={styles.icon_google} resizeMode="contain"/>
+            <Text style={styles.btn_google_text}>Continue with Google</Text>
           </Pressable>
           <View style={styles.container_login}>
             <Text style={styles.text}>Already have an Account? </Text>
@@ -267,16 +281,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
   },
-  btn_login: {
+  btn_signup: {
     height: 55,
     width: "100%",
     backgroundColor: "#042628",
     borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: 20,
   },
-  btn_login_text: {
+  btn_signup_text: {
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "bold",
@@ -289,4 +302,24 @@ const styles = StyleSheet.create({
     marginRight: "10%",
     marginTop: "15%",
   },
+  btn_google: {
+    height: 55,
+    width: "100%",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 10,
+    borderWidth: 1
+  },
+  btn_google_text: {
+    color: "black",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  icon_google: {
+    height: 16,
+    width: 16
+  }
 });

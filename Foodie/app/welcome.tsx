@@ -10,7 +10,7 @@ import {
   Pressable,
   Platform,
 } from "react-native";
-
+import * as Linking from "expo-linking";
 
 export default function WelcomeScreen() {
   // navigation
@@ -21,6 +21,7 @@ export default function WelcomeScreen() {
   const img_path_1 = "../assets/cone.png";
   const img_path_2 = "../assets/burger.png";
   const img_path_3 = "../assets/orange.png";
+  const google_icon_path = "../assets/google_icon.png";
 
   // functions
   function onPressLater(event: GestureResponderEvent): void {
@@ -38,7 +39,12 @@ export default function WelcomeScreen() {
     router.push("/signup");
   }
 
-  
+  async function onPressGoogleLogin(
+    event: GestureResponderEvent
+  ): Promise<void> {
+    console.log("user: press continue with google");
+    await Linking.openURL("http://localhost:4000/auth/google");
+  }
 
   return (
     <>
@@ -60,6 +66,14 @@ export default function WelcomeScreen() {
               </Pressable>
               <Pressable style={styles.btn_signup} onPress={onPressSignUp}>
                 <Text style={styles.btn_signup_text}>Sign Up</Text>
+              </Pressable>
+              <Pressable style={styles.btn_google} onPress={onPressGoogleLogin}>
+                <Image
+                  source={require(google_icon_path)}
+                  style={styles.icon_google}
+                  resizeMode="contain"
+                />
+                <Text style={styles.btn_google_text}>Continue with Google</Text>
               </Pressable>
             </View>
           </View>
@@ -88,7 +102,8 @@ const styles = StyleSheet.create({
     width: "90%",
     alignItems: "center",
     justifyContent: "center",
-    gap: 20,
+    gap: 10,
+    marginBottom: 100
   },
   container_img: {
     position: "relative",
@@ -146,14 +161,33 @@ const styles = StyleSheet.create({
   btn_signup: {
     height: 55,
     width: "80%",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#4285F4",
     borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
   },
   btn_signup_text: {
-    color: "#042628",
+    color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "bold",
   },
+  btn_google: {
+    height: 55,
+    width: "80%",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 10,
+  },
+  btn_google_text: {
+    color: "black",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  icon_google: {
+    height: 16,
+    width: 16
+  }
 });
