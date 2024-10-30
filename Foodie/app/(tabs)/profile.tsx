@@ -125,7 +125,7 @@ export default function Tab() {
             style={styles.avatar}
             resizeMode="contain"
           />
-          <Text style={styles.title}>
+          <Text style={styles.title_nonlog}>
             Login or sign up to track your favorites and daily intake!
           </Text>
           <Pressable style={styles.btn_login} onPress={onPressLogin}>
@@ -167,6 +167,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "black",
+  },
+  title_nonlog: {
+    width: "90%",
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "black",
+    textAlign: "center"
   },
   title_intake: {
     fontSize: 20,
