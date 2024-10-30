@@ -59,9 +59,15 @@ export async function getRandomCocktailRecipe(
     // refer: https://stackoverflow.com/questions/62708802/how-to-convert-buffer-into-image-using-nodejs
     if (buffer){
       const b64 = Buffer.from(buffer).toString('base64');
-      const mimeType = 'image/png';
-      const uri = `data:${mimeType};base64,${b64}`;
-      return uri;
+      const str8 = Buffer.from(buffer).toString('utf8');
+      if(str8.includes('googleusercontent.com')){
+        return str8;
+      }
+      else{
+        const mimeType = 'image/png';
+        const uri = `data:${mimeType};base64,${b64}`;
+        return uri;
+      }
     }
    
   }
