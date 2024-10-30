@@ -51,7 +51,7 @@ export default function Tab() {
       }
     };
     fetchData();
-  }, [userInfo]);
+  }, [id]);
 
   // functions
   async function onPressLoginOut(event: GestureResponderEvent): Promise<void> {
