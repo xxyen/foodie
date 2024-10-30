@@ -12,12 +12,12 @@ import {
 } from "react-native";
 import { getRandomFoodRecipe } from "../../utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import * as Linking from 'expo-linking';
+import * as Linking from "expo-linking";
 import { useAppContext } from "@/context/contexts";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Home() {
-
-  const {id, onChangeId} = useAppContext();
+  const { id, onChangeId } = useAppContext();
 
   // states
   const [isSelected, setIsSelected] = useState<number>(0);
@@ -34,7 +34,7 @@ export default function Home() {
         const { queryParams } = Linking.parse(url);
         console.log("queryParams.userId: ", queryParams?.userId);
         if (queryParams?.userId) {
-          if(typeof queryParams.userId === 'string'){
+          if (typeof queryParams.userId === "string") {
             onChangeId(queryParams.userId);
           }
         }
@@ -48,7 +48,7 @@ export default function Home() {
     const urlListener = Linking.addEventListener("url", (event) => {
       const { queryParams } = Linking.parse(event.url);
       if (queryParams?.userId) {
-        if(typeof queryParams.userId === 'string'){
+        if (typeof queryParams.userId === "string") {
           onChangeId(queryParams.userId);
         }
       }
@@ -165,20 +165,37 @@ export default function Home() {
                 style={styles.img}
                 resizeMode="cover"
               >
-                <Pressable onPress={onPressAddFav}>
-                  <MaterialCommunityIcons
-                    name={isFavorite ? "heart" : "heart-plus"}
-                    size={24}
-                    style={
-                      isFavorite
-                        ? styles.fav_icon_selected
-                        : styles.fav_icon_unselected
-                    }
-                  />
-                </Pressable>
+                <LinearGradient
+                  colors={[
+                    "rgba(0, 0, 0, 0.4)",
+                    "rgba(0, 0, 0, 0)",
+                    "rgba(0, 0, 0, 0)",
+                    "rgba(0, 0, 0, 0.4)",
+                  ]}
+                  style={styles.gradient}
+                  start={{ x: 0.5, y: 0 }}
+                  end={{ x: 0.5, y: 1 }}
+                />
+                <View style={styles.container_text_and_btn}>
+                  <Text style={styles.text}>
+                    {data && data?.recipes[0]?.title}
+                  </Text>
+                  <Pressable onPress={onPressAddFav}>
+                    <View style={styles.circle}>
+                      <MaterialCommunityIcons
+                        name={isFavorite ? "heart" : "heart-plus"}
+                        size={20}
+                        style={
+                          isFavorite
+                            ? styles.fav_icon_selected
+                            : styles.fav_icon_unselected
+                        }
+                      />
+                    </View>
+                  </Pressable>
+                </View>
               </ImageBackground>
             </View>
-            <Text style={styles.text}>{data && data?.recipes[0]?.title}</Text>
           </Pressable>
           <Pressable style={styles.container_recipes_img}>
             <View style={styles.img_wrapper}>
@@ -187,20 +204,37 @@ export default function Home() {
                 style={styles.img}
                 resizeMode="cover"
               >
-                <Pressable onPress={onPressAddFav}>
-                  <MaterialCommunityIcons
-                    name={isFavorite ? "heart" : "heart-plus"}
-                    size={24}
-                    style={
-                      isFavorite
-                        ? styles.fav_icon_selected
-                        : styles.fav_icon_unselected
-                    }
-                  />
-                </Pressable>
+                <LinearGradient
+                  colors={[
+                    "rgba(0, 0, 0, 0.4)",
+                    "rgba(0, 0, 0, 0)",
+                    "rgba(0, 0, 0, 0)",
+                    "rgba(0, 0, 0, 0.4)",
+                  ]}
+                  style={styles.gradient}
+                  start={{ x: 0.5, y: 0 }}
+                  end={{ x: 0.5, y: 1 }}
+                />
+                <View style={styles.container_text_and_btn}>
+                  <Text style={styles.text}>
+                    {data && data?.recipes[1]?.title}
+                  </Text>
+                  <Pressable onPress={onPressAddFav}>
+                    <View style={styles.circle}>
+                      <MaterialCommunityIcons
+                        name={isFavorite ? "heart" : "heart-plus"}
+                        size={20}
+                        style={
+                          isFavorite
+                            ? styles.fav_icon_selected
+                            : styles.fav_icon_unselected
+                        }
+                      />
+                    </View>
+                  </Pressable>
+                </View>
               </ImageBackground>
             </View>
-            <Text style={styles.text}>{data && data?.recipes[1]?.title}</Text>
           </Pressable>
           <Pressable style={styles.container_recipes_img}>
             <View style={styles.img_wrapper}>
@@ -209,20 +243,37 @@ export default function Home() {
                 style={styles.img}
                 resizeMode="cover"
               >
-                <Pressable onPress={onPressAddFav}>
-                  <MaterialCommunityIcons
-                    name={isFavorite ? "heart" : "heart-plus"}
-                    size={24}
-                    style={
-                      isFavorite
-                        ? styles.fav_icon_selected
-                        : styles.fav_icon_unselected
-                    }
-                  />
-                </Pressable>
+                <LinearGradient
+                  colors={[
+                    "rgba(0, 0, 0, 0.4)",
+                    "rgba(0, 0, 0, 0)",
+                    "rgba(0, 0, 0, 0)",
+                    "rgba(0, 0, 0, 0.4)",
+                  ]}
+                  style={styles.gradient}
+                  start={{ x: 0.5, y: 0 }}
+                  end={{ x: 0.5, y: 1 }}
+                />
+                <View style={styles.container_text_and_btn}>
+                  <Text style={styles.text}>
+                    {data && data?.recipes[2]?.title}
+                  </Text>
+                  <Pressable onPress={onPressAddFav}>
+                    <View style={styles.circle}>
+                      <MaterialCommunityIcons
+                        name={isFavorite ? "heart" : "heart-plus"}
+                        size={20}
+                        style={
+                          isFavorite
+                            ? styles.fav_icon_selected
+                            : styles.fav_icon_unselected
+                        }
+                      />
+                    </View>
+                  </Pressable>
+                </View>
               </ImageBackground>
             </View>
-            <Text style={styles.text}>{data && data?.recipes[2]?.title}</Text>
           </Pressable>
         </ScrollView>
       </View>
@@ -256,6 +307,19 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: "90%",
     marginVertical: 10,
+
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+
+    elevation: 20, // TODO: seems like not work
+  },
+  container_text_and_btn: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "95%",
   },
   title: {
     fontSize: 24,
@@ -293,23 +357,38 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 20,
     justifyContent: "flex-end",
-    alignItems: "flex-end",
+    alignItems: "center",
   },
   text: {
     fontSize: 18,
     fontWeight: "bold",
     marginVertical: 5,
+    color: "#FFFFFF",
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
   },
   img_wrapper: {
     borderRadius: 20,
     overflow: "hidden",
   },
   fav_icon_selected: {
-    padding: 10,
     color: "red",
   },
   fav_icon_unselected: {
-    padding: 10,
-    color: "#F1F5F5"
+    color: "grey",
+  },
+  gradient: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 10,
+  },
+  circle: {
+    height: 25,
+    width: 25,
+    backgroundColor: "white",
+    borderRadius: 25 / 2,
+    alignItems: "center",
+    justifyContent: "center",
+    margin: 10,
   },
 });

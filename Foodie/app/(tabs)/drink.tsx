@@ -7,12 +7,12 @@ import {
   Platform,
   ScrollView,
   Pressable,
-  Image,
   ImageBackground,
   GestureResponderEvent,
 } from "react-native";
 import { getRandomCocktailRecipe } from "../../utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Home() {
   // states
@@ -121,16 +121,29 @@ export default function Home() {
                   style={styles.img}
                   resizeMode="cover"
                 >
+                  <LinearGradient
+                    colors={[
+                      "rgba(0, 0, 0, 0.3)",
+                      "rgba(0, 0, 0, 0)",
+                      "rgba(0, 0, 0, 0)",
+                      "rgba(0, 0, 0, 0.3)",
+                    ]}
+                    style={styles.gradient}
+                    start={{ x: 0.5, y: 0 }}
+                    end={{ x: 0.5, y: 1 }}
+                  />
                   <Pressable onPress={onPressAddFav}>
-                    <MaterialCommunityIcons
-                      name={isFavorite ? "heart" : "heart-plus"}
-                      size={24}
-                      style={
-                        isFavorite
-                          ? styles.fav_icon_selected
-                          : styles.fav_icon_unselected
-                      }
-                    />
+                    <View style={styles.circle}>
+                      <MaterialCommunityIcons
+                        name={isFavorite ? "heart" : "heart-plus"}
+                        size={20}
+                        style={
+                          isFavorite
+                            ? styles.fav_icon_selected
+                            : styles.fav_icon_unselected
+                        }
+                      />
+                    </View>
                   </Pressable>
                 </ImageBackground>
               </View>
@@ -139,22 +152,35 @@ export default function Home() {
               </Text> */}
             </Pressable>
             <Pressable style={styles.container_recipes_img}>
-            <View style={styles.img_wrapper}>
+              <View style={styles.img_wrapper}>
                 <ImageBackground
                   source={{ uri: data && data?.drinks[1]?.strDrinkThumb }}
                   style={styles.img}
                   resizeMode="cover"
                 >
+                  <LinearGradient
+                    colors={[
+                      "rgba(0, 0, 0, 0.3)",
+                      "rgba(0, 0, 0, 0)",
+                      "rgba(0, 0, 0, 0)",
+                      "rgba(0, 0, 0, 0.3)",
+                    ]}
+                    style={styles.gradient}
+                    start={{ x: 0.5, y: 0 }}
+                    end={{ x: 0.5, y: 1 }}
+                  />
                   <Pressable onPress={onPressAddFav}>
-                    <MaterialCommunityIcons
-                      name={isFavorite ? "heart" : "heart-plus"}
-                      size={24}
-                      style={
-                        isFavorite
-                          ? styles.fav_icon_selected
-                          : styles.fav_icon_unselected
-                      }
-                    />
+                    <View style={styles.circle}>
+                      <MaterialCommunityIcons
+                        name={isFavorite ? "heart" : "heart-plus"}
+                        size={20}
+                        style={
+                          isFavorite
+                            ? styles.fav_icon_selected
+                            : styles.fav_icon_unselected
+                        }
+                      />
+                    </View>
                   </Pressable>
                 </ImageBackground>
               </View>
@@ -165,22 +191,35 @@ export default function Home() {
           </View>
           <View style={styles.container_drinkrow}>
             <Pressable style={styles.container_recipes_img}>
-            <View style={styles.img_wrapper}>
+              <View style={styles.img_wrapper}>
                 <ImageBackground
                   source={{ uri: data && data?.drinks[2]?.strDrinkThumb }}
                   style={styles.img}
                   resizeMode="cover"
                 >
+                  <LinearGradient
+                    colors={[
+                      "rgba(0, 0, 0, 0.3)",
+                      "rgba(0, 0, 0, 0)",
+                      "rgba(0, 0, 0, 0)",
+                      "rgba(0, 0, 0, 0.3)",
+                    ]}
+                    style={styles.gradient}
+                    start={{ x: 0.5, y: 0 }}
+                    end={{ x: 0.5, y: 1 }}
+                  />
                   <Pressable onPress={onPressAddFav}>
-                    <MaterialCommunityIcons
-                      name={isFavorite ? "heart" : "heart-plus"}
-                      size={24}
-                      style={
-                        isFavorite
-                          ? styles.fav_icon_selected
-                          : styles.fav_icon_unselected
-                      }
-                    />
+                    <View style={styles.circle}>
+                      <MaterialCommunityIcons
+                        name={isFavorite ? "heart" : "heart-plus"}
+                        size={20}
+                        style={
+                          isFavorite
+                            ? styles.fav_icon_selected
+                            : styles.fav_icon_unselected
+                        }
+                      />
+                    </View>
                   </Pressable>
                 </ImageBackground>
               </View>
@@ -189,22 +228,35 @@ export default function Home() {
               </Text> */}
             </Pressable>
             <Pressable style={styles.container_recipes_img}>
-            <View style={styles.img_wrapper}>
+              <View style={styles.img_wrapper}>
                 <ImageBackground
                   source={{ uri: data && data?.drinks[3]?.strDrinkThumb }}
                   style={styles.img}
                   resizeMode="cover"
                 >
+                  <LinearGradient
+                    colors={[
+                      "rgba(0, 0, 0, 0.3)",
+                      "rgba(0, 0, 0, 0)",
+                      "rgba(0, 0, 0, 0)",
+                      "rgba(0, 0, 0, 0.3)",
+                    ]}
+                    style={styles.gradient}
+                    start={{ x: 0.5, y: 0 }}
+                    end={{ x: 0.5, y: 1 }}
+                  />
                   <Pressable onPress={onPressAddFav}>
-                    <MaterialCommunityIcons
-                      name={isFavorite ? "heart" : "heart-plus"}
-                      size={24}
-                      style={
-                        isFavorite
-                          ? styles.fav_icon_selected
-                          : styles.fav_icon_unselected
-                      }
-                    />
+                    <View style={styles.circle}>
+                      <MaterialCommunityIcons
+                        name={isFavorite ? "heart" : "heart-plus"}
+                        size={20}
+                        style={
+                          isFavorite
+                            ? styles.fav_icon_selected
+                            : styles.fav_icon_unselected
+                        }
+                      />
+                    </View>
                   </Pressable>
                 </ImageBackground>
               </View>
@@ -215,22 +267,35 @@ export default function Home() {
           </View>
           <View style={styles.container_drinkrow}>
             <Pressable style={styles.container_recipes_img}>
-            <View style={styles.img_wrapper}>
+              <View style={styles.img_wrapper}>
                 <ImageBackground
                   source={{ uri: data && data?.drinks[4]?.strDrinkThumb }}
                   style={styles.img}
                   resizeMode="cover"
                 >
+                  <LinearGradient
+                    colors={[
+                      "rgba(0, 0, 0, 0.3)",
+                      "rgba(0, 0, 0, 0)",
+                      "rgba(0, 0, 0, 0)",
+                      "rgba(0, 0, 0, 0.3)",
+                    ]}
+                    style={styles.gradient}
+                    start={{ x: 0.5, y: 0 }}
+                    end={{ x: 0.5, y: 1 }}
+                  />
                   <Pressable onPress={onPressAddFav}>
-                    <MaterialCommunityIcons
-                      name={isFavorite ? "heart" : "heart-plus"}
-                      size={24}
-                      style={
-                        isFavorite
-                          ? styles.fav_icon_selected
-                          : styles.fav_icon_unselected
-                      }
-                    />
+                    <View style={styles.circle}>
+                      <MaterialCommunityIcons
+                        name={isFavorite ? "heart" : "heart-plus"}
+                        size={20}
+                        style={
+                          isFavorite
+                            ? styles.fav_icon_selected
+                            : styles.fav_icon_unselected
+                        }
+                      />
+                    </View>
                   </Pressable>
                 </ImageBackground>
               </View>
@@ -239,22 +304,35 @@ export default function Home() {
               </Text> */}
             </Pressable>
             <Pressable style={styles.container_recipes_img}>
-            <View style={styles.img_wrapper}>
+              <View style={styles.img_wrapper}>
                 <ImageBackground
                   source={{ uri: data && data?.drinks[5]?.strDrinkThumb }}
                   style={styles.img}
                   resizeMode="cover"
                 >
+                  <LinearGradient
+                    colors={[
+                      "rgba(0, 0, 0, 0.3)",
+                      "rgba(0, 0, 0, 0)",
+                      "rgba(0, 0, 0, 0)",
+                      "rgba(0, 0, 0, 0.3)",
+                    ]}
+                    style={styles.gradient}
+                    start={{ x: 0.5, y: 0 }}
+                    end={{ x: 0.5, y: 1 }}
+                  />
                   <Pressable onPress={onPressAddFav}>
-                    <MaterialCommunityIcons
-                      name={isFavorite ? "heart" : "heart-plus"}
-                      size={24}
-                      style={
-                        isFavorite
-                          ? styles.fav_icon_selected
-                          : styles.fav_icon_unselected
-                      }
-                    />
+                    <View style={styles.circle}>
+                      <MaterialCommunityIcons
+                        name={isFavorite ? "heart" : "heart-plus"}
+                        size={20}
+                        style={
+                          isFavorite
+                            ? styles.fav_icon_selected
+                            : styles.fav_icon_unselected
+                        }
+                      />
+                    </View>
                   </Pressable>
                 </ImageBackground>
               </View>
@@ -295,6 +373,13 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: "40%",
     marginVertical: 20,
+
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+
+    elevation: 20, // TODO: seems like not work
   },
   container_drinkrow: {
     width: "100%",
@@ -351,11 +436,22 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   fav_icon_selected: {
-    padding: 10,
     color: "red",
   },
   fav_icon_unselected: {
-    padding: 10,
-    color: "#F1F5F5"
+    color: "grey",
+  },
+  gradient: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 10,
+  },
+  circle: {
+    height: 25,
+    width: 25,
+    backgroundColor: "white",
+    borderRadius: 25 / 2,
+    alignItems: "center",
+    justifyContent: "center",
+    margin: 10,
   },
 });
