@@ -360,13 +360,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
+    flex: 8,
     fontSize: 18,
     fontWeight: "bold",
     marginVertical: 5,
     color: "#FFFFFF",
-    textShadowColor: "rgba(0, 0, 0, 0.75)",
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 10,
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 2, height: 3 },
+    textShadowRadius: 3,
   },
   img_wrapper: {
     borderRadius: 20,
