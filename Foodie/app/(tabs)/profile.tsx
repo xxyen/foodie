@@ -6,17 +6,12 @@ import {
   Image,
   Pressable,
   GestureResponderEvent,
+  Dimensions,
 } from "react-native";
 import { useAppContext } from "@/context/contexts";
 import { Redirect, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-} from "react-native-chart-kit";
+import { BarChart } from "react-native-gifted-charts";
 import { getProfile, parseImage } from "@/utils";
 
 export default function Tab() {
@@ -26,28 +21,19 @@ export default function Tab() {
   // variables
   const img_path = "../../assets/peanut.png";
   const img_path1 = "../../assets/smile.png";
+  const window_width = Dimensions.get('window').width;
+  const window_height = Dimensions.get('window').height;
 
   // intake demo data
-  const data = {
-    labels: ["January", "February", "March", "April", "May", "June"],
-    datasets: [
-      {
-        data: [20, 45, 28, 80, 99, 43],
-        // color: (opacity = 1) => `rgba(2, 65, 244, ${opacity})`, // optional
-        strokeWidth: 4, // optional
-      },
-    ],
-  };
-
-  const chartConfig = {
-    backgroundGradientFrom: "#D9D9D9",
-    backgroundGradientFromOpacity: 0,
-    backgroundGradientTo: "#D9D9D9",
-    color: (opacity = 1) => `rgba(217, 217, 217, ${opacity})`,
-    strokeWidth: 2, // optional, default 3
-    barPercentage: 0.5,
-    useShadowColorFromDataset: false, // optional
-  };
+  const barData = [
+    { value: 800, label: "Mon"},
+    { value: 1300, label: "Tue"},
+    { value: 1300, label: "Wed"},
+    { value: 400, label: "Thu"},
+    { value: 1200, label: "Fri"},
+    { value: 1800, label: "Sat"},
+    { value: 1300, label: "Sun"},
+  ];
 
   // state
   const [userInfo, setUserInfo] = useState<IUserInfo | undefined>(undefined);
@@ -94,14 +80,29 @@ export default function Tab() {
             <Text style={styles.title}>My Shopping List</Text>
             <View style={styles.container_row}></View>
           </View>
-          <View style={styles.shopping_list}>
-            <Text style={styles.title}>Calorie intake</Text>
-            <LineChart
-              data={data}
-              width={300}
-              height={100}
-              chartConfig={chartConfig}
-            />
+          <View style={styles.intake}>
+            <View style={{justifyContent: "flex-start"}}>
+              <Text style={styles.title}>Calorie intake</Text>
+            </View>
+            
+            <View>
+              <BarChart
+                  barWidth={10}
+                  noOfSections={1}
+                  barBorderRadius={4}
+                  frontColor="lightgray"
+                  data={barData}
+                  yAxisThickness={0}
+                  xAxisThickness={0}
+                  height={window_height * 0.05}
+                  width={window_width * 0.8}
+                  spacing={window_width * 0.08}
+                  initialSpacing={10}
+                  hideAxesAndRules
+                  isAnimated
+              />
+            </View>
+            
           </View>
           <View style={styles.shopping_list}>
             <Text style={styles.title}>My Food allergies</Text>
@@ -124,7 +125,9 @@ export default function Tab() {
             style={styles.avatar}
             resizeMode="contain"
           />
-          <Text style={styles.title}>Login or sign up to track your favorites and daily intake!</Text>
+          <Text style={styles.title}>
+            Login or sign up to track your favorites and daily intake!
+          </Text>
           <Pressable style={styles.btn_login} onPress={onPressLogin}>
             <Text style={styles.btn_login_text}>Login</Text>
           </Pressable>
@@ -154,11 +157,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
   },
+  title_name: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "black",
+    textAlign: "center",
+  },
   title: {
     fontSize: 20,
     fontWeight: "bold",
     color: "black",
-    textAlign: "center"
+  },
+  title_intake: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "black",
+    textAlign: "left"
   },
   avatar: {
     height: 80,
@@ -176,6 +190,17 @@ const styles = StyleSheet.create({
     height: "20%",
     width: "90%",
     padding: 20,
+    gap: 15,
+    alignItems: "center",
+  },
+  intake: {
+    backgroundColor: "rgba(217, 217, 217, 0.2)",
+    borderRadius: 20,
+    height: "20%",
+    width: "90%",
+    padding: 20,
+    gap: 15,
+    alignItems: "center",
   },
   btn_logout: {
     height: 55,
@@ -211,11 +236,14 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1
+    borderWidth: 1,
   },
   btn_signup_text: {
     color: "#042628",
     fontSize: 16,
     fontWeight: "bold",
   },
+  bar_wrapper: {
+    width: "100%"
+  }
 });
