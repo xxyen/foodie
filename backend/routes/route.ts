@@ -59,7 +59,6 @@ router.get("/:userId", async (req,res) => {
 });
 
 router.put("/:userId", async (req,res) => {
-    console.log("Update request");
     const {userId} = req.params;
     const data = req.body;
     const code = await mgsfunlib.update(userId, data);
