@@ -13,7 +13,11 @@ import { useAppContext } from "@/context/contexts";
 import { Redirect, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { BarChart } from "react-native-gifted-charts";
-import { getProfile, parseImage } from "@/utils";
+import { getProfile, parseImage, updateImage } from "@/utils";
+import * as ImagePicker from "expo-image-picker";
+import { Buffer } from "buffer";
+import * as FileSystem from "expo-file-system";
+import { Asset } from "expo-asset";
 
 export default function Tab() {
   const { username, id, onChangeUsername, onChangeEmail, onChangeAllergies, 
@@ -54,6 +58,9 @@ export default function Tab() {
     fetchData();
   }, [id]);
 
+  useEffect(() => {
+  }, [userInfo]);
+
   // functions
   async function onPressLoginOut(event: GestureResponderEvent): Promise<void> {
     if(userInfo?.googleId){
@@ -91,15 +98,52 @@ export default function Tab() {
     onChangeId(undefined);
   }
 
+  const pickImage = async () => {
+    
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 0,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      const uri = result.assets[0].uri;
+      // const asset = Asset.fromModule(require('../../assets/alice.png'));
+      // await asset.downloadAsync();
+      // const path =  '../../assets/alice.png';
+      // const base64Data = await FileSystem.readAsStringAsync(asset.localUri || '', {
+      //   encoding: FileSystem.EncodingType.Base64,
+      // });
+      // const bufferURI = Buffer.from(base64Data,'base64');
+
+
+      const test = await fetch(uri);
+      const arrayBufferTest = await test.arrayBuffer();
+      const bufferURI = Buffer.from(arrayBufferTest);
+      const res = await updateImage(id,bufferURI);
+      if(res===200){
+        onChangeBuffer(bufferURI);
+        if(userInfo){
+          const updatedUserInfo = {...userInfo, icon: bufferURI};
+          setUserInfo(updatedUserInfo);
+        }
+      }
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safearea}>
       {id ? (
         <View style={styles.container}>
-          <Image
-            source={{ uri: parseImage(userInfo?.icon) }}
-            style={styles.avatar}
-            resizeMode="contain"
-          />
+          <Pressable onPress={pickImage}>
+            <Image
+              source={{ uri: parseImage(userInfo?.icon) }}
+              style={styles.avatar}
+              resizeMode="contain"
+            />
+          </Pressable>
           <Text style={styles.title}>{userInfo?.username}</Text>
           <View style={styles.shopping_list}>
             <Text style={styles.title}>My Shopping List</Text>

@@ -1,4 +1,5 @@
 import {Buffer} from 'buffer';
+import { Alert } from 'react-native';
 
 export async function getRandomFoodRecipe(
   tag: string
@@ -64,10 +65,45 @@ export async function getRandomCocktailRecipe(
         return str8;
       }
       else{
-        const mimeType = 'image/png';
+        const mimeType = 'image/*';
         const uri = `data:${mimeType};base64,${b64}`;
         return uri;
       }
     }
    
+  }
+
+  export const updateImage = async (id: string|undefined , buffer: Buffer) => {
+    const config = {
+      method : 'PUT',
+      headers : {
+        'Content-Type': 'application/json'
+      },
+      body : JSON.stringify({
+        'icon' : buffer
+      })
+    };
+    const jsonPayloadSize = new Blob([config.body]).size; // Size in bytes
+    console.log(`Payload size: ${jsonPayloadSize} bytes`);
+    try{
+      const response = await fetch(`http://localhost:4000/users/${id}`, config);
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1){
+        const body = await response.json();
+        if(response.status!=200){
+          alert("Update failure: "+body.message);
+        }
+        else{
+          Alert.alert("Congratulations", "Successfully update your profile photo!");
+        }
+        return response.status;
+      }
+      else{
+        console.log(response.text());
+        return 400;
+      }
+    } catch(err){
+      alert(err);
+      return 400;
+    }
   }

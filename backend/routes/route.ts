@@ -3,6 +3,11 @@ import {Router} from "express";
 
 const router = Router();
 
+// const multer = require('multer');
+// const upload = multer({
+//   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+// });
+
 router.post("/register", async (req,res) => {
     console.log("Posting request to create a user");
     const data = req.body;
@@ -62,6 +67,7 @@ router.put("/:userId", async (req,res) => {
     console.log("Update request");
     const {userId} = req.params;
     const data = req.body;
+
     const code = await mgsfunlib.update(userId, data);
     if(code===1){
         return res.status(200).json({ message: "User profile is updated successfully. "});
