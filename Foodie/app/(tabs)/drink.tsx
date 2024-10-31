@@ -16,6 +16,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useAppContext } from "@/context/contexts";
 import { useNavigation } from '@react-navigation/native';
+import { router } from "expo-router";
 
 export default function Home() {
   // states
@@ -23,8 +24,7 @@ export default function Home() {
   const [tag, setTag] = useState<string>("Gin");
   const [data, setData] = useState<IApiDrinkIdData | undefined>(undefined);
 
-   const { id, favDrinks, onChangeFavDrinks } = useAppContext();
-   const navigation = useNavigation();
+  const { id, favDrinks, onChangeFavDrinks } = useAppContext();
 
   // functions
   function changeTag(num: number, tag: string): void {
@@ -45,7 +45,7 @@ export default function Home() {
     // check if login
     if (!id) {
         console.log("User not logged in. Redirecting to Profile.");
-        navigation.navigate('profile');
+        router.push("profile")
         return;
     }
 

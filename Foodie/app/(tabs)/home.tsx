@@ -16,7 +16,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
 import { useAppContext } from "@/context/contexts";
 import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from "expo-router";
 
 export default function Home() {
   const { id, onChangeId, favFoods, onChangeFavFoods } = useAppContext();
@@ -27,7 +27,7 @@ export default function Home() {
   const [data, setData] = useState<IApiFoodRecipeData | undefined>(undefined);
   // const [userId, setUserId] = useState<string | null>(null);
 
-  const navigation = useNavigation();
+  const router = useRouter();
 
   useEffect(() => {
     const getUserIdFromUrl = async () => {
@@ -80,7 +80,7 @@ export default function Home() {
       // check if login
       if (!id) {
           console.log("User not logged in. Redirecting to Profile.");
-          navigation.navigate('profile');
+          router.push("profile");
           return;
       }
 
@@ -119,6 +119,10 @@ export default function Home() {
     };
     fetchData();
   }, [tag]);
+
+  function onPressDetail(event: GestureResponderEvent): void {
+    throw new Error("Function not implemented.");
+  }
 
   return (
     <SafeAreaView style={styles.safearea}>
@@ -195,7 +199,7 @@ export default function Home() {
 
         <ScrollView style={styles.container_recipes}>
             {data?.recipes.slice(0, 3).map((recipe, index) => (
-                <Pressable key={recipe.id} style={styles.container_recipes_img}>
+                <Pressable key={recipe.id} style={styles.container_recipes_img} onPress={onPressDetail}>
                     <View style={styles.img_wrapper}>
                         <ImageBackground
                             source={{ uri: recipe.image }}
