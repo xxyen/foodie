@@ -103,7 +103,7 @@ export default function SignUpScreen() {
         alert(body.message);
       }
       else{
-        Alert.alert("Congratulate!", "You have successfully registered.");//TODO: You can customize a success modal/dialog!
+        Alert.alert("Congratulate!", username+", you have successfully registered.");//TODO: You can customize a success modal/dialog!
       }
     } catch(err){
       alert(err);

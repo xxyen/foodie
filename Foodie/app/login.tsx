@@ -72,9 +72,10 @@ export default function LoginScreen() {
     // throw new Error("Function not implemented.");
     const res = await loginHelper();
     if (res) {
-      getProfile(res);
+      const user = await getProfile(res);
       router.dismissAll();
       router.push("/home");
+      Alert.alert("Congratulate!", user?.username+", you have logged in successfully."); 
     }
   }
 
@@ -97,7 +98,6 @@ export default function LoginScreen() {
         return null;
       } else {
         onChangeId(body.id);
-        Alert.alert("Congratulate!", "You have logged in successfully."); //TODO: You can customize a success modal/dialog!
         return body.id;
       }
     } catch (err) {

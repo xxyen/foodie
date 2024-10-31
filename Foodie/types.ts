@@ -95,6 +95,7 @@ interface IApiFoodRecipeData {
 }
 interface IUserInfo{
   id: string,
+  googleId: string,
   username: string,
   email: string,
   allergies: string[],
@@ -114,8 +115,8 @@ interface IAppContextType{
   weeklyCalories: number[];
   ingredients: string[];
   icon: Buffer|undefined;
-  onChangeUsername: (username: string) => void;
-  onChangeEmail: (email:string) =>void;
+  onChangeUsername: (username: string|undefined) => void;
+  onChangeEmail: (email:string|undefined) =>void;
   onChangeId: (id: string|undefined) =>void;
   onChangeAllergies: (allergies: string[]) => void;
   onChangeFavFoods: (favFoods: number[]) => void;

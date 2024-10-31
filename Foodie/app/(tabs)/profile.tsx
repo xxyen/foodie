@@ -7,6 +7,7 @@ import {
   Pressable,
   GestureResponderEvent,
   Dimensions,
+  Linking,
 } from "react-native";
 import { useAppContext } from "@/context/contexts";
 import { Redirect, useRouter } from "expo-router";
@@ -15,7 +16,9 @@ import { BarChart } from "react-native-gifted-charts";
 import { getProfile, parseImage } from "@/utils";
 
 export default function Tab() {
-  const { username, id } = useAppContext();
+  const { username, id, onChangeUsername, onChangeEmail, onChangeAllergies, 
+    onChangeFavFoods, onChangeFavDrinks, onChangeWeeklyCalories, 
+    onChangeIngredients, onChangeBuffer,onChangeId } = useAppContext();
   const router = useRouter();
 
   // variables
@@ -49,11 +52,21 @@ export default function Tab() {
       }
     };
     fetchData();
-  }, [userInfo]);
+  }, [id]);
 
   // functions
-  function onPressLoginOut(event: GestureResponderEvent): void {
-    throw new Error("Function not implemented.");
+  async function onPressLoginOut(event: GestureResponderEvent): Promise<void> {
+    if(userInfo?.googleId){
+      try{
+        const response = await Linking.openURL(`http://localhost:4000/api/logout`);
+      }
+      catch(err){
+        console.log(err);
+      }
+    }
+      
+    logout();
+    setUserInfo(undefined);
   }
 
   function onPressLogin(event: GestureResponderEvent): void {
@@ -64,6 +77,18 @@ export default function Tab() {
   function onPressSignUp(event: GestureResponderEvent): void {
     console.log("user: press sign up btn");
     router.push("/signup");
+  }
+
+  const logout = () => {
+    onChangeUsername(undefined);
+    onChangeEmail(undefined);
+    onChangeAllergies([]);
+    onChangeFavFoods([]);
+    onChangeFavDrinks([]);
+    onChangeWeeklyCalories([]);
+    onChangeIngredients([]);
+    onChangeBuffer(undefined);
+    onChangeId(undefined);
   }
 
   return (
