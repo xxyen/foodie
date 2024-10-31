@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, SafeAreaView, Pressable, FlatList, Alert } from "react-native";
+import Checkbox from "expo-checkbox"; 
 import { useAppContext } from "@/context/contexts";
 import { useState, useEffect } from "react";
 import { getProfile } from "@/utils";
@@ -7,6 +8,7 @@ export default function ShoppingList() {
     const { id, onChangeIngredients } = useAppContext();
     const [userInfo, setUserInfo] = useState<IUserInfo | undefined>(undefined);
     const [ingredients, setIngredients] = useState<string[]>([]);
+    const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
 
     useEffect(() => {
         const fetchData = async () => {
@@ -26,10 +28,25 @@ export default function ShoppingList() {
         }
     }, [userInfo]);
 
-    const confirmAndRemoveItem = (item: string) => {
+    const toggleSelection = (item: string) => {
+        const updatedSelection = new Set(selectedItems);
+        if (updatedSelection.has(item)) {
+            updatedSelection.delete(item);
+        } else {
+            updatedSelection.add(item);
+        }
+        setSelectedItems(updatedSelection);
+    };
+
+    const confirmAndRemoveSelectedItems = () => {
+        if (selectedItems.size === 0) {
+            Alert.alert("No Items Selected", "Please select items to remove.");
+            return;
+        }
+
         Alert.alert(
             "Confirm Remove",
-            `Are you sure you want to remove "${item}"?`,
+            `Are you sure you want to remove selected items?`,
             [
                 {
                     text: "Cancel",
@@ -37,19 +54,18 @@ export default function ShoppingList() {
                 },
                 {
                     text: "Yes",
-                    onPress: () => removeItem(item),
+                    onPress: removeSelectedItems,
                 },
             ]
         );
     };
 
-    const removeItem = (item: string) => {
-        const updatedList = ingredients.filter((ingredient) => ingredient !== item);
+    const removeSelectedItems = () => {
+        const updatedList = ingredients.filter((ingredient) => !selectedItems.has(ingredient));
         setIngredients(updatedList);
         onChangeIngredients(updatedList);
-        // TBD: update the user's ingredients in the database
-
-        Alert.alert("Item Removed", `"${item}" has been successfully removed.`);
+        setSelectedItems(new Set());
+        Alert.alert("Items Removed", "Selected items have been successfully removed.");
     };
 
     return (
@@ -60,13 +76,17 @@ export default function ShoppingList() {
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
                     <View style={styles.listItem}>
+                        <Checkbox
+                            value={selectedItems.has(item)}
+                            onValueChange={() => toggleSelection(item)}
+                        />
                         <Text style={styles.itemText}>{item}</Text>
-                        <Pressable style={styles.removeButton} onPress={() => confirmAndRemoveItem(item)}>
-                            <Text style={styles.removeButtonText}>Remove</Text>
-                        </Pressable>
                     </View>
                 )}
             />
+            <Pressable style={styles.deleteButton} onPress={confirmAndRemoveSelectedItems}>
+                <Text style={styles.deleteButtonText}>Remove Selected</Text>
+            </Pressable>
         </SafeAreaView>
     );
 }
@@ -80,32 +100,32 @@ const styles = StyleSheet.create({
   listContainer: {
     paddingHorizontal: 10, 
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "black",
-    marginBottom: 20,
-  },
   listItem: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#A9A9A9",
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#D3D3D3", 
     marginHorizontal: 10,
   },
   itemText: {
     fontSize: 18,
-    color: "black",
+    flex: 1,
+    marginLeft: 15,
   },
-  removeButton: {
+  deleteButton: {
     backgroundColor: "#FF6B6B",
-    borderRadius: 8,
-    padding: 10,
+    borderRadius: 16,
+    padding: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "90%",
+    marginHorizontal: 20,
+    marginBottom: 20,
   },
-  removeButtonText: {
+  deleteButtonText: {
     color: "#FFFFFF",
     fontWeight: "bold",
+    fontSize: 16,
   },
 });
