@@ -71,3 +71,51 @@ export async function getRandomCocktailRecipe(
     }
    
   }
+
+export async function updateFavoriteFoods(id, newFavFoods) {
+    try {
+        const response = await fetch(`http://localhost:4000/users/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ favFoods: newFavFoods }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Update failed:", errorData.message);
+            alert(errorData);
+        } else {
+            const data = await response.json();
+            console.log(data.message);
+        }
+    } catch (error) {
+        console.error("Request error:", error.message);
+        alert(error);
+    }
+}
+
+export async function updateFavoriteDrinks(id, newFavDrinks) {
+    try {
+        const response = await fetch(`http://localhost:4000/users/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ favDrinks: newFavDrinks }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Update failed:", errorData.message);
+            alert(errorData.message);
+        } else {
+            const data = await response.json();
+            console.log(data.message);
+        }
+    } catch (error) {
+        console.error("Request error:", error.message);
+        alert(error);
+    }
+}
