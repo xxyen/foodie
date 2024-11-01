@@ -11,7 +11,7 @@ import {
   GestureResponderEvent,
   Alert,
 } from "react-native";
-import { getRandomFoodRecipe, updateFavoriteFoods } from "../../utils";
+import { getRandomFoodRecipe, updateFavoriteFoods } from "../../../utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
 import { useAppContext } from "@/context/contexts";
@@ -61,13 +61,7 @@ export default function Home() {
     return () => {
       urlListener.remove();
     };
-  }, []);
-
-  useEffect(() => {
-    if (id) {
-      console.log("Updated userId: ", id);
-    }
-  }, [id]);
+  }, []);  
 
 
   // functions
@@ -111,6 +105,10 @@ export default function Home() {
      });
   }
 
+  function onPressDetail(event: GestureResponderEvent): void {
+    router.push("home/detail");
+  }
+
   // render
   useEffect(() => {
     const fetchData = async () => {
@@ -120,9 +118,13 @@ export default function Home() {
     fetchData();
   }, [tag]);
 
-  function onPressDetail(event: GestureResponderEvent): void {
-    throw new Error("Function not implemented.");
-  }
+  useEffect(() => {
+    if (id) {
+      console.log("Updated userId: ", id);
+    }
+  }, [id]);
+
+  
 
   return (
     <SafeAreaView style={styles.safearea}>

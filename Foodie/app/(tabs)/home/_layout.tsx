@@ -7,6 +7,13 @@ export default function ProfileLayout() {
         name="index"
         options={{
           headerShown: false,
+          title: "Food",
+        }}
+      />
+      <Stack.Screen
+        name="detail"
+        options={{
+          headerShown: false,
           title: "Recipe Detail",
         }}
       />

@@ -49,10 +49,12 @@ export default function WelcomeScreen() {
   return (
     <>
       <SafeAreaView style={styles.safearea}>
-        <Pressable onPress={onPressLater}>
-          <Text style={styles.later}>Later</Text>
-        </Pressable>
         <View style={styles.container}>
+          <View style={styles.container_later}>
+            <Pressable onPress={onPressLater} style={styles.later_wrapper}>
+              <Text style={styles.later}>Later</Text>
+            </Pressable>
+          </View>
           <View style={styles.container_img}>
             <Image source={require(img_path_1)} style={styles.img1} />
             <Image source={require(img_path_2)} style={styles.img2} />
@@ -103,7 +105,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
-    marginBottom: 100
+    marginBottom: 100,
   },
   container_img: {
     position: "relative",
@@ -136,8 +138,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "right",
-    marginRight: "10%",
-    marginTop: "15%",
   },
   text: {
     fontSize: 28,
@@ -188,6 +188,17 @@ const styles = StyleSheet.create({
   },
   icon_google: {
     height: 16,
-    width: 16
-  }
+    width: 16,
+  },
+  later_wrapper: {
+    width: 45,
+    height: 20,
+  },
+  container_later: {
+    width: "100%",
+    height: 20,
+    alignItems: "flex-end",
+    marginRight: "15%",
+    marginTop: "20%",
+  },
 });

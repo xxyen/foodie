@@ -13,7 +13,7 @@ import {
 
 export default function Tab() {
   // variables
-  const img = "../../assets/img_search.png";
+  const img = "../../../assets/img_search.png";
 
   // functions
   function onChangeSearchText(text: string): void {
