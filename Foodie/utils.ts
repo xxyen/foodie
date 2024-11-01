@@ -32,6 +32,52 @@ export async function getRandomCocktailRecipe(
     return data;
   }
 
+  export async function classifyImage(url:any){
+    const baseURL = "https://api.spoonacular.com";
+    const apiKEY = "9fc2dee7142a457b9faae9e34afc8087";
+
+    const config = {
+      method : 'GET',
+      headers: {
+        // "Content-Type": 'multipart/form-data',
+        "Content-Type": 'application/json',
+      },
+    };
+
+    try{
+      const response = await fetch(`${baseURL}/food/images/classify?imageUrl=${url}&apiKey=${apiKEY}`,config);
+      if (!response.ok) {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          console.log(errorData);
+          console.error('Error:', errorData.message || 'Unknown error occurred');
+        } else {
+          const errorText = await response.text();
+          console.error('Server returned an error page:', errorText);
+        }
+      }
+      else{
+        const data = await response.json();
+        return data.category;
+      }
+    }catch(err){
+      if (err instanceof Error) {
+        console.error('Error message:', err.message);
+      }
+    }
+  }
+
+  function base64ToBinary(base64 : any) {
+    const binaryString = atob(base64);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+  }
+
   export const getProfile = async (id:string) => {
 
     const config = {
@@ -73,6 +119,30 @@ export async function getRandomCocktailRecipe(
    
   }
 
+  const updateHelper = async(id: string|undefined, config:RequestInit, success: string) => {
+    try{
+      const response = await fetch(`http://localhost:4000/users/${id}`, config);
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1){
+        const body = await response.json();
+        if(response.status!=200){
+          alert("Update failure: "+body.message);
+        }
+        else{
+          Alert.alert("Congratulations", success);
+        }
+        return response.status;
+      }
+      else{
+        alert("Update failure: network error");
+        return 400;
+      }
+    } catch(err){
+      alert(err);
+      return 400;
+    }
+  }
+
   export const updateImage = async (id: string|undefined , buffer: Buffer) => {
     const config = {
       method : 'PUT',
@@ -85,25 +155,5 @@ export async function getRandomCocktailRecipe(
     };
     const jsonPayloadSize = new Blob([config.body]).size; // Size in bytes
     console.log(`Payload size: ${jsonPayloadSize} bytes`);
-    try{
-      const response = await fetch(`http://localhost:4000/users/${id}`, config);
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.indexOf("application/json") !== -1){
-        const body = await response.json();
-        if(response.status!=200){
-          alert("Update failure: "+body.message);
-        }
-        else{
-          Alert.alert("Congratulations", "Successfully update your profile photo!");
-        }
-        return response.status;
-      }
-      else{
-        console.log(response.text());
-        return 400;
-      }
-    } catch(err){
-      alert(err);
-      return 400;
-    }
+    return updateHelper(id,config,"Successfully update your profile photo!");
   }

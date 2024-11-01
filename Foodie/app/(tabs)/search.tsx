@@ -10,6 +10,15 @@ import {
   GestureResponderEvent,
   ScrollView,
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import { Buffer } from "buffer";
+import { Blob } from "buffer";
+import * as FileSystem from "expo-file-system";
+import { Asset } from "expo-asset";
+import { classifyImage } from "@/utils";
+import ReactNativeBlobUtil from "react-native-blob-util";
+import {decode, encode} from 'base-64';
+import axios from "axios";
 
 export default function Tab() {
   // variables
@@ -21,7 +30,8 @@ export default function Tab() {
   }
 
   function onPressSearchByImage(event: GestureResponderEvent): void {
-    throw new Error("Function not implemented.");
+    // throw new Error("Function not implemented.");
+    pickImage();
   }
 
   // states
@@ -30,6 +40,43 @@ export default function Tab() {
   function changeTag(tag: string): void {
     throw new Error("Function not implemented.");
   }
+
+  const pickImage = async () => {
+    //Reference: https://gist.github.com/Balaagha/9b080d984d5b99e916293d24b4dfa01e
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 0,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      let newFile = {
+        uri:result.assets[0].uri,
+        type:`test/${result.assets[0].uri.split(".")[1]}`,
+        name:`test.${result.assets[0].uri.split(".")[1]}`};
+      const url = await handleUpload(newFile);
+      const categ = await classifyImage(url);
+      console.log(categ);
+    }
+  };
+
+ const handleUpload = async (image:any)=>{
+    const data = new FormData(); 
+    data.append('file',image);  
+    data.append('upload_preset','unsigned_preset');
+    data.append('cloud_name','dg2ht2fvn'); 
+    try{
+      const res = await fetch("https://api.cloudinary.com/v1_1/dg2ht2fvn/image/upload",{  method:'post',body:data})
+      const json = await res.json()
+      return json.secure_url;
+    }
+    catch(err){
+      console.log(err)
+    }
+  }
+
 
   return (
     <SafeAreaView style={styles.safearea}>
