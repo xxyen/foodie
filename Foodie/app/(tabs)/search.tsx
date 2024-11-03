@@ -9,16 +9,21 @@ import {
   Image,
   GestureResponderEvent,
   ScrollView,
+  Modal,
+  Button
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Buffer } from "buffer";
 import { Blob } from "buffer";
 import * as FileSystem from "expo-file-system";
 import { Asset } from "expo-asset";
-import { classifyImage } from "@/utils";
+import { pickImage, openCamera } from "@/utils";
 import ReactNativeBlobUtil from "react-native-blob-util";
 import {decode, encode} from 'base-64';
 import axios from "axios";
+import PickerModal from "@/Components/PickerModal";
+import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
+import PermissionRequest from "@/Components/PermissionRequest";
 
 export default function Tab() {
   // variables
@@ -31,50 +36,43 @@ export default function Tab() {
 
   function onPressSearchByImage(event: GestureResponderEvent): void {
     // throw new Error("Function not implemented.");
-    pickImage();
+    setModal(true);
   }
 
   // states
   const [isSelected, setIsSelected] = useState<number | undefined>(undefined);
+  const [modal, setModal] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
+  const[gallery, setGallery] = useState(false);
+  const[camera, setCamera] = useState(false);
 
   function changeTag(tag: string): void {
     throw new Error("Function not implemented.");
   }
 
-  const pickImage = async () => {
-    //Reference: https://gist.github.com/Balaagha/9b080d984d5b99e916293d24b4dfa01e
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 0,
-    });
+  const onClickGallery = async () => {
+    setGallery(true);
+    setCamera(false);
+    await pickImage();
+    setModal(false);
+  }
 
-    console.log(result);
+  const onClickCamera = async() => {
+    setGallery(false);
+    setCamera(true);
+    await openCamera(null);
+    setModal(false);
+  }
 
-    if (!result.canceled) {
-      let newFile = {
-        uri:result.assets[0].uri,
-        type:`test/${result.assets[0].uri.split(".")[1]}`,
-        name:`test.${result.assets[0].uri.split(".")[1]}`};
-      const url = await handleUpload(newFile);
-      const categ = await classifyImage(url);
-      console.log(categ);
-    }
-  };
+  const onClose = async() => {
+    setModal(false);
+  }
 
- const handleUpload = async (image:any)=>{
-    const data = new FormData(); 
-    data.append('file',image);  
-    data.append('upload_preset','unsigned_preset');
-    data.append('cloud_name','dg2ht2fvn'); 
-    try{
-      const res = await fetch("https://api.cloudinary.com/v1_1/dg2ht2fvn/image/upload",{  method:'post',body:data})
-      const json = await res.json()
-      return json.secure_url;
-    }
-    catch(err){
-      console.log(err)
-    }
+  const closeGrantPermission = async() => {
+    console.log("Closing...");
+    setGallery(false);
+    setCamera(false);
+    
   }
 
 
@@ -94,6 +92,32 @@ export default function Tab() {
           <Text style={styles.title2}>Search By Image</Text>
         </View>
         <View style={styles.img_search_wrapper}>
+          {modal && (
+            <View style={styles.container}>
+              <Modal transparent visible={modal} animationType="slide" onRequestClose={onClose}>
+                  <View style={styles.modalBackground}>
+                      <View style={styles.innerContainer}>
+                        <Button onPress={onClickGallery} title="Choose from Photo Library"/>
+                        <Button onPress={onClickCamera} title="Take a picture"/>
+                        <Button onPress={onClose} title="Close"/>
+                      </View>
+                    </View>
+              </Modal>
+            </View>
+          )}
+          {(camera && permission && !permission?.granted) && (
+            <View style={styles.modalBackground}>
+              <Modal transparent visible={camera && !permission?.granted}>
+                <View style={styles.innerContainer}>
+                  <Text>
+                      We need your permission to show the camera
+                  </Text>
+                  <Button onPress={requestPermission} title="Grant Permission" />
+                  <Button onPress={closeGrantPermission} title="Close"></Button>
+                </View>
+              </Modal>
+            </View>
+          )}
           <Pressable
             style={styles.img_search_icon_bkg}
             onPress={onPressSearchByImage}
@@ -236,5 +260,34 @@ const styles = StyleSheet.create({
     color: "#0A2533",
     padding: 10,
     textAlign: "center",
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)', 
+  },
+  innerContainer: {
+      opacity: 0.95,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'white',
+      height: 200,
+      width: '80%',
+      borderRadius: 20,
+      padding: 20,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+  },
+  option: {
+    borderRadius: 20,
+    padding: 5,
+    fontSize: 32,
+    marginVertical: 10,
   },
 });
