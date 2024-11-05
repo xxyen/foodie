@@ -106,7 +106,7 @@ export default function Home() {
   }
 
   function onPressDetail(event: GestureResponderEvent): void {
-    router.push("home/detail");
+    router.push({pathname: "home/detail", params: {}});
   }
 
   // render
