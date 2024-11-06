@@ -14,8 +14,12 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import * as Linking from "expo-linking";
+import { useAppContext } from "@/context/contexts";
 
 export default function SignUpScreen() {
+
+  const {onChangeId} = useAppContext();
+
   // variables
   const img_path = "../assets/chickenleg.png";
   const google_icon_path = "../assets/google_icon.png";
@@ -61,12 +65,17 @@ export default function SignUpScreen() {
     router.push("./login");
   }
 
-  function onPressRegister(event: GestureResponderEvent): void {
+  async function onPressRegister(event: GestureResponderEvent): Promise<void> {
     console.log("user: press sign up btn");
     // throw new Error("Function not implemented.");
     if(validateEmail(email)){
       if(validPassword(password)){
-        registerHelper();
+        const res = await registerHelper();
+        if (res) {
+          router.dismissAll();
+          router.push("/home");
+          Alert.alert("Congratulate!",username+", you have resgistered successfully."); 
+        }
       }
       else{
         alert("Invalid Password, please contain at least 8 characters including one lower/upper letter, one digit and one special character.");
@@ -101,12 +110,15 @@ export default function SignUpScreen() {
       const body = await response.json();
       if(response.status!=201){
         alert(body.message);
+        return false;
       }
       else{
-        Alert.alert("Congratulate!", username+", you have successfully registered.");//TODO: You can customize a success modal/dialog!
+        onChangeId(body.userId);
+        return true;
       }
     } catch(err){
       alert(err);
+      return false;
     }
     
   }

@@ -9,7 +9,12 @@ import {
   Image,
   GestureResponderEvent,
   ScrollView,
+  Modal,
+  Button
 } from "react-native";
+
+import { pickImage, openCamera } from "@/utils";
+import { useCameraPermissions } from "expo-camera";
 
 export default function Tab() {
   // variables
@@ -21,15 +26,46 @@ export default function Tab() {
   }
 
   function onPressSearchByImage(event: GestureResponderEvent): void {
-    throw new Error("Function not implemented.");
+    // throw new Error("Function not implemented.");
+    setModal(true);
   }
 
   // states
   const [isSelected, setIsSelected] = useState<number | undefined>(undefined);
+  const [modal, setModal] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
+  const[gallery, setGallery] = useState(false);
+  const[camera, setCamera] = useState(false);
 
   function changeTag(tag: string): void {
     throw new Error("Function not implemented.");
   }
+
+  const onClickGallery = async () => {
+    setGallery(true);
+    setCamera(false);
+    await pickImage();
+    setModal(false);
+  }
+
+  const onClickCamera = async() => {
+    setGallery(false);
+    setCamera(true);
+    await openCamera(null);
+    setModal(false);
+  }
+
+  const onClose = async() => {
+    setModal(false);
+  }
+
+  const closeGrantPermission = async() => {
+    console.log("Closing...");
+    setGallery(false);
+    setCamera(false);
+    
+  }
+
 
   return (
     <SafeAreaView style={styles.safearea}>
@@ -47,6 +83,32 @@ export default function Tab() {
           <Text style={styles.title2}>Search By Image</Text>
         </View>
         <View style={styles.img_search_wrapper}>
+          {modal && (
+            <View style={styles.container}>
+              <Modal transparent visible={modal} animationType="slide" onRequestClose={onClose}>
+                  <View style={styles.modalBackground}>
+                      <View style={styles.innerContainer}>
+                        <Button onPress={onClickGallery} title="Choose from Photo Library"/>
+                        <Button onPress={onClickCamera} title="Take a picture"/>
+                        <Button onPress={onClose} title="Close"/>
+                      </View>
+                    </View>
+              </Modal>
+            </View>
+          )}
+          {(camera && permission && !permission?.granted) && (
+            <View style={styles.modalBackground}>
+              <Modal transparent visible={camera && !permission?.granted}>
+                <View style={styles.innerContainer}>
+                  <Text>
+                      We need your permission to show the camera
+                  </Text>
+                  <Button onPress={requestPermission} title="Grant Permission" />
+                  <Button onPress={closeGrantPermission} title="Close"></Button>
+                </View>
+              </Modal>
+            </View>
+          )}
           <Pressable
             style={styles.img_search_icon_bkg}
             onPress={onPressSearchByImage}
@@ -189,5 +251,34 @@ const styles = StyleSheet.create({
     color: "#0A2533",
     padding: 10,
     textAlign: "center",
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)', 
+  },
+  innerContainer: {
+      opacity: 0.95,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'white',
+      height: 200,
+      width: '80%',
+      borderRadius: 20,
+      padding: 20,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+  },
+  option: {
+    borderRadius: 20,
+    padding: 5,
+    fontSize: 32,
+    marginVertical: 10,
   },
 });
