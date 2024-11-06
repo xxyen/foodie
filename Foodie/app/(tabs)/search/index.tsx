@@ -12,22 +12,13 @@ import {
   Modal,
   Button
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import { Buffer } from "buffer";
-import { Blob } from "buffer";
-import * as FileSystem from "expo-file-system";
-import { Asset } from "expo-asset";
+
 import { pickImage, openCamera } from "@/utils";
-import ReactNativeBlobUtil from "react-native-blob-util";
-import {decode, encode} from 'base-64';
-import axios from "axios";
-import PickerModal from "@/Components/PickerModal";
-import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import PermissionRequest from "@/Components/PermissionRequest";
+import { useCameraPermissions } from "expo-camera";
 
 export default function Tab() {
   // variables
-  const img = "../../assets/img_search.png";
+  const img = "../../../assets/img_search.png";
 
   // functions
   function onChangeSearchText(text: string): void {

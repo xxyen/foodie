@@ -9,22 +9,25 @@ import {
   Pressable,
   ImageBackground,
   GestureResponderEvent,
+  Alert,
 } from "react-native";
-import { getRandomFoodRecipe } from "../../utils";
+import { getRandomFoodRecipe, updateFavoriteFoods } from "../../../utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
 import { useAppContext } from "@/context/contexts";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
 
 export default function Home() {
-  const { id, onChangeId } = useAppContext();
+  const { id, onChangeId, favFoods, onChangeFavFoods } = useAppContext();
 
   // states
   const [isSelected, setIsSelected] = useState<number>(0);
   const [tag, setTag] = useState<string>("breakfast");
   const [data, setData] = useState<IApiFoodRecipeData | undefined>(undefined);
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
   // const [userId, setUserId] = useState<string | null>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     const getUserIdFromUrl = async () => {
@@ -58,13 +61,8 @@ export default function Home() {
     return () => {
       urlListener.remove();
     };
-  }, []);
+  }, []);  
 
-  useEffect(() => {
-    if (id) {
-      console.log("Updated userId: ", id);
-    }
-  }, [id]);
 
   // functions
   function changeTag(num: number, tag: string): void {
@@ -72,8 +70,43 @@ export default function Home() {
     setTag(tag);
   }
 
-  function onPressAddFav(event: GestureResponderEvent): void {
-    throw new Error("Function not implemented.");
+  function onPressAddFav(event: GestureResponderEvent,  index: number): void {
+      // check if login
+      if (!id) {
+          console.log("User not logged in. Redirecting to Profile.");
+          router.push("profile");
+          return;
+      }
+
+      const selectedRecipeId = data?.recipes[index]?.id;
+          if (!selectedRecipeId) {
+              console.error("Invalid recipe ID");
+              return;
+          }
+
+      let newFavFoods;
+      let alertMessage;
+
+      if (favFoods.includes(selectedRecipeId)) {
+          // remove favorite
+         newFavFoods = favFoods.filter(foodId => foodId !== selectedRecipeId);
+         console.log("remove:", newFavFoods);
+         alertMessage = "Recipe removed from favorites.";
+      } else {
+          // add new favorite
+          newFavFoods = [...favFoods, selectedRecipeId];
+          console.log("add:", newFavFoods);
+          alertMessage = "Recipe added to favorites!";
+      }
+
+     updateFavoriteFoods(id, newFavFoods).then(() => {
+         onChangeFavFoods(newFavFoods);
+         Alert.alert("Success", alertMessage);
+     });
+  }
+
+  function onPressDetail(event: GestureResponderEvent): void {
+    router.push({pathname: "home/detail", params: {}});
   }
 
   // render
@@ -84,6 +117,14 @@ export default function Home() {
     };
     fetchData();
   }, [tag]);
+
+  useEffect(() => {
+    if (id) {
+      console.log("Updated userId: ", id);
+    }
+  }, [id]);
+
+  
 
   return (
     <SafeAreaView style={styles.safearea}>
@@ -157,125 +198,49 @@ export default function Home() {
             </Pressable>
           </View>
         </ScrollView>
+
         <ScrollView style={styles.container_recipes}>
-          <Pressable style={styles.container_recipes_img}>
-            <View style={styles.img_wrapper}>
-              <ImageBackground
-                source={{ uri: data && data?.recipes[0]?.image }}
-                style={styles.img}
-                resizeMode="cover"
-              >
-                <LinearGradient
-                  colors={[
-                    "rgba(0, 0, 0, 0.4)",
-                    "rgba(0, 0, 0, 0)",
-                    "rgba(0, 0, 0, 0)",
-                    "rgba(0, 0, 0, 0.4)",
-                  ]}
-                  style={styles.gradient}
-                  start={{ x: 0.5, y: 0 }}
-                  end={{ x: 0.5, y: 1 }}
-                />
-                <View style={styles.container_text_and_btn}>
-                  <Text style={styles.text}>
-                    {data && data?.recipes[0]?.title}
-                  </Text>
-                  <Pressable onPress={onPressAddFav}>
-                    <View style={styles.circle}>
-                      <MaterialCommunityIcons
-                        name={isFavorite ? "heart" : "heart-plus"}
-                        size={20}
-                        style={
-                          isFavorite
-                            ? styles.fav_icon_selected
-                            : styles.fav_icon_unselected
-                        }
-                      />
+            {data?.recipes.slice(0, 3).map((recipe, index) => (
+                <Pressable key={recipe.id} style={styles.container_recipes_img} onPress={onPressDetail}>
+                    <View style={styles.img_wrapper}>
+                        <ImageBackground
+                            source={{ uri: recipe.image }}
+                            style={styles.img}
+                            resizeMode="cover"
+                        >
+                            <LinearGradient
+                                colors={[
+                                    "rgba(0, 0, 0, 0.4)",
+                                    "rgba(0, 0, 0, 0)",
+                                    "rgba(0, 0, 0, 0)",
+                                    "rgba(0, 0, 0, 0.4)",
+                                ]}
+                                style={styles.gradient}
+                                start={{ x: 0.5, y: 0 }}
+                                end={{ x: 0.5, y: 1 }}
+                            />
+                            <View style={styles.container_text_and_btn}>
+                                <Text style={styles.text}>{recipe.title}</Text>
+                                <Pressable onPress={(event) => onPressAddFav(event, index)}>
+                                    <View style={styles.circle}>
+                                        <MaterialCommunityIcons
+                                            name={favFoods.includes(recipe.id) ? "heart" : "heart-plus"}
+                                            size={20}
+                                            style={
+                                                favFoods.includes(recipe.id)
+                                                    ? styles.fav_icon_selected
+                                                    : styles.fav_icon_unselected
+                                            }
+                                        />
+                                    </View>
+                                </Pressable>
+                            </View>
+                        </ImageBackground>
                     </View>
-                  </Pressable>
-                </View>
-              </ImageBackground>
-            </View>
-          </Pressable>
-          <Pressable style={styles.container_recipes_img}>
-            <View style={styles.img_wrapper}>
-              <ImageBackground
-                source={{ uri: data && data?.recipes[1]?.image }}
-                style={styles.img}
-                resizeMode="cover"
-              >
-                <LinearGradient
-                  colors={[
-                    "rgba(0, 0, 0, 0.4)",
-                    "rgba(0, 0, 0, 0)",
-                    "rgba(0, 0, 0, 0)",
-                    "rgba(0, 0, 0, 0.4)",
-                  ]}
-                  style={styles.gradient}
-                  start={{ x: 0.5, y: 0 }}
-                  end={{ x: 0.5, y: 1 }}
-                />
-                <View style={styles.container_text_and_btn}>
-                  <Text style={styles.text}>
-                    {data && data?.recipes[1]?.title}
-                  </Text>
-                  <Pressable onPress={onPressAddFav}>
-                    <View style={styles.circle}>
-                      <MaterialCommunityIcons
-                        name={isFavorite ? "heart" : "heart-plus"}
-                        size={20}
-                        style={
-                          isFavorite
-                            ? styles.fav_icon_selected
-                            : styles.fav_icon_unselected
-                        }
-                      />
-                    </View>
-                  </Pressable>
-                </View>
-              </ImageBackground>
-            </View>
-          </Pressable>
-          <Pressable style={styles.container_recipes_img}>
-            <View style={styles.img_wrapper}>
-              <ImageBackground
-                source={{ uri: data && data?.recipes[2]?.image }}
-                style={styles.img}
-                resizeMode="cover"
-              >
-                <LinearGradient
-                  colors={[
-                    "rgba(0, 0, 0, 0.4)",
-                    "rgba(0, 0, 0, 0)",
-                    "rgba(0, 0, 0, 0)",
-                    "rgba(0, 0, 0, 0.4)",
-                  ]}
-                  style={styles.gradient}
-                  start={{ x: 0.5, y: 0 }}
-                  end={{ x: 0.5, y: 1 }}
-                />
-                <View style={styles.container_text_and_btn}>
-                  <Text style={styles.text}>
-                    {data && data?.recipes[2]?.title}
-                  </Text>
-                  <Pressable onPress={onPressAddFav}>
-                    <View style={styles.circle}>
-                      <MaterialCommunityIcons
-                        name={isFavorite ? "heart" : "heart-plus"}
-                        size={20}
-                        style={
-                          isFavorite
-                            ? styles.fav_icon_selected
-                            : styles.fav_icon_unselected
-                        }
-                      />
-                    </View>
-                  </Pressable>
-                </View>
-              </ImageBackground>
-            </View>
-          </Pressable>
+                </Pressable>
+            ))}
         </ScrollView>
+
       </View>
     </SafeAreaView>
   );

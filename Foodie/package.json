@@ -16,12 +16,9 @@
     "@react-navigation/drawer": "^6.7.2",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/stack": "^6.4.1",
-    "axios": "^1.7.7",
-    "base-64": "^1.0.0",
     "expo": "~51.0.28",
-    "expo-asset": "^10.0.10",
-    "expo-file-system": "^17.0.1",
-    "expo-image-picker": "~15.0.7",
+    "expo-camera": "~15.0.16",
+    "expo-checkbox": "^3.0.0",
     "expo-linear-gradient": "~13.0.2",
     "expo-router": "^3.5.23",
     "expo-status-bar": "~1.12.1",
@@ -29,7 +26,6 @@
     "react": "18.2.0",
     "react-native": "0.74.5",
     "react-native-base64": "^0.2.1",
-    "react-native-blob-util": "^0.19.11",
     "react-native-chart-kit": "^6.12.0",
     "react-native-fs": "^2.20.0",
     "react-native-gifted-charts": "^1.4.47",
@@ -37,8 +33,7 @@
     "react-native-safe-area-context": "^4.11.1",
     "react-native-svg": "15.2.0",
     "rn-fetch-blob": "^0.12.0",
-    "utf8": "^3.0.0",
-    "expo-camera": "~15.0.16"
+    "utf8": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

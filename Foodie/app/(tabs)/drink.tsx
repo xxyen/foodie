@@ -9,17 +9,22 @@ import {
   Pressable,
   ImageBackground,
   GestureResponderEvent,
+  Alert,
 } from "react-native";
-import { getRandomCocktailRecipe } from "../../utils";
+import { getRandomCocktailRecipe, updateFavoriteDrinks } from "../../utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { useAppContext } from "@/context/contexts";
+import { useNavigation } from '@react-navigation/native';
+import { router } from "expo-router";
 
 export default function Home() {
   // states
   const [isSelected, setIsSelected] = useState<number>(0);
   const [tag, setTag] = useState<string>("Gin");
   const [data, setData] = useState<IApiDrinkIdData | undefined>(undefined);
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+
+  const { id, favDrinks, onChangeFavDrinks } = useAppContext();
 
   // functions
   function changeTag(num: number, tag: string): void {
@@ -36,8 +41,39 @@ export default function Home() {
     fetchData();
   }, [tag]);
 
-  function onPressAddFav(event: GestureResponderEvent): void {
-    throw new Error("Function not implemented.");
+  function onPressAddFav(index: number): void {
+    // check if login
+    if (!id) {
+        console.log("User not logged in. Redirecting to Profile.");
+        router.push("profile")
+        return;
+    }
+
+    const selectedDrinkId = data?.drinks[index]?.idDrink;
+    if (!selectedDrinkId) {
+        console.error("Invalid drink ID");
+        return;
+    }
+
+    let newFavDrinks;
+    let alertMessage;
+
+    if (favDrinks.includes(selectedDrinkId)) {
+         // remove favorite
+         newFavDrinks = favDrinks.filter(drinkId => drinkId !== selectedDrinkId);
+         console.log("remove:", newFavDrinks);
+         alertMessage = "Drink removed from favorites.";
+    } else {
+         // add new favorite
+         newFavDrinks = [...favDrinks, selectedDrinkId];
+         console.log("add:", newFavDrinks);
+         alertMessage = "Drink added to favorites!";
+    }
+
+    updateFavoriteDrinks(id, newFavDrinks).then(() => {
+         onChangeFavDrinks(newFavDrinks);
+         Alert.alert("Success", alertMessage);
+    });
   }
 
   return (
@@ -113,235 +149,48 @@ export default function Home() {
           </View>
         </ScrollView>
         <ScrollView style={styles.container_recipes}>
-          <View style={styles.container_drinkrow}>
-            <Pressable style={styles.container_recipes_img}>
-              <View style={styles.img_wrapper}>
-                <ImageBackground
-                  source={{ uri: data && data?.drinks[0]?.strDrinkThumb }}
-                  style={styles.img}
-                  resizeMode="cover"
-                >
-                  <LinearGradient
-                    colors={[
-                      "rgba(0, 0, 0, 0.3)",
-                      "rgba(0, 0, 0, 0)",
-                      "rgba(0, 0, 0, 0)",
-                      "rgba(0, 0, 0, 0.3)",
-                    ]}
-                    style={styles.gradient}
-                    start={{ x: 0.5, y: 0 }}
-                    end={{ x: 0.5, y: 1 }}
-                  />
-                  <Pressable onPress={onPressAddFav}>
-                    <View style={styles.circle}>
-                      <MaterialCommunityIcons
-                        name={isFavorite ? "heart" : "heart-plus"}
-                        size={20}
-                        style={
-                          isFavorite
-                            ? styles.fav_icon_selected
-                            : styles.fav_icon_unselected
-                        }
+          {data?.drinks?.slice(0, 6).map((_, rowIndex) => (
+            <View key={rowIndex} style={styles.container_drinkrow}>
+              {data.drinks.slice(rowIndex * 2, rowIndex * 2 + 2).map((drink, colIndex) => (
+                <Pressable key={colIndex} style={styles.container_recipes_img}>
+                  <View style={styles.img_wrapper}>
+                    <ImageBackground
+                      source={{ uri: drink.strDrinkThumb }}
+                      style={styles.img}
+                      resizeMode="cover"
+                    >
+                      <LinearGradient
+                        colors={[
+                          "rgba(0, 0, 0, 0.3)",
+                          "rgba(0, 0, 0, 0)",
+                          "rgba(0, 0, 0, 0)",
+                          "rgba(0, 0, 0, 0.3)",
+                        ]}
+                        style={styles.gradient}
+                        start={{ x: 0.5, y: 0 }}
+                        end={{ x: 0.5, y: 1 }}
                       />
-                    </View>
-                  </Pressable>
-                </ImageBackground>
-              </View>
-              {/* <Text style={styles.text}>
-                {data && data?.drinks[0]?.strDrink}
-              </Text> */}
-            </Pressable>
-            <Pressable style={styles.container_recipes_img}>
-              <View style={styles.img_wrapper}>
-                <ImageBackground
-                  source={{ uri: data && data?.drinks[1]?.strDrinkThumb }}
-                  style={styles.img}
-                  resizeMode="cover"
-                >
-                  <LinearGradient
-                    colors={[
-                      "rgba(0, 0, 0, 0.3)",
-                      "rgba(0, 0, 0, 0)",
-                      "rgba(0, 0, 0, 0)",
-                      "rgba(0, 0, 0, 0.3)",
-                    ]}
-                    style={styles.gradient}
-                    start={{ x: 0.5, y: 0 }}
-                    end={{ x: 0.5, y: 1 }}
-                  />
-                  <Pressable onPress={onPressAddFav}>
-                    <View style={styles.circle}>
-                      <MaterialCommunityIcons
-                        name={isFavorite ? "heart" : "heart-plus"}
-                        size={20}
-                        style={
-                          isFavorite
-                            ? styles.fav_icon_selected
-                            : styles.fav_icon_unselected
-                        }
-                      />
-                    </View>
-                  </Pressable>
-                </ImageBackground>
-              </View>
-              {/* <Text style={styles.text}>
-                {data && data?.drinks[1]?.strDrink}
-              </Text> */}
-            </Pressable>
-          </View>
-          <View style={styles.container_drinkrow}>
-            <Pressable style={styles.container_recipes_img}>
-              <View style={styles.img_wrapper}>
-                <ImageBackground
-                  source={{ uri: data && data?.drinks[2]?.strDrinkThumb }}
-                  style={styles.img}
-                  resizeMode="cover"
-                >
-                  <LinearGradient
-                    colors={[
-                      "rgba(0, 0, 0, 0.3)",
-                      "rgba(0, 0, 0, 0)",
-                      "rgba(0, 0, 0, 0)",
-                      "rgba(0, 0, 0, 0.3)",
-                    ]}
-                    style={styles.gradient}
-                    start={{ x: 0.5, y: 0 }}
-                    end={{ x: 0.5, y: 1 }}
-                  />
-                  <Pressable onPress={onPressAddFav}>
-                    <View style={styles.circle}>
-                      <MaterialCommunityIcons
-                        name={isFavorite ? "heart" : "heart-plus"}
-                        size={20}
-                        style={
-                          isFavorite
-                            ? styles.fav_icon_selected
-                            : styles.fav_icon_unselected
-                        }
-                      />
-                    </View>
-                  </Pressable>
-                </ImageBackground>
-              </View>
-              {/* <Text style={styles.text}>
-                {data && data?.drinks[2]?.strDrink}
-              </Text> */}
-            </Pressable>
-            <Pressable style={styles.container_recipes_img}>
-              <View style={styles.img_wrapper}>
-                <ImageBackground
-                  source={{ uri: data && data?.drinks[3]?.strDrinkThumb }}
-                  style={styles.img}
-                  resizeMode="cover"
-                >
-                  <LinearGradient
-                    colors={[
-                      "rgba(0, 0, 0, 0.3)",
-                      "rgba(0, 0, 0, 0)",
-                      "rgba(0, 0, 0, 0)",
-                      "rgba(0, 0, 0, 0.3)",
-                    ]}
-                    style={styles.gradient}
-                    start={{ x: 0.5, y: 0 }}
-                    end={{ x: 0.5, y: 1 }}
-                  />
-                  <Pressable onPress={onPressAddFav}>
-                    <View style={styles.circle}>
-                      <MaterialCommunityIcons
-                        name={isFavorite ? "heart" : "heart-plus"}
-                        size={20}
-                        style={
-                          isFavorite
-                            ? styles.fav_icon_selected
-                            : styles.fav_icon_unselected
-                        }
-                      />
-                    </View>
-                  </Pressable>
-                </ImageBackground>
-              </View>
-              {/* <Text style={styles.text}>
-                {data && data?.drinks[3]?.strDrink}
-              </Text> */}
-            </Pressable>
-          </View>
-          <View style={styles.container_drinkrow}>
-            <Pressable style={styles.container_recipes_img}>
-              <View style={styles.img_wrapper}>
-                <ImageBackground
-                  source={{ uri: data && data?.drinks[4]?.strDrinkThumb }}
-                  style={styles.img}
-                  resizeMode="cover"
-                >
-                  <LinearGradient
-                    colors={[
-                      "rgba(0, 0, 0, 0.3)",
-                      "rgba(0, 0, 0, 0)",
-                      "rgba(0, 0, 0, 0)",
-                      "rgba(0, 0, 0, 0.3)",
-                    ]}
-                    style={styles.gradient}
-                    start={{ x: 0.5, y: 0 }}
-                    end={{ x: 0.5, y: 1 }}
-                  />
-                  <Pressable onPress={onPressAddFav}>
-                    <View style={styles.circle}>
-                      <MaterialCommunityIcons
-                        name={isFavorite ? "heart" : "heart-plus"}
-                        size={20}
-                        style={
-                          isFavorite
-                            ? styles.fav_icon_selected
-                            : styles.fav_icon_unselected
-                        }
-                      />
-                    </View>
-                  </Pressable>
-                </ImageBackground>
-              </View>
-              {/* <Text style={styles.text}>
-                {data && data?.drinks[4]?.strDrink}
-              </Text> */}
-            </Pressable>
-            <Pressable style={styles.container_recipes_img}>
-              <View style={styles.img_wrapper}>
-                <ImageBackground
-                  source={{ uri: data && data?.drinks[5]?.strDrinkThumb }}
-                  style={styles.img}
-                  resizeMode="cover"
-                >
-                  <LinearGradient
-                    colors={[
-                      "rgba(0, 0, 0, 0.3)",
-                      "rgba(0, 0, 0, 0)",
-                      "rgba(0, 0, 0, 0)",
-                      "rgba(0, 0, 0, 0.3)",
-                    ]}
-                    style={styles.gradient}
-                    start={{ x: 0.5, y: 0 }}
-                    end={{ x: 0.5, y: 1 }}
-                  />
-                  <Pressable onPress={onPressAddFav}>
-                    <View style={styles.circle}>
-                      <MaterialCommunityIcons
-                        name={isFavorite ? "heart" : "heart-plus"}
-                        size={20}
-                        style={
-                          isFavorite
-                            ? styles.fav_icon_selected
-                            : styles.fav_icon_unselected
-                        }
-                      />
-                    </View>
-                  </Pressable>
-                </ImageBackground>
-              </View>
-              {/* <Text style={styles.text}>
-                {data && data?.drinks[5]?.strDrink}
-              </Text> */}
-            </Pressable>
-          </View>
+                      <Pressable onPress={() => onPressAddFav(rowIndex * 2 + colIndex)}>
+                        <View style={styles.circle}>
+                          <MaterialCommunityIcons
+                            name={favDrinks.includes(drink.idDrink) ? "heart" : "heart-plus"}
+                            size={20}
+                            style={
+                              favDrinks.includes(drink.idDrink)
+                                ? styles.fav_icon_selected
+                                : styles.fav_icon_unselected
+                            }
+                          />
+                        </View>
+                      </Pressable>
+                    </ImageBackground>
+                  </View>
+                </Pressable>
+              ))}
+            </View>
+          ))}
         </ScrollView>
+
       </View>
     </SafeAreaView>
   );

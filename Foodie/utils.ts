@@ -233,3 +233,52 @@ async function handleTakePicture() {
     return null;
   }
 }
+
+export async function updateFavoriteFoods(id:any, newFavFoods:any
+) {
+    try {
+        const response = await fetch(`http://localhost:4000/users/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ favFoods: newFavFoods }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Update failed:", errorData.message);
+            alert(errorData);
+        } else {
+            const data = await response.json();
+            console.log(data.message);
+        }
+    } catch (error) {
+        console.error("Request error:", error);
+        alert(error);
+    }
+}
+
+export async function updateFavoriteDrinks(id:any, newFavDrinks:any) {
+    try {
+        const response = await fetch(`http://localhost:4000/users/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ favDrinks: newFavDrinks }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Update failed:", errorData.message);
+            alert(errorData.message);
+        } else {
+            const data = await response.json();
+            console.log(data.message);
+        }
+    } catch (error) {
+        console.error("Request error:", error);
+        alert(error);
+    }
+}
