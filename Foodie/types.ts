@@ -25,7 +25,7 @@ interface IApiFoodRecipeData {
     creditsText: string;
     sourceName: string;
     pricePerServing: number;
-    extendedIngredients: {
+    extendedIngredients: [{
       id: number;
       aisle: string;
       image: string;
@@ -49,7 +49,7 @@ interface IApiFoodRecipeData {
           unitLong: string;
         };
       };
-    }[];
+    }];
     id: number;
     title: string;
     readyInMinutes: number;
@@ -91,7 +91,15 @@ interface IApiFoodRecipeData {
     }[];
     spoonacularScore: number;
     spoonacularSourceUrl: string;
-  }[];
+    nutrition: {
+      nutrients:[{
+        name: string;
+        percentOfDailyNeeds: string;
+        amount: number;
+        unit: string;
+      }];
+    };
+  };
 }
 interface IUserInfo{
   id: string,
