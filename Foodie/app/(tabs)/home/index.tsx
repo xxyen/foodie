@@ -105,9 +105,9 @@ export default function Home() {
      });
   }
 
-  function onPressDetail(event: GestureResponderEvent): void {
-    router.push({pathname: "home/detail", params: {}});
-  }
+  function onPressDetail(event: GestureResponderEvent, recipeId: number): void {
+    router.push({ pathname: "home/detail", params: { id: recipeId } });
+  }  
 
   // render
   useEffect(() => {
@@ -201,7 +201,7 @@ export default function Home() {
 
         <ScrollView style={styles.container_recipes}>
             {data?.recipes.slice(0, 3).map((recipe, index) => (
-                <Pressable key={recipe.id} style={styles.container_recipes_img} onPress={onPressDetail}>
+                <Pressable key={recipe.id} style={styles.container_recipes_img} onPress={(event) => onPressDetail(event, recipe.id)}>
                     <View style={styles.img_wrapper}>
                         <ImageBackground
                             source={{ uri: recipe.image }}

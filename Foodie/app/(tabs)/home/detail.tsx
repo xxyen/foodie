@@ -10,27 +10,54 @@ import {
   Dimensions,
 } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
+import { getRecipeDetails } from "@/utils";
 
 export default function Tab() {
-  const ingredient_num = 1;
-  const window_width = Dimensions.get("window").width;
-  const window_height = Dimensions.get("window").height;
-  const recipe_difficulty = "Easy";
-  const cook_time = 10;
-  const intake = 150;
-  const fat = 6;
-  const cholesterol = 0;
-  const sodium = 3;
-  const carbs = 2;
-  const protein = 1;
+
+  const { id } = useLocalSearchParams();
+  const [recipe, setRecipe] = useState<IApiFoodRecipeData["recipes"] | undefined>(undefined);
+  const [nutrition, setNutrition] = useState<any | undefined>(undefined);
+
+
+  useEffect(() => {
+    const fetchRecipeDetails = async () => {
+      if (id) {
+        const recipeData = await getRecipeDetails(Number(id));
+
+        if (recipeData) {
+          setRecipe(recipeData);
+  
+          const nutritionData = recipeData?.nutrition?.nutrients;
+          setNutrition(nutritionData);
+        }
+      }
+    };
+    fetchRecipeDetails();
+  }, [id]);
+  
+
+  if (!recipe) {
+    return (
+      <SafeAreaView style={styles.safearea}>
+        <Text>Loading...</Text>
+      </SafeAreaView>
+    );
+  }
+
 
   function onPressAddToShoplist(event: GestureResponderEvent): void {
-    throw new Error("Function not implemented.");
+    // throw new Error("Function not implemented.");
   }
 
   function onPressAddToDailyIntake(event: GestureResponderEvent): void {
-    throw new Error("Function not implemented.");
+    // throw new Error("Function not implemented.");
   }
+
+  // const nutrition = recipe.recipes[0].nutrition?.nutrients;
+  const getNutritionValue = (name: string) =>
+    nutrition?.find((nutrient) => nutrient.name === name)?.amount || 0;
 
   return (
     <SafeAreaView style={styles.safearea}>
@@ -38,34 +65,21 @@ export default function Tab() {
         <View style={styles.container_img}>
           <Text style={styles.title_h1}>Recipe Detail</Text>
           <ImageBackground
-            source={require("../../../assets/sample_recipe_img.png")}
+            source={{ uri: recipe?.image }}
             style={styles.img_wrapper}
             resizeMode="cover"
           />
         </View>
         <View style={styles.container_title}>
           <Text style={styles.title_h2}>Ingredients</Text>
-          <Text style={styles.subtitle}>{`${ingredient_num} Item`}</Text>
+          <Text style={styles.subtitle}>{`${recipe?.extendedIngredients.length} Items`}</Text>
         </View>
         <View style={styles.container_ingredient}>
-          <View style={styles.container_ingredient_item}>
-            <Text style={styles.title_h3}>Apple</Text>
-          </View>
-          <View style={styles.container_ingredient_item}>
-            <Text style={styles.title_h3}>Pear</Text>
-          </View>
-          <View style={styles.container_ingredient_item}>
-            <Text style={styles.title_h3}>Apple</Text>
-          </View>
-          <View style={styles.container_ingredient_item}>
-            <Text style={styles.title_h3}>Pear</Text>
-          </View>
-          <View style={styles.container_ingredient_item}>
-            <Text style={styles.title_h3}>Apple</Text>
-          </View>
-          <View style={styles.container_ingredient_item}>
-            <Text style={styles.title_h3}>Pear</Text>
-          </View>
+        {recipe?.extendedIngredients.map((ingredient) => (
+            <View key={ingredient.id} style={styles.container_ingredient_item}>
+              <Text style={styles.title_h3}>{ingredient.name}</Text>
+            </View>
+          ))}
         </View>
         <Pressable style={styles.btn} onPress={onPressAddToShoplist}>
           <Text style={styles.btn_text}>Add To Shoplist</Text>
@@ -74,61 +88,45 @@ export default function Tab() {
           <Text style={styles.title_h2}>Directions</Text>
           <Text
             style={styles.subtitle}
-          >{`${recipe_difficulty} ${cook_time}mins`}</Text>
+          >{` ${recipe?.readyInMinutes} mins`}</Text>
         </View>
         <View style={styles.container_ingredient}>
           <Text style={styles.text_paragraph}>
-            Contrary to popular belief, Lorem Ipsum is not simply random text.
-            It has roots in a piece of classical Latin literature from 45 BC,
-            making it over 2000 years old. Richard McClintock, a Latin professor
-            at Hampden-Sydney College in Virginia, looked up one of the more
-            obscure Latin words, consectetur, from a Lorem Ipsum passage, and
-            going through the cites of the word in classical literature,
-            discovered the undoubtable source. Lorem Ipsum comes from sections
-            1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes
-            of Good and Evil) by Cicero, written in 45 BC. This book is a
-            treatise on the theory of ethics, very popular during the
-            Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit
-            amet..", comes from a line in section 1.10.32. The standard chunk of
-            Lorem Ipsum used since the 1500s is reproduced below for those
-            interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et
-            Malorum" by Cicero are also reproduced in their exact original form,
-            accompanied by English versions from the 1914 translation by H.
-            Rackham.
+          {recipe?.summary.replace(/<[^>]*>?/gm, "")}
           </Text>
         </View>
         <View style={styles.container_title}>
           <Text style={styles.title_h2}>Nutrition Facts</Text>
-          <Text style={styles.subtitle}>{`${intake} calories`}</Text>
+          <Text style={styles.subtitle}>{`${getNutritionValue("Calories")} calories`}</Text>
         </View>
         <View style={styles.container_nutrition}>
           <View style={styles.container_nutrition_row}>
             <View style={styles.container_nutrition_item}>
               <MaterialCommunityIcons name={"water"} size={30} />
               <Text style={styles.title_h4}>Fat</Text>
-              <Text style={styles.subtitle}>{`${fat}g`}</Text>
+              <Text style={styles.subtitle}>{`${getNutritionValue("Fat")}g`}</Text>
             </View>
             <View style={styles.container_nutrition_item}>
               <MaterialCommunityIcons name={"hamburger-minus"} size={30} />
               <Text style={styles.title_h4}>Cholesterol</Text>
-              <Text style={styles.subtitle}>{`${cholesterol}g`}</Text>
+              <Text style={styles.subtitle}>{`${getNutritionValue("Cholesterol")}mg`}</Text>
             </View>
             <View style={styles.container_nutrition_item}>
               <MaterialCommunityIcons name={"shaker"} size={30} />
               <Text style={styles.title_h4}>Sodium</Text>
-              <Text style={styles.subtitle}>{`${sodium}g`}</Text>
+              <Text style={styles.subtitle}>{`${getNutritionValue("Sodium")}mg`}</Text>
             </View>
           </View>
           <View style={styles.container_nutrition_row}>
             <View style={styles.container_nutrition_item}>
               <MaterialCommunityIcons name={"cube-outline"} size={30} />
               <Text style={styles.title_h4}>Carbs</Text>
-              <Text style={styles.subtitle}>{`${carbs}g`}</Text>
+              <Text style={styles.subtitle}>{`${getNutritionValue("Carbohydrates")}g`}</Text>
             </View>
             <View style={styles.container_nutrition_item}>
               <MaterialCommunityIcons name={"pizza"} size={30} />
               <Text style={styles.title_h4}>Protein</Text>
-              <Text style={styles.subtitle}>{`${protein}g`}</Text>
+              <Text style={styles.subtitle}>{`${getNutritionValue("Protein")}g`}</Text>
             </View>
             <View style={styles.container_nutrition_item_hide}></View>
           </View>
