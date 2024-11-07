@@ -64,75 +64,6 @@ export default function Tab() {
             resizeMode="cover"
           />
         </View>
-        <View style={styles.container_title}>
-          <Text style={styles.title_h2}>Ingredients</Text>
-          <Text style={styles.subtitle}>{`${recipe?.extendedIngredients.length} Items`}</Text>
-        </View>
-        <View style={styles.container_ingredient}>
-        {recipe?.extendedIngredients.map((ingredient) => (
-            <View key={ingredient.id} style={styles.container_ingredient_item}>
-              <Text style={styles.text_paragraph}>{ingredient.name}</Text>
-              <Image style={styles.ingredient_image} resizeMode="contain" source={{ uri: getIngredientImage(ingredient.image)}} />
-            </View>
-          ))}
-        </View>
-        <Pressable style={styles.btn} onPress={onPressAddToShoplist}>
-          <Text style={styles.btn_text}>Add To Shoplist</Text>
-        </Pressable>
-        <View style={styles.container_title}>
-          <Text style={styles.title_h2}>Directions</Text>
-          <Text
-            style={styles.subtitle}
-          >{` ${recipe?.readyInMinutes} mins`}</Text>
-        </View>
-        <View style={styles.container_direction}>
-          {steps?.map((step: IFoodStep) => (
-            <Text key={step.number} style={styles.text_paragraph}>
-              {`${step.number}. ${step.step}`}
-            </Text>
-          ))}
-          
-        </View>
-        <View style={styles.container_title}>
-          <Text style={styles.title_h2}>Nutrition Facts</Text>
-          <Text style={styles.subtitle}>{`${getNutritionValue("Calories")} calories`}</Text>
-        </View>
-        <View style={styles.container_nutrition}>
-          <View style={styles.container_nutrition_row}>
-            <View style={styles.container_nutrition_item}>
-              <MaterialCommunityIcons name={"water"} size={30} />
-              <Text style={styles.title_h4}>Fat</Text>
-              <Text style={styles.subtitle}>{`${getNutritionValue("Fat")}g`}</Text>
-            </View>
-            <View style={styles.container_nutrition_item}>
-              <MaterialCommunityIcons name={"hamburger-minus"} size={30} />
-              <Text style={styles.title_h4}>Cholesterol</Text>
-              <Text style={styles.subtitle}>{`${getNutritionValue("Cholesterol")}mg`}</Text>
-            </View>
-            <View style={styles.container_nutrition_item}>
-              <MaterialCommunityIcons name={"shaker"} size={30} />
-              <Text style={styles.title_h4}>Sodium</Text>
-              <Text style={styles.subtitle}>{`${getNutritionValue("Sodium")}mg`}</Text>
-            </View>
-          </View>
-          <View style={styles.container_nutrition_row}>
-            <View style={styles.container_nutrition_item}>
-              <MaterialCommunityIcons name={"cube-outline"} size={30} />
-              <Text style={styles.title_h4}>Carbs</Text>
-              <Text style={styles.subtitle}>{`${getNutritionValue("Carbohydrates")}g`}</Text>
-            </View>
-            <View style={styles.container_nutrition_item}>
-              <MaterialCommunityIcons name={"pizza"} size={30} />
-              <Text style={styles.title_h4}>Protein</Text>
-              <Text style={styles.subtitle}>{`${getNutritionValue("Protein")}g`}</Text>
-            </View>
-            <View style={styles.container_nutrition_item_hide}></View>
-          </View>
-        </View>
-
-        <Pressable style={styles.btn} onPress={onPressAddToDailyIntake}>
-          <Text style={styles.btn_text}>Add To Today's Diet Analysis</Text>
-        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );
@@ -151,7 +82,7 @@ const styles = StyleSheet.create({
   },
   container_img: {
     width: "90%",
-    height: 260,
+    height: 400,
     justifyContent: "center",
     alignItems: "flex-start",
     gap: 10,
