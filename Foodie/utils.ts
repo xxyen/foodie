@@ -289,6 +289,22 @@ export function getIngredientImage(name: string){
   return url;
 }
 
+export async function getRecipeDetails(id: string) {
+  const baseURL = "https://www.thecocktaildb.com";
+    const apiKEY = "1";
+  
+    // TODO: assume no error here
+    const response = await fetch(
+      `${baseURL}/api/json/v1/${apiKEY}/lookup.php?i=11008`
+    );
+    const data = await response.json();
+    // console.log(data);
+
+    // TODO: Random choose 4 drink if data has more than 4drinks
+
+    return data;
+}
+
 // export async function getRecipeDetails(id: number): Promise<IApiFoodRecipeData["recipes"] | undefined> {
 //   const baseURL = "https://api.spoonacular.com";
 //   const apiKEY = "af648e0c5ba441cdbb8dcdec0e2b3a1d";
