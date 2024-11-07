@@ -7,7 +7,6 @@ import {
   Pressable,
   GestureResponderEvent,
   ScrollView,
-  Dimensions,
 } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useLocalSearchParams } from "expo-router";

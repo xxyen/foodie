@@ -15,7 +15,6 @@ import { getRandomCocktailRecipe, updateFavoriteDrinks } from "../../utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useAppContext } from "@/context/contexts";
-import { useNavigation } from '@react-navigation/native';
 import { router } from "expo-router";
 
 export default function Home() {

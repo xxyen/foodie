@@ -10,7 +10,7 @@ import {
     Linking,
   } from "react-native";
   import { useAppContext } from "@/context/contexts";
-  import { Redirect, useRouter } from "expo-router";
+  import { useRouter } from "expo-router";
   import { useEffect, useState } from "react";
   import { BarChart } from "react-native-gifted-charts";
   import { getProfile, parseImage } from "@/utils";

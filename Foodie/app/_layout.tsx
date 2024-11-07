@@ -1,6 +1,5 @@
-import { ContextProvider, useAppContext } from "@/context/contexts";
+import { ContextProvider} from "@/context/contexts";
 import { Stack } from "expo-router/stack";
-import { useEffect } from "react";
 
 export default function DrawerLayout() {
   return (

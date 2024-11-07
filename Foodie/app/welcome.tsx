@@ -8,7 +8,6 @@ import {
   StyleSheet,
   GestureResponderEvent,
   Pressable,
-  Platform,
 } from "react-native";
 import * as Linking from "expo-linking";
 
