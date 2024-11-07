@@ -11,30 +11,21 @@ import {
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { getRecipeDetails } from "@/utils";
 
 export default function Tab() {
 
-  const { id } = useLocalSearchParams();
-  const [recipe, setRecipe] = useState<IApiFoodRecipeData["recipes"] | undefined>(undefined);
-  const [nutrition, setNutrition] = useState<any | undefined>(undefined);
+  const { data } = useLocalSearchParams();
+  const [recipe, setRecipe] = useState<IFoodRecipe | undefined>(undefined);
+  const [nutrition, setNutrition] = useState< INutrition| undefined>(undefined);
 
 
   useEffect(() => {
-    const fetchRecipeDetails = async () => {
-      if (id) {
-        const recipeData = await getRecipeDetails(Number(id));
-
-        if (recipeData) {
-          setRecipe(recipeData);
-  
-          const nutritionData = recipeData?.nutrition?.nutrients;
-          setNutrition(nutritionData);
-        }
-      }
-    };
-    fetchRecipeDetails();
-  }, [id]);
+    if (data) {
+      const parsedData: IFoodRecipe = JSON.parse(data as string);
+      setRecipe(parsedData);
+      setNutrition(parsedData.nutrition);
+    }
+  }, [data]);
   
 
   if (!recipe) {
@@ -56,7 +47,7 @@ export default function Tab() {
 
   // const nutrition = recipe.recipes[0].nutrition?.nutrients;
   const getNutritionValue = (name: string) =>
-    nutrition?.find((nutrient) => nutrient.name === name)?.amount || 0;
+    nutrition?.nutrients?.find((nutrient: Nutrient) => nutrient.name === name)?.amount || 0;
 
   return (
     <SafeAreaView style={styles.safearea}>

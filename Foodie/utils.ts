@@ -12,7 +12,7 @@ export async function getRandomFoodRecipe(
 
   // TODO: assume no error here
   const response = await fetch(
-    `${baseURL}/recipes/random?apiKey=${apiKEY}&limitLicense=true&tags=${tag}&number=3`
+    `${baseURL}/recipes/random?apiKey=${apiKEY}&limitLicense=true&tags=${tag}&number=3&includeNutrition=true`
   );
   const data: IApiFoodRecipeData = await response.json();
   return data;
@@ -283,18 +283,20 @@ export async function updateFavoriteDrinks(id:any, newFavDrinks:any) {
     }
 }
 
-export async function getRecipeDetails(id: number): Promise<IApiFoodRecipeData["recipes"] | undefined> {
-  const baseURL = "https://api.spoonacular.com";
-  const apiKEY = "af648e0c5ba441cdbb8dcdec0e2b3a1d";
+// export async function getRecipeDetails(id: number): Promise<IApiFoodRecipeData["recipes"] | undefined> {
+//   const baseURL = "https://api.spoonacular.com";
+//   const apiKEY = "af648e0c5ba441cdbb8dcdec0e2b3a1d";
 
-  const response = await fetch(
-    `${baseURL}/recipes/${id}/information?includeNutrition=true&apiKey=${apiKEY}`
-  );
-  if (!response.ok) {
-    console.error("Failed to fetch recipe details:", response.statusText);
-    return undefined;
-  }
+//   const response = await fetch(
+//     `${baseURL}/recipes/${id}/information?includeNutrition=true&apiKey=${apiKEY}`
+//   );
+//   if (!response.ok) {
+//     console.error("Failed to fetch recipe details:", response.statusText);
+//     return undefined;
+//   }
 
-  const data: IApiFoodRecipeData["recipes"] = await response.json();
-  return data;
-}
+//   const data: IApiFoodRecipeData["recipes"] = await response.json();
+//   return data;
+// }
+
+

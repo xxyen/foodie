@@ -67,7 +67,7 @@ export default function Home() {
   }
 
   function onPressDetail(event: GestureResponderEvent, recipeId: string): void {
-    router.push({ pathname: "home/detail", params: { id: recipeId } });
+    router.push({ pathname: "drink/detail", params: { id: recipeId } });
   }
 
   // render

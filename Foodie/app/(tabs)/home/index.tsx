@@ -27,15 +27,17 @@ export default function Home() {
   const [data, setData] = useState<IApiFoodRecipeData | undefined>(undefined);
   // const [userId, setUserId] = useState<string | null>(null);
 
+  // navigation
   const router = useRouter();
 
+  // render
   useEffect(() => {
     const getUserIdFromUrl = async () => {
       const url = await Linking.getInitialURL();
       console.log("url: ", url);
       if (url) {
         const { queryParams } = Linking.parse(url);
-        console.log("queryParams.userId: ", queryParams?.userId);
+        console.log("userId: ", queryParams?.userId);
         if (queryParams?.userId) {
           if (typeof queryParams.userId === "string") {
             onChangeId(queryParams.userId);
@@ -61,59 +63,14 @@ export default function Home() {
     return () => {
       urlListener.remove();
     };
-  }, []);  
+  }, []);
 
-
-  // functions
-  function changeTag(num: number, tag: string): void {
-    setIsSelected(num);
-    setTag(tag);
-  }
-
-  function onPressAddFav(event: GestureResponderEvent,  index: number): void {
-      // check if login
-      if (!id) {
-          console.log("User not logged in. Redirecting to Profile.");
-          router.push("profile");
-          return;
-      }
-
-      const selectedRecipeId = data?.recipes[index]?.id;
-          if (!selectedRecipeId) {
-              console.error("Invalid recipe ID");
-              return;
-          }
-
-      let newFavFoods;
-      let alertMessage;
-
-      if (favFoods.includes(selectedRecipeId)) {
-          // remove favorite
-         newFavFoods = favFoods.filter(foodId => foodId !== selectedRecipeId);
-         console.log("remove:", newFavFoods);
-         alertMessage = "Recipe removed from favorites.";
-      } else {
-          // add new favorite
-          newFavFoods = [...favFoods, selectedRecipeId];
-          console.log("add:", newFavFoods);
-          alertMessage = "Recipe added to favorites!";
-      }
-
-     updateFavoriteFoods(id, newFavFoods).then(() => {
-         onChangeFavFoods(newFavFoods);
-         Alert.alert("Success", alertMessage);
-     });
-  }
-
-  function onPressDetail(event: GestureResponderEvent, recipeId: number): void {
-    router.push({ pathname: "home/detail", params: { id: recipeId } });
-  }  
-
-  // render
   useEffect(() => {
     const fetchData = async () => {
       const recipes = await getRandomFoodRecipe(tag);
-      setData(recipes);
+      if (recipes) {
+        setData(recipes);
+      }
     };
     fetchData();
   }, [tag]);
@@ -124,13 +81,65 @@ export default function Home() {
     }
   }, [id]);
 
-  
+  // functions
+  function changeTag(num: number, tag: string): void {
+    setIsSelected(num);
+    setTag(tag);
+  }
+
+  function onPressAddFav(event: GestureResponderEvent, index: number): void {
+    // check if login
+    if (!id) {
+      console.log("User not logged in. Redirecting to Profile.");
+      router.push("profile");
+      return;
+    }
+
+    const selectedRecipeId = data?.recipes[index]?.id;
+    if (!selectedRecipeId) {
+      console.error("Invalid recipe ID");
+      return;
+    }
+
+    let newFavFoods;
+    let alertMessage;
+
+    if (favFoods.includes(selectedRecipeId)) {
+      // remove favorite
+      newFavFoods = favFoods.filter((foodId) => foodId !== selectedRecipeId);
+      console.log("remove:", newFavFoods);
+      alertMessage = "Recipe removed from favorites.";
+    } else {
+      // add new favorite
+      newFavFoods = [...favFoods, selectedRecipeId];
+      console.log("add:", newFavFoods);
+      alertMessage = "Recipe added to favorites!";
+    }
+
+    updateFavoriteFoods(id, newFavFoods).then(() => {
+      onChangeFavFoods(newFavFoods);
+      Alert.alert("Success", alertMessage);
+    });
+  }
+
+  function onPressDetail(
+    event: GestureResponderEvent,
+    recipe: IFoodRecipe
+  ): void {
+    console.log("user press check detail");
+    // console.log(recipe);
+    router.push({ pathname: "home/detail", params: { data: JSON.stringify(recipe)} });
+  }
 
   return (
     <SafeAreaView style={styles.safearea}>
       <Text style={styles.title}>Today's Pick</Text>
       <View style={styles.container}>
-        <ScrollView horizontal={true} style={{ width: "90%" }} showsHorizontalScrollIndicator={false}>
+        <ScrollView
+          horizontal={true}
+          style={{ width: "90%" }}
+          showsHorizontalScrollIndicator={false}
+        >
           <View style={styles.container_topbar}>
             <Pressable
               style={
@@ -200,47 +209,58 @@ export default function Home() {
         </ScrollView>
 
         <ScrollView style={styles.container_recipes}>
-            {data?.recipes.slice(0, 3).map((recipe, index) => (
-                <Pressable key={recipe.id} style={styles.container_recipes_img} onPress={(event) => onPressDetail(event, recipe.id)}>
-                    <View style={styles.img_wrapper}>
-                        <ImageBackground
-                            source={{ uri: recipe.image }}
-                            style={styles.img}
-                            resizeMode="cover"
-                        >
-                            <LinearGradient
-                                colors={[
-                                    "rgba(0, 0, 0, 0.4)",
-                                    "rgba(0, 0, 0, 0)",
-                                    "rgba(0, 0, 0, 0)",
-                                    "rgba(0, 0, 0, 0.4)",
-                                ]}
-                                style={styles.gradient}
-                                start={{ x: 0.5, y: 0 }}
-                                end={{ x: 0.5, y: 1 }}
-                            />
-                            <View style={styles.container_text_and_btn}>
-                                <Text style={styles.text}>{recipe.title}</Text>
-                                <Pressable onPress={(event) => onPressAddFav(event, index)}>
-                                    <View style={styles.circle}>
-                                        <MaterialCommunityIcons
-                                            name={favFoods.includes(recipe.id) ? "heart" : "heart-plus"}
-                                            size={20}
-                                            style={
-                                                favFoods.includes(recipe.id)
-                                                    ? styles.fav_icon_selected
-                                                    : styles.fav_icon_unselected
-                                            }
-                                        />
-                                    </View>
-                                </Pressable>
-                            </View>
-                        </ImageBackground>
+          {data?.recipes
+            .slice(0, 3)
+            .map((recipe: IFoodRecipe, index: number) => (
+              <Pressable
+                key={recipe.id}
+                style={styles.container_recipes_img}
+                onPress={(event) => onPressDetail(event, recipe)}
+              >
+                <View style={styles.img_wrapper}>
+                  <ImageBackground
+                    source={{ uri: recipe.image }}
+                    style={styles.img}
+                    resizeMode="cover"
+                  >
+                    <LinearGradient
+                      colors={[
+                        "rgba(0, 0, 0, 0.4)",
+                        "rgba(0, 0, 0, 0)",
+                        "rgba(0, 0, 0, 0)",
+                        "rgba(0, 0, 0, 0.4)",
+                      ]}
+                      style={styles.gradient}
+                      start={{ x: 0.5, y: 0 }}
+                      end={{ x: 0.5, y: 1 }}
+                    />
+                    <View style={styles.container_text_and_btn}>
+                      <Text style={styles.text}>{recipe.title}</Text>
+                      <Pressable
+                        onPress={(event) => onPressAddFav(event, index)}
+                      >
+                        <View style={styles.circle}>
+                          <MaterialCommunityIcons
+                            name={
+                              favFoods.includes(recipe.id)
+                                ? "heart"
+                                : "heart-plus"
+                            }
+                            size={20}
+                            style={
+                              favFoods.includes(recipe.id)
+                                ? styles.fav_icon_selected
+                                : styles.fav_icon_unselected
+                            }
+                          />
+                        </View>
+                      </Pressable>
                     </View>
-                </Pressable>
+                  </ImageBackground>
+                </View>
+              </Pressable>
             ))}
         </ScrollView>
-
       </View>
     </SafeAreaView>
   );
@@ -333,7 +353,6 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0, 0, 0, 0.3)",
     textShadowOffset: { width: 2, height: 3 },
     textShadowRadius: 3,
-
   },
   img_wrapper: {
     borderRadius: 20,
