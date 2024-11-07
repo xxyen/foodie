@@ -165,8 +165,8 @@ const styles = StyleSheet.create({
   },
   container_ingredient: {
     width: "90%",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "rgba(217, 217, 217, 0.2)",
     borderRadius: 20,
   },
