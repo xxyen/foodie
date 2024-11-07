@@ -18,6 +18,7 @@ export default function Tab() {
 
   const { id } = useLocalSearchParams();
   const [recipe, setRecipe] = useState<ICocktailRecipe | undefined>(undefined);
+  const [ingredients, setIngredients] = useState<string[] | undefined>(undefined);
 
 
   useEffect(() => {
@@ -34,6 +35,19 @@ export default function Tab() {
       console.log(recipe);
     }
   }, [id]);
+
+  useEffect(() => {
+    if(recipe){ 
+      const ingredients: string[] = [];
+      for (let i = 1; i <= 15; i++) {
+        const ingredient = recipe[`strIngredient${i}` as keyof ICocktailRecipe];
+        if (ingredient) {
+          ingredients.push(`${ingredient}`);
+        }
+      }
+      setIngredients(ingredients);
+    }
+  }, [recipe]);
   
 
   if (!recipe) {
@@ -64,6 +78,23 @@ export default function Tab() {
             resizeMode="cover"
           />
         </View>
+
+        <View style={styles.container_title}>
+          <Text style={styles.title_h2}>Ingredients</Text>
+          <Text style={styles.subtitle}>{`${ingredients?.length || 0} Items`}</Text>
+        </View>
+        <View style={styles.container_ingredient}>
+        {ingredients && ingredients.map((ingredient, i) => (
+            <View key={i} style={styles.container_ingredient_item}>
+              <Text style={styles.text_paragraph}>{ingredient}</Text>
+            </View>
+          ))}
+        </View>
+        <Pressable style={styles.btn} onPress={onPressAddToShoplist}>
+          <Text style={styles.btn_text}>Add To Shoplist</Text>
+        </Pressable>
+
+
       </ScrollView>
     </SafeAreaView>
   );
