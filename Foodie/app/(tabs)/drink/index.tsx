@@ -8,10 +8,10 @@ import {
   ScrollView,
   Pressable,
   ImageBackground,
-  GestureResponderEvent,
   Alert,
+  GestureResponderEvent,
 } from "react-native";
-import { getRandomCocktailRecipe, updateFavoriteDrinks } from "../../utils";
+import { getRandomCocktailRecipe, updateFavoriteDrinks } from "../../../utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useAppContext } from "@/context/contexts";
@@ -31,15 +31,6 @@ export default function Home() {
     setTag(tag);
   }
 
-  // render
-  useEffect(() => {
-    const fetchData = async () => {
-      const recipes = await getRandomCocktailRecipe(tag);
-      setData(recipes);
-    };
-    fetchData();
-  }, [tag]);
-
   function onPressAddFav(index: number): void {
     // check if login
     if (!id) {
@@ -57,9 +48,9 @@ export default function Home() {
     let newFavDrinks;
     let alertMessage;
 
-    if (favDrinks.includes(selectedDrinkId)) {
+    if (favDrinks.includes(Number(selectedDrinkId))) {
          // remove favorite
-         newFavDrinks = favDrinks.filter(drinkId => drinkId !== selectedDrinkId);
+         newFavDrinks = favDrinks.filter(drinkId => drinkId !== Number(selectedDrinkId));
          console.log("remove:", newFavDrinks);
          alertMessage = "Drink removed from favorites.";
     } else {
@@ -70,10 +61,25 @@ export default function Home() {
     }
 
     updateFavoriteDrinks(id, newFavDrinks).then(() => {
-         onChangeFavDrinks(newFavDrinks);
+         onChangeFavDrinks([Number(newFavDrinks)]); // TODO
          Alert.alert("Success", alertMessage);
     });
   }
+
+  function onPressDetail(event: GestureResponderEvent, recipeId: string): void {
+    router.push({ pathname: "home/detail", params: { id: recipeId } });
+  }
+
+  // render
+  useEffect(() => {
+    const fetchData = async () => {
+      const recipes = await getRandomCocktailRecipe(tag);
+      setData(recipes);
+    };
+    fetchData();
+  }, [tag]);
+
+  
 
   return (
     <SafeAreaView style={styles.safearea}>
@@ -151,7 +157,7 @@ export default function Home() {
           {data?.drinks?.slice(0, 6).map((_, rowIndex) => (
             <View key={rowIndex} style={styles.container_drinkrow}>
               {data.drinks.slice(rowIndex * 2, rowIndex * 2 + 2).map((drink, colIndex) => (
-                <Pressable key={colIndex} style={styles.container_recipes_img}>
+                <Pressable key={colIndex} style={styles.container_recipes_img} onPress={(event) => onPressDetail(event, drink.idDrink)}>
                   <View style={styles.img_wrapper}>
                     <ImageBackground
                       source={{ uri: drink.strDrinkThumb }}
@@ -172,10 +178,10 @@ export default function Home() {
                       <Pressable onPress={() => onPressAddFav(rowIndex * 2 + colIndex)}>
                         <View style={styles.circle}>
                           <MaterialCommunityIcons
-                            name={favDrinks.includes(drink.idDrink) ? "heart" : "heart-plus"}
+                            name={favDrinks.includes(Number(drink.idDrink)) ? "heart" : "heart-plus"}
                             size={20}
                             style={
-                              favDrinks.includes(drink.idDrink)
+                              favDrinks.includes(Number(drink.idDrink))
                                 ? styles.fav_icon_selected
                                 : styles.fav_icon_unselected
                             }

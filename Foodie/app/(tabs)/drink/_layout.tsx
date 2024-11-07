@@ -1,13 +1,13 @@
 import { Stack } from "expo-router";
 
-export default function FoodTabLayout() {
+export default function DrinkTabLayout() {
   return (
     <Stack>
       <Stack.Screen
         name="index"
         options={{
           headerShown: false,
-          title: "Food",
+          title: "Drink",
         }}
       />
       <Stack.Screen
