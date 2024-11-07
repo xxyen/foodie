@@ -17,6 +17,7 @@ export default function Tab() {
   const { data } = useLocalSearchParams();
   const [recipe, setRecipe] = useState<IFoodRecipe | undefined>(undefined);
   const [nutrition, setNutrition] = useState< INutrition| undefined>(undefined);
+  const [steps, setSteps] = useState<IFoodStep[]| undefined>(undefined);
 
 
   useEffect(() => {
@@ -24,6 +25,7 @@ export default function Tab() {
       const parsedData: IFoodRecipe = JSON.parse(data as string);
       setRecipe(parsedData);
       setNutrition(parsedData.nutrition);
+      setSteps(parsedData.analyzedInstructions[0]?.steps);
     }
   }, [data]);
   
@@ -67,7 +69,7 @@ export default function Tab() {
         <View style={styles.container_ingredient}>
         {recipe?.extendedIngredients.map((ingredient) => (
             <View key={ingredient.id} style={styles.container_ingredient_item}>
-              <Text style={styles.title_h3}>{ingredient.name}</Text>
+              <Text style={styles.text_paragraph}>{ingredient.name}</Text>
             </View>
           ))}
         </View>
@@ -80,10 +82,13 @@ export default function Tab() {
             style={styles.subtitle}
           >{` ${recipe?.readyInMinutes} mins`}</Text>
         </View>
-        <View style={styles.container_ingredient}>
-          <Text style={styles.text_paragraph}>
-          {recipe?.summary.replace(/<[^>]*>?/gm, "")}
-          </Text>
+        <View style={styles.container_direction}>
+          {steps?.map((step: IFoodStep) => (
+            <Text key={step.number} style={styles.text_paragraph}>
+              {`${step.number}. ${step.step}`}
+            </Text>
+          ))}
+          
         </View>
         <View style={styles.container_title}>
           <Text style={styles.title_h2}>Nutrition Facts</Text>
@@ -158,9 +163,17 @@ const styles = StyleSheet.create({
   container_ingredient: {
     width: "90%",
     justifyContent: "flex-start",
-    alignItems: "center",
+    alignItems: "flex-start",
     backgroundColor: "rgba(217, 217, 217, 0.2)",
     borderRadius: 20,
+  },
+  container_direction: {
+    width: "90%",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    backgroundColor: "rgba(217, 217, 217, 0.2)",
+    borderRadius: 20,
+    paddingVertical: 10
   },
   container_nutrition: {
     width: "90%",
@@ -226,7 +239,8 @@ const styles = StyleSheet.create({
   },
   text_paragraph: {
     fontSize: 16,
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10
   },
   img_wrapper: {
     width: "100%",
