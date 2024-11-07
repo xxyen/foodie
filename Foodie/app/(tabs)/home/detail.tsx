@@ -7,10 +7,12 @@ import {
   Pressable,
   GestureResponderEvent,
   ScrollView,
+  Image
 } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
+import { getIngredientImage } from "@/utils";
 
 export default function Tab() {
 
@@ -70,6 +72,7 @@ export default function Tab() {
         {recipe?.extendedIngredients.map((ingredient) => (
             <View key={ingredient.id} style={styles.container_ingredient_item}>
               <Text style={styles.text_paragraph}>{ingredient.name}</Text>
+              <Image style={styles.ingredient_image} resizeMode="contain" source={{ uri: getIngredientImage(ingredient.image)}} />
             </View>
           ))}
         </View>
@@ -211,9 +214,10 @@ const styles = StyleSheet.create({
     height: 55,
     backgroundColor: "white",
     borderRadius: 20,
-    alignItems: "flex-start",
-    justifyContent: "center",
+    alignItems: "center",
+    justifyContent: "space-between",
     margin: 10,
+    flexDirection: "row"
   },
   title_h1: {
     fontSize: 24,
@@ -262,4 +266,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+  ingredient_image: {
+    width: 50,
+    height: 50,
+  }
 });

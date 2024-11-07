@@ -283,6 +283,12 @@ export async function updateFavoriteDrinks(id:any, newFavDrinks:any) {
     }
 }
 
+export function getIngredientImage(name: string){
+  const url = "https://img.spoonacular.com/ingredients_100x100/" + name;
+  // console.log(url);
+  return url;
+}
+
 // export async function getRecipeDetails(id: number): Promise<IApiFoodRecipeData["recipes"] | undefined> {
 //   const baseURL = "https://api.spoonacular.com";
 //   const apiKEY = "af648e0c5ba441cdbb8dcdec0e2b3a1d";
