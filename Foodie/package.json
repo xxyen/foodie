@@ -26,6 +26,7 @@
     "fs": "^0.0.1-security",
     "react": "18.2.0",
     "react-native": "0.74.5",
+    "react-native-animated-pagination-dots": "^0.1.73",
     "react-native-base64": "^0.2.1",
     "react-native-chart-kit": "^6.12.0",
     "react-native-fs": "^2.20.0",

@@ -21,8 +21,8 @@ export default function SignUpScreen() {
   const {onChangeId} = useAppContext();
 
   // variables
-  const img_path = "../assets/chickenleg.png";
-  const google_icon_path = "../assets/google_icon.png";
+  const img_path = "../../assets/chickenleg.png";
+  const google_icon_path = "../../assets/google_icon.png";
 
   // navigation
   const router = useRouter();
@@ -36,8 +36,9 @@ export default function SignUpScreen() {
   // functions
   function onPressLater(event: GestureResponderEvent): void {
     console.log("user: press later");
-    router.back();
-    router.push("/home");
+    // router.back();
+    // router.push("/home");
+    router.push("signup/allergy");
   }
 
   function onChangeUserName(text: string): void {
