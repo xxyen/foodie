@@ -133,8 +133,8 @@ export default function Tab() {
               <Pressable style={styles.tag} onPress={() => changeTag("American")}>
                 <Text style={styles.tag_text}>American🇺🇸</Text>
               </Pressable>
-              <Pressable style={styles.tag} onPress={() => changeTag("Asain")}>
-                <Text style={styles.tag_text}>Asain🏮</Text>
+              <Pressable style={styles.tag} onPress={() => changeTag("Asian")}>
+                <Text style={styles.tag_text}>Asian🏮</Text>
               </Pressable>
               <Pressable style={styles.tag} onPress={() => changeTag("Latin American")}>
                 <Text style={styles.tag_text}>Latin American🌮</Text>
