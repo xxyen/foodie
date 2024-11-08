@@ -15,6 +15,7 @@ import {
 
 import { pickImage, openCamera } from "@/utils";
 import { useCameraPermissions } from "expo-camera";
+import { useRouter } from "expo-router";
 
 export default function Tab() {
   // variables
@@ -30,6 +31,9 @@ export default function Tab() {
     setModal(true);
   }
 
+  // router
+  const router = useRouter();
+
   // states
   const [isSelected, setIsSelected] = useState<number | undefined>(undefined);
   const [modal, setModal] = useState(false);
@@ -38,7 +42,7 @@ export default function Tab() {
   const[camera, setCamera] = useState(false);
 
   function changeTag(tag: string): void {
-    throw new Error("Function not implemented.");
+    router.push({ pathname: "search/search-details", params: { pressedTag: tag } });
   }
 
   const onClickGallery = async () => {
@@ -162,9 +166,9 @@ export default function Tab() {
               <Pressable style={styles.tag} onPress={() => changeTag("dessert")}>
                 <Text style={styles.tag_text}>Dessert🍮</Text>
               </Pressable>
-              <Pressable style={styles.tag} onPress={() => changeTag("drink")}>
+              {/* <Pressable style={styles.tag} onPress={() => changeTag("drink")}>
                 <Text style={styles.tag_text}>Drink🍷</Text>
-              </Pressable>
+              </Pressable> */}
             </View>
           </View>
         </View>
