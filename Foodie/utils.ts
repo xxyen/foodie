@@ -8,11 +8,8 @@ export async function getRandomFoodRecipe(
   tag: string
 ): Promise<undefined | IApiFoodRecipeData> {
   const baseURL = "https://api.spoonacular.com";
-<<<<<<< HEAD
   const apiKEY = "a391c51a20ac4e878b52c3778f616389";
-=======
-  const apiKEY = "af648e0c5ba441cdbb8dcdec0e2b3a1d";
->>>>>>> 0e2fc48bddda43905f3ea229b4c1bbce44bc3944
+
 
   // TODO: assume no error here
   const response = await fetch(
