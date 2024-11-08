@@ -8,7 +8,7 @@ export async function getRandomFoodRecipe(
   tag: string
 ): Promise<undefined | IApiFoodRecipeData> {
   const baseURL = "https://api.spoonacular.com";
-  const apiKEY = "4af54363becf45a2aae9d94abfb4ee3b";
+  const apiKEY = "a391c51a20ac4e878b52c3778f616389";
 
   // TODO: assume no error here
   const response = await fetch(
@@ -16,6 +16,23 @@ export async function getRandomFoodRecipe(
   );
   const data: IApiFoodRecipeData = await response.json();
   return data;
+}
+
+export async function getRecipeById(id: number): Promise<undefined | IApiFoodRecipeData> {
+  const baseURL = "https://api.spoonacular.com";
+  const apiKEY = "a391c51a20ac4e878b52c3778f616389";
+
+  try {
+    const response = await fetch(`${baseURL}/recipes/${id}/information?apiKey=${apiKEY}`);
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+    const data: IApiFoodRecipeData = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching recipe information:", error);
+    return undefined;
+  }
 }
 
 export async function getRandomCocktailRecipe(
@@ -31,6 +48,23 @@ export async function getRandomCocktailRecipe(
     const data: IApiDrinkIdData = await response.json();
 
     // TODO: Random choose 4 drink if data has more than 4drinks
+
+    return data;
+  }
+
+  export async function searchCocktailById(id: string): Promise<undefined | IApiDrinkDetailsData> {
+    const baseURL = "https://www.thecocktaildb.com";
+    const apiKEY = "1";
+
+    // TODO: assume no error here
+    const response = await fetch(`${baseURL}/api/json/v1/${apiKEY}/lookup.php?i=${id}`);
+    const data: IApiDrinkDetailsData = await response.json();
+
+    // Check if data.drinks exists and has at least one element
+    if (!data?.drinks || data.drinks.length === 0) {
+      console.warn(`No cocktail found with ID: ${id}`);
+      return undefined;
+    }
 
     return data;
   }
