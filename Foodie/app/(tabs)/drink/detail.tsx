@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
   container: {
+    marginTop: 20,
     gap: 10,
     justifyContent: "flex-start",
     alignItems: "center",
