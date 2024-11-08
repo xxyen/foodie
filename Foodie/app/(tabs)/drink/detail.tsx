@@ -12,13 +12,14 @@ import {
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { getIngredientImage, getRandomCocktailRecipe, getRecipeDetails } from "@/utils";
+import {  getRecipeDetails } from "@/utils";
 
 export default function Tab() {
 
   const { id } = useLocalSearchParams();
   const [recipe, setRecipe] = useState<ICocktailRecipe | undefined>(undefined);
   const [ingredients, setIngredients] = useState<string[] | undefined>(undefined);
+  const [steps, setSteps] = useState<string[]|undefined>(undefined);
 
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export default function Tab() {
         }
       }
       fetchRecipeDetails();
-      console.log(recipe);
+      // console.log(recipe);
     }
   }, [id]);
 
@@ -46,6 +47,11 @@ export default function Tab() {
         }
       }
       setIngredients(ingredients);
+
+      if (recipe.strInstructions){
+        const parsedStep = recipe.strInstructions.split(".").slice(0, -1);
+        setSteps(parsedStep);
+      }
     }
   }, [recipe]);
   
@@ -97,9 +103,12 @@ export default function Tab() {
           <Text style={styles.title_h2}>Directions</Text>
         </View>
         <View style={styles.container_direction}>
-          <Text style={styles.text_paragraph}>
-            {recipe.strInstructions}
-          </Text>
+          {steps?.map((step, index) => (
+            <Text key={index} style={styles.text_paragraph}>
+              {`${index + 1}. ${step}`}
+            </Text>
+          ))}
+          
         </View>
       </ScrollView>
     </SafeAreaView>
