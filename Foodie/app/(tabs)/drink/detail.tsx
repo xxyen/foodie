@@ -93,8 +93,14 @@ export default function Tab() {
         <Pressable style={styles.btn} onPress={onPressAddToShoplist}>
           <Text style={styles.btn_text}>Add To Shoplist</Text>
         </Pressable>
-
-
+        <View style={styles.container_title}>
+          <Text style={styles.title_h2}>Directions</Text>
+        </View>
+        <View style={styles.container_direction}>
+          <Text style={styles.text_paragraph}>
+            {recipe.strInstructions}
+          </Text>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -138,7 +144,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     backgroundColor: "rgba(217, 217, 217, 0.2)",
     borderRadius: 20,
-    paddingVertical: 10
+    paddingVertical: 10,
+    marginBottom: 20
   },
   container_nutrition: {
     width: "90%",

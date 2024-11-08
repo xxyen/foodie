@@ -295,7 +295,7 @@ export async function getRecipeDetails(id: string) {
   
     // TODO: assume no error here
     const response = await fetch(
-      `${baseURL}/api/json/v1/${apiKEY}/lookup.php?i=11008`
+      `${baseURL}/api/json/v1/${apiKEY}/lookup.php?i=${id}`
     );
     const data = await response.json();
     // console.log(data);
