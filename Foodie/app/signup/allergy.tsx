@@ -8,8 +8,19 @@ import {
   Image,
   GestureResponderEvent,
 } from "react-native";
+import { useLocalSearchParams } from "expo-router";
+import { useState, useEffect } from "react";
+import AllergyFood from "./FoodTag";
 
-export default function AllergyScreen() {
+export default function AllergyScreen({ }) {
+
+  const allergyFoods:string[] = ['Dairy🥛','Peanut🥜','Soy🫘','Seafood🦞','Egg🥚','Gluten🌾',
+    'Sesame🧂','Tree Nut🌰','Grain🍚','Shellfish🐚','Wheat🍞','Sulfite🪨'
+  ];
+
+  const { username, email,password } = useLocalSearchParams();
+  const [statues, setStatues] = useState<boolean[]>(Array(allergyFoods.length).fill(false));
+
 
   function onPressLater(event: GestureResponderEvent): void {
     router.push("home");
@@ -18,7 +29,19 @@ export default function AllergyScreen() {
   const img_path = "../../assets/dinner.png";
 
   function onPressNext(event: GestureResponderEvent): void {
-    router.push("signup/diet");
+
+    const allergies = allergyFoods.filter((f:string,index:number)=>statues[index]===true);
+    console.log(allergies);
+
+    router.push({
+      pathname:"signup/diet",
+      params:{
+        email:email,
+        username:username,
+        password:password,
+        allergies:allergies
+      },
+    });
   }
 
   const router = useRouter();
@@ -37,44 +60,9 @@ export default function AllergyScreen() {
 
         <View style={styles.container_tag}>
           <Text style={styles.title2}>Any Allergy...?</Text>
-          <View style={styles.container_tag_row}>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Dairy🥛</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Peanut🥜</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Soy🫘</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Seafood🦞</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Egg🥚</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Gluten🌾</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Sesame🧂</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Tree Nut🌰</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Grain🍚</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Shellfish🐚</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Wheat🍞</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Sulfite🪨</Text>
-            </Pressable>
-          </View>
+          <SafeAreaView style={styles.container_tag_row}>
+          {allergyFoods.map((f:string,index:number)=> <AllergyFood key={index} food={f} index={index} statues={statues} onChangeStatus={setStatues}/>)}
+          </SafeAreaView>
         </View>
 
         <Pressable style={styles.btn} onPress={onPressNext}>
@@ -108,7 +96,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
-    padding: 20,
+    paddingVertical: 20,
   },
   container_tag_row: {
     flexDirection: "row",
@@ -171,4 +159,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+  // container_tag_row:{
+  //   flexDirection: "row",
+  //   alignItems: "flex-start",
+  //   justifyContent: "flex-start",
+  //   width: "90%",
+  //   flexWrap: "wrap",
+  // },
 });

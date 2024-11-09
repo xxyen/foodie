@@ -8,7 +8,7 @@ const uri = process.env.MONGODB_URI as string;
 
 mongoose.connect(uri, {dbName: 'User', serverSelectionTimeoutMS: 5000});
 
-export const create = async (username : string, email: string, password: string) => {
+export const create = async (username : string, email: string, password: string , allergies: string[]) => {
     try{
         const existingUser = await User.findOne({ $or: [{ username }, { email }] });
         if(existingUser){
@@ -17,7 +17,7 @@ export const create = async (username : string, email: string, password: string)
         }
         console.log("Current working directory:", process.cwd());
         const newUser = new User({username: username,email:email,password:password, 
-            icon: fs.readFileSync('../Foodie/assets/rasberry.png')})
+            icon: fs.readFileSync('../Foodie/assets/rasberry.png'), allergies:allergies})
         await newUser.save();
         console.log("You have successfully registered, ", username);
         // mongoose.disconnect();

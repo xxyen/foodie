@@ -16,7 +16,7 @@ router.post("/register", async (req,res) => {
         return;
     }
 
-    const uid = await mgsfunlib.create(data.username,data.email,data.password);
+    const uid = await mgsfunlib.create(data.username,data.email,data.password,data.allergies);
     if(uid!==-1 && uid!==-2){
         return res.status(201).json({ message: "User created successfully", userId: uid });
     }

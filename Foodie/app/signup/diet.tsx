@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import {
   View,
   Text,
@@ -7,7 +7,12 @@ import {
   Pressable,
   Image,
   GestureResponderEvent,
+  Alert
 } from "react-native";
+import FoodTag from "./FoodTag";
+import { useState } from "react";
+import { registerHelper } from "@/utils";
+import { useAppContext } from "@/context/contexts";
 
 export default function AllergyScreen() {
 
@@ -15,9 +20,43 @@ export default function AllergyScreen() {
     router.push("home");
   }
 
-  const img_path = "../../assets/chief.png";
+  const { username, email,password,allergies } = useLocalSearchParams();
+  const {onChangeId} = useAppContext();
 
-  function onPressNext(event: GestureResponderEvent): void {
+  const img_path = "../../assets/chief.png";
+  const diets:string[] = ['Ketogenic🥑','Vegetarian🌱','Lacto-Vegetarian🌿','Ovo-Vegetarian🥦',
+    'Vegan🥒','Gluten Free🌾','Paleo🥩','Primal🥛','Low FODMAP🍞','Whole30🥚' ];
+
+
+  const [statues, setStatues] = useState<boolean[]>(Array(diets.length).fill(false));
+  
+  async function onPressNext(event: GestureResponderEvent): Promise<void> {
+    const diet = diets.filter((f:string,index:number)=>statues[index]===true);
+    console.log(diet);
+
+    const allergiesArray = typeof allergies==='string' ? allergies.split(',') : [];
+
+    router.push({
+      pathname:"signup/diet",
+      params:{
+        email:email,
+        username:username,
+        password:password,
+        allergies: allergiesArray,
+        diets:diet,
+      },
+    });
+    console.log(allergies);
+    if(typeof username === "string" && typeof email==='string' 
+      && typeof password==='string' && Array.isArray(allergiesArray)){
+        const res = await registerHelper(username,email,password,allergiesArray,onChangeId);
+        if (res) {
+          router.dismissAll();
+          router.push("/home");
+          Alert.alert("Congratulate!",username+", you have resgistered successfully."); 
+        }
+      }
+    router.dismissAll();
     router.push("home");
   }
 
@@ -38,39 +77,8 @@ export default function AllergyScreen() {
         <View style={styles.container_tag}>
           <Text style={styles.title2}>Any Diet...?</Text>
           <View style={styles.container_tag_row}>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Ketogenic🥑</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Vegetarian🌱</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Lacto-Vegetarian🌿</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Ovo-Vegetarian🥦</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Vegan🥒</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Gluten Free🌾</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Pescetarian🥬</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Paleo🥩</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Primal🥛</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Low FODMAP🍞</Text>
-            </Pressable>
-            <Pressable style={styles.tag}>
-              <Text style={styles.tag_text}>Whole30🥚</Text>
-            </Pressable>
+          
+            {diets.map((f:string,index:number)=> <FoodTag key={index} food={f} index={index} statues={statues} onChangeStatus={setStatues}/>)}
           </View>
         </View>
 

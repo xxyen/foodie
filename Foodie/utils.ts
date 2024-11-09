@@ -3,6 +3,41 @@ import { Alert } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import { useRef, useState } from 'react';
+import { useAppContext } from './context/contexts';
+
+
+export const registerHelper = async (username:string,email:string,password:string,
+allergies:string[],onChangeId:(id:string)=>void) => {
+  
+  const config = {
+    method : 'POST',
+    headers : {
+      'Content-Type': 'application/json'
+    },
+    body : JSON.stringify({
+      'username' : username,
+      'email' : email,
+      'password' : password,
+      'allergies': allergies,
+    })
+  };
+  try{
+    const response = await fetch(`http://localhost:4000/users/register`, config);
+    const body = await response.json();
+    if(response.status!=201){
+      alert(body.message);
+      return false;
+    }
+    else{
+      onChangeId(body.userId);
+      return true;
+    }
+  } catch(err){
+    alert(err);
+    return false;
+  }
+  
+}
 
 export async function getRandomFoodRecipe(
   tag: string
@@ -53,13 +88,13 @@ export async function getRandomCocktailRecipe(
     return data;
   }
 
-  export async function searchCocktailById(id: string): Promise<undefined | IApiDrinkDetailsData> {
+  export async function searchCocktailById(id: string): Promise<undefined | IApiDrinkIdData> {
     const baseURL = "https://www.thecocktaildb.com";
     const apiKEY = "1";
 
     // TODO: assume no error here
     const response = await fetch(`${baseURL}/api/json/v1/${apiKEY}/lookup.php?i=${id}`);
-    const data: IApiDrinkDetailsData = await response.json();
+    const data: IApiDrinkIdData = await response.json();
 
     // Check if data.drinks exists and has at least one element
     if (!data?.drinks || data.drinks.length === 0) {

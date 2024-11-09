@@ -37,7 +37,7 @@ export default function Home() {
       console.log("url: ", url);
       if (url) {
         const { queryParams } = Linking.parse(url);
-        console.log("userId: ", queryParams?.userId);
+        // console.log("userId: ", queryParams?.userId);
         if (queryParams?.userId) {
           if (typeof queryParams.userId === "string") {
             onChangeId(queryParams.userId);

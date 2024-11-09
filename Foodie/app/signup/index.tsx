@@ -68,22 +68,54 @@ export default function SignUpScreen() {
 
   async function onPressRegister(event: GestureResponderEvent): Promise<void> {
     console.log("user: press sign up btn");
-    // throw new Error("Function not implemented.");
+
+    if(validation()){
+      router.push({
+        pathname:"signup/allergy",
+        params:{
+          email:email,
+          username:username,
+          password:password
+        }
+      });
+    }
+
+    // if(validation()){
+    //   router.push("signup/allergy"+ "?" + createQueryString("username", username)
+    //   +"&"+createQueryString("email", email)+"&"+createQueryString("password", password));
+    // }
+    
+    // if(validateEmail(email)){
+    //   if(validPassword(password)){
+    //     const res = await registerHelper();
+    //     if (res) {
+    //       router.dismissAll();
+    //       router.push("/home");
+    //       Alert.alert("Congratulate!",username+", you have resgistered successfully."); 
+    //     }
+    //   }
+    //   else{
+    //     alert("Invalid Password, please contain at least 8 characters including one lower/upper letter, one digit and one special character.");
+    //   }
+    // }
+    // else{
+    //   alert("Invalid Email Address");
+    // }
+  }
+
+  const validation = () => {
     if(validateEmail(email)){
       if(validPassword(password)){
-        const res = await registerHelper();
-        if (res) {
-          router.dismissAll();
-          router.push("/home");
-          Alert.alert("Congratulate!",username+", you have resgistered successfully."); 
-        }
+        return true;
       }
       else{
         alert("Invalid Password, please contain at least 8 characters including one lower/upper letter, one digit and one special character.");
+        return false;
       }
     }
     else{
       alert("Invalid Email Address");
+      return false;
     }
   }
 
