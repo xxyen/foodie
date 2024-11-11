@@ -31,7 +31,6 @@ export default function AllergyScreen({ }) {
   function onPressNext(event: GestureResponderEvent): void {
 
     const allergies = allergyFoods.filter((f:string,index:number)=>statues[index]===true);
-    console.log(allergies);
 
     router.push({
       pathname:"signup/diet",

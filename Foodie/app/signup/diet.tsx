@@ -32,7 +32,6 @@ export default function AllergyScreen() {
   
   async function onPressNext(event: GestureResponderEvent): Promise<void> {
     const diet = diets.filter((f:string,index:number)=>statues[index]===true);
-    console.log(diet);
 
     const allergiesArray = typeof allergies==='string' ? allergies.split(',') : [];
 
@@ -46,10 +45,9 @@ export default function AllergyScreen() {
         diets:diet,
       },
     });
-    console.log(allergies);
     if(typeof username === "string" && typeof email==='string' 
       && typeof password==='string' && Array.isArray(allergiesArray)){
-        const res = await registerHelper(username,email,password,allergiesArray,onChangeId);
+        const res = await registerHelper(username,email,password,allergiesArray,diet,onChangeId);
         if (res) {
           router.dismissAll();
           router.push("/home");

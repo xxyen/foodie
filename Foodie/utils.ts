@@ -7,7 +7,7 @@ import { useAppContext } from './context/contexts';
 
 
 export const registerHelper = async (username:string,email:string,password:string,
-allergies:string[],onChangeId:(id:string)=>void) => {
+allergies:string[],diets: string[], onChangeId:(id:string)=>void) => {
   
   const config = {
     method : 'POST',
@@ -19,6 +19,7 @@ allergies:string[],onChangeId:(id:string)=>void) => {
       'email' : email,
       'password' : password,
       'allergies': allergies,
+      'diets' : diets,
     })
   };
   try{
