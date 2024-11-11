@@ -168,6 +168,7 @@ export const openCamera = async (result:any) => {
 };
 
 async function OpenAIRecogByUrl(url:string) {
+  //Ref: https://platform.openai.com/docs/guides/vision?lang=node
   const response = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
