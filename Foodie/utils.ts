@@ -152,8 +152,10 @@ export async function getRandomCocktailRecipe(
     );
     const data: IApiDrinkIdData = await response.json();
 
-    // TODO: Random choose 4 drink if data has more than 4drinks
-
+    if (data?.drinks) {
+      data.drinks = data.drinks.sort(() => Math.random() - 0.5);
+    }
+  
     return data;
   }
 
