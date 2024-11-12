@@ -70,6 +70,7 @@ export default function SignUpScreen() {
     console.log("user: press sign up btn");
 
     if(validation()){
+      // ref: https://stackoverflow.com/questions/77747019/how-can-i-pass-parameters-using-expo-router
       router.push({
         pathname:"signup/allergy",
         params:{

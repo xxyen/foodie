@@ -8,7 +8,7 @@ const uri = process.env.MONGODB_URI as string;
 
 mongoose.connect(uri, {dbName: 'User', serverSelectionTimeoutMS: 5000});
 
-export const create = async (username : string, email: string, password: string , allergies: string[]) => {
+export const create = async (username : string, email: string, password: string , allergies: string[], diets: string[]) => {
     try{
         const existingUser = await User.findOne({ $or: [{ username }, { email }] });
         if(existingUser){
@@ -17,7 +17,7 @@ export const create = async (username : string, email: string, password: string 
         }
         console.log("Current working directory:", process.cwd());
         const newUser = new User({username: username,email:email,password:password, 
-            icon: fs.readFileSync('../Foodie/assets/rasberry.png'), allergies:allergies})
+            icon: fs.readFileSync('../Foodie/assets/rasberry.png'), allergies:allergies , diets:diets})
         await newUser.save();
         console.log("You have successfully registered, ", username);
         // mongoose.disconnect();
@@ -56,7 +56,7 @@ export const login = async (username : string, password: string) => {
 
 export const get = async (uid : string) => {
     try{
-        const user = await UserProfile.findById(uid).select('username googleId email allergies favFoods favDrinks weeklyCalories ingredients icon');
+        const user = await UserProfile.findById(uid).select('username googleId email allergies diets favFoods favDrinks weeklyCalories ingredients icon');
         if(user){
             return user;
         }
