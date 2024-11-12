@@ -13,7 +13,7 @@ import {
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { getIngredientImage, updateFavoriteFoods } from "@/utils";
+import { getIngredientImage, updateFavoriteFoods, updateIngredients } from "@/utils";
 import { useAppContext } from "@/context/contexts";
 
 
@@ -21,7 +21,7 @@ export default function Tab() {
 
   const { data } = useLocalSearchParams();
   const router = useRouter();
-  const { id, favFoods, onChangeFavFoods } = useAppContext();
+  const { id, favFoods, onChangeFavFoods, ingredients, onChangeIngredients } = useAppContext();
 
   const [recipe, setRecipe] = useState<IFoodRecipe | undefined>(undefined);
   const [nutrition, setNutrition] = useState< INutrition| undefined>(undefined);
@@ -73,8 +73,27 @@ export default function Tab() {
   }
   
   function onPressAddToShoplist(event: GestureResponderEvent): void {
-    // throw new Error("Function not implemented.");
-  }
+    if (recipe) {
+        const newIngredients = recipe.extendedIngredients.map((ingredient) => ingredient.name);
+        const existingIngredients = newIngredients.filter(ingredient => ingredients.includes(ingredient));
+        const ingredientsToAdd = newIngredients.filter(ingredient => !ingredients.includes(ingredient));
+
+        if (ingredientsToAdd.length > 0) {
+          const allIngredients = [...ingredients, ...ingredientsToAdd];
+
+            updateIngredients(id, allIngredients).then(() => {
+                onChangeIngredients(allIngredients); 
+                const successMessage = existingIngredients.length > 0
+                    ? `Added new ingredients to the shopping list. Already had: ${existingIngredients.join(', ')}.`
+                    : "Ingredients added to shopping list!";
+                Alert.alert("Success", successMessage);
+            });
+        } else {
+            Alert.alert("Info", `All ingredients already in the shopping list.`);
+        }
+    }
+}
+
 
   function onPressAddToDailyIntake(event: GestureResponderEvent): void {
     // throw new Error("Function not implemented.");
@@ -112,8 +131,8 @@ export default function Tab() {
           <Text style={styles.subtitle}>{`${recipe?.extendedIngredients.length} Items`}</Text>
         </View>
         <View style={styles.container_ingredient}>
-        {recipe?.extendedIngredients.map((ingredient) => (
-            <View key={ingredient.id} style={styles.container_ingredient_item}>
+        {recipe?.extendedIngredients.map((ingredient, index) => (
+        <View key={`${ingredient.id}-${index}`} style={styles.container_ingredient_item}>
               <Text style={styles.text_paragraph}>{ingredient.name}</Text>
               <Image style={styles.ingredient_image} resizeMode="contain" source={{ uri: getIngredientImage(ingredient.image)}} />
             </View>

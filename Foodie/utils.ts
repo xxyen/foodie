@@ -453,6 +453,31 @@ export async function getRecipeDetails(id: string) {
     return data;
 }
 
+export async function updateIngredients(id: any, newIngredients: string[]) {
+  try {
+      const updateResponse = await fetch(`http://localhost:4000/users/${id}`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ingredients: newIngredients }),
+      });
+
+      if (!updateResponse.ok) {
+          const errorData = await updateResponse.json();
+          console.error("Update failed:", errorData.message);
+          alert(errorData.message);
+      } else {
+          const data = await updateResponse.json();
+          console.log(data.message);
+      }
+  } catch (error) {
+      console.error("Request error:", error);
+      alert(error);
+  }
+}
+
+
 // export async function getRecipeDetails(id: number): Promise<IApiFoodRecipeData["recipes"] | undefined> {
 //   const baseURL = "https://api.spoonacular.com";
 //   const apiKEY = "af648e0c5ba441cdbb8dcdec0e2b3a1d";
