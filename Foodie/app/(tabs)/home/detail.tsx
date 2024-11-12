@@ -7,16 +7,22 @@ import {
   Pressable,
   GestureResponderEvent,
   ScrollView,
-  Image
+  Image,
+  Alert
 } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { getIngredientImage } from "@/utils";
+import { getIngredientImage, updateFavoriteFoods } from "@/utils";
+import { useAppContext } from "@/context/contexts";
+
 
 export default function Tab() {
 
   const { data } = useLocalSearchParams();
+  const router = useRouter();
+  const { id, favFoods, onChangeFavFoods } = useAppContext();
+
   const [recipe, setRecipe] = useState<IFoodRecipe | undefined>(undefined);
   const [nutrition, setNutrition] = useState< INutrition| undefined>(undefined);
   const [steps, setSteps] = useState<IFoodStep[]| undefined>(undefined);
@@ -40,7 +46,32 @@ export default function Tab() {
     );
   }
 
+  function onPressAddFav(event: GestureResponderEvent): void {
+    if (!id) {
+      console.log("User not logged in. Redirecting to Profile.");
+      router.push("profile");
+      return;
+    }
 
+    let newFavFoods: number[] = [];
+    let alertMessage: string;
+
+    if (recipe && favFoods.includes(recipe.id)) {
+      // Remove favorite
+      newFavFoods = favFoods.filter((foodId) => foodId !== recipe.id);
+      alertMessage = "Recipe removed from favorites.";
+    } else if (recipe) {
+      // Add to favorites
+      newFavFoods = [...favFoods, recipe.id];
+      alertMessage = "Recipe added to favorites!";
+    }
+
+    updateFavoriteFoods(id, newFavFoods).then(() => {
+      onChangeFavFoods(newFavFoods);
+      Alert.alert("Success", alertMessage);
+    });
+  }
+  
   function onPressAddToShoplist(event: GestureResponderEvent): void {
     // throw new Error("Function not implemented.");
   }
@@ -62,7 +93,19 @@ export default function Tab() {
             source={{ uri: recipe?.image }}
             style={styles.img_wrapper}
             resizeMode="cover"
-          />
+          >
+            <Pressable style={styles.favorite_icon} onPress={onPressAddFav}>
+              <MaterialCommunityIcons
+                name={favFoods.includes(recipe.id) ? "heart" : "heart-plus"}
+                size={30}
+                style={
+                  favFoods.includes(recipe.id)
+                    ? styles.fav_icon_selected
+                    : styles.fav_icon_unselected
+                }
+              />
+            </Pressable>
+          </ImageBackground>
         </View>
         <View style={styles.container_title}>
           <Text style={styles.title_h2}>Ingredients</Text>
@@ -270,5 +313,16 @@ const styles = StyleSheet.create({
   ingredient_image: {
     width: 50,
     height: 50,
+  },
+  favorite_icon: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+  },
+  fav_icon_selected: {
+    color: "red",
+  },
+  fav_icon_unselected: {
+    color: "grey",
   }
 });
