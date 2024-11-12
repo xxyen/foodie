@@ -8,9 +8,9 @@ import {
   Pressable,
   Image,
   GestureResponderEvent,
-  ScrollView,
   Modal,
-  Button
+  Button,
+  ActivityIndicator,
 } from "react-native";
 
 import { pickImage, openCamera } from "@/utils";
@@ -20,6 +20,17 @@ import { useRouter } from "expo-router";
 export default function Tab() {
   // variables
   const img = "../../../assets/img_search.png";
+
+  // router
+  const router = useRouter();
+
+  // states
+  const [isSelected, setIsSelected] = useState<number | undefined>(undefined);
+  const [modal, setModal] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
+  const [gallery, setGallery] = useState(false);
+  const [camera, setCamera] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // functions
   function onChangeSearchText(text: string): void {
@@ -31,45 +42,59 @@ export default function Tab() {
     setModal(true);
   }
 
-  // router
-  const router = useRouter();
-
-  // states
-  const [isSelected, setIsSelected] = useState<number | undefined>(undefined);
-  const [modal, setModal] = useState(false);
-  const [permission, requestPermission] = useCameraPermissions();
-  const[gallery, setGallery] = useState(false);
-  const[camera, setCamera] = useState(false);
-
   function changeTag(tag: string): void {
-    router.push({ pathname: "search/search-details", params: { pressedTag: tag } });
+    router.push({
+      pathname: "search/search-details",
+      params: { pressedTag: tag, type: "byTag" },
+    });
   }
 
+  // Search by Image
   const onClickGallery = async () => {
+    setLoading(true);
+
     setGallery(true);
     setCamera(false);
-    await pickImage();
-    setModal(false);
-  }
+    const tag = await pickImage();
 
-  const onClickCamera = async() => {
+    setLoading(false);
+
+    setModal(false);
+    if (tag != undefined) {
+      router.push({
+        pathname: "search/search-details",
+        params: { pressedTag: tag, type: "byIngredient" },
+      });
+    }
+  };
+
+  const onClickCamera = async () => {
+    setLoading(true);
+
     setGallery(false);
     setCamera(true);
-    await openCamera(null);
-    setModal(false);
-  }
+    const tag = await openCamera(null);
 
-  const onClose = async() => {
-    setModal(false);
-  }
+    setLoading(false);
 
-  const closeGrantPermission = async() => {
+    setModal(false);
+    if (tag != undefined) {
+      router.push({
+        pathname: "search/search-details",
+        params: { pressedTag: tag, type: "byIngredient" },
+      });
+    }
+  };
+
+  const onClose = async () => {
+    setModal(false);
+  };
+
+  const closeGrantPermission = async () => {
     console.log("Closing...");
     setGallery(false);
     setCamera(false);
-    
-  }
-
+  };
 
   return (
     <SafeAreaView style={styles.safearea}>
@@ -89,25 +114,38 @@ export default function Tab() {
         <View style={styles.img_search_wrapper}>
           {modal && (
             <View style={styles.container}>
-              <Modal transparent visible={modal} animationType="slide" onRequestClose={onClose}>
-                  <View style={styles.modalBackground}>
-                      <View style={styles.innerContainer}>
-                        <Button onPress={onClickGallery} title="Choose from Photo Library"/>
-                        <Button onPress={onClickCamera} title="Take a picture"/>
-                        <Button onPress={onClose} title="Close"/>
-                      </View>
+              <Modal
+                transparent
+                visible={modal}
+                animationType="slide"
+                onRequestClose={onClose}
+              >
+                <View style={styles.modalBackground}>
+                  {loading ? (
+                    <ActivityIndicator size="large" />
+                  ) : (
+                    <View style={styles.innerContainer}>
+                      <Button
+                        onPress={onClickGallery}
+                        title="Choose from Photo Library"
+                      />
+                      <Button onPress={onClickCamera} title="Take a picture" />
+                      <Button onPress={onClose} color={"red"} title="Close" />
                     </View>
+                  )}
+                </View>
               </Modal>
             </View>
           )}
-          {(camera && permission && !permission?.granted) && (
+          {camera && permission && !permission?.granted && (
             <View style={styles.modalBackground}>
               <Modal transparent visible={camera && !permission?.granted}>
                 <View style={styles.innerContainer}>
-                  <Text>
-                      We need your permission to show the camera
-                  </Text>
-                  <Button onPress={requestPermission} title="Grant Permission" />
+                  <Text>We need your permission to show the camera</Text>
+                  <Button
+                    onPress={requestPermission}
+                    title="Grant Permission"
+                  />
                   <Button onPress={closeGrantPermission} title="Close"></Button>
                 </View>
               </Modal>
@@ -130,21 +168,33 @@ export default function Tab() {
         <View style={styles.img_search_wrapper}>
           <View style={styles.container_tag}>
             <View style={styles.container_tag_row}>
-              <Pressable style={styles.tag} onPress={() => changeTag("American")}>
+              <Pressable
+                style={styles.tag}
+                onPress={() => changeTag("American")}
+              >
                 <Text style={styles.tag_text}>American🇺🇸</Text>
               </Pressable>
               <Pressable style={styles.tag} onPress={() => changeTag("Asian")}>
                 <Text style={styles.tag_text}>Asian🏮</Text>
               </Pressable>
-              <Pressable style={styles.tag} onPress={() => changeTag("Latin American")}>
+              <Pressable
+                style={styles.tag}
+                onPress={() => changeTag("Latin American")}
+              >
                 <Text style={styles.tag_text}>Latin American🌮</Text>
               </Pressable>
             </View>
             <View style={styles.container_tag_row}>
-              <Pressable style={styles.tag} onPress={() => changeTag("Gluten Free")}>
+              <Pressable
+                style={styles.tag}
+                onPress={() => changeTag("Gluten Free")}
+              >
                 <Text style={styles.tag_text}>Gluten Free🌾</Text>
               </Pressable>
-              <Pressable style={styles.tag} onPress={() => changeTag("Vegetarian")}>
+              <Pressable
+                style={styles.tag}
+                onPress={() => changeTag("Vegetarian")}
+              >
                 <Text style={styles.tag_text}>Vegetarian🌱</Text>
               </Pressable>
               <Pressable style={styles.tag} onPress={() => changeTag("Vegan")}>
@@ -152,10 +202,16 @@ export default function Tab() {
               </Pressable>
             </View>
             <View style={styles.container_tag_row}>
-              <Pressable style={styles.tag} onPress={() => changeTag("appetizer")}>
+              <Pressable
+                style={styles.tag}
+                onPress={() => changeTag("appetizer")}
+              >
                 <Text style={styles.tag_text}>Appetizer🫒</Text>
               </Pressable>
-              <Pressable style={styles.tag} onPress={() => changeTag("main course")}>
+              <Pressable
+                style={styles.tag}
+                onPress={() => changeTag("main course")}
+              >
                 <Text style={styles.tag_text}>Main Course🍽️</Text>
               </Pressable>
               <Pressable style={styles.tag} onPress={() => changeTag("salad")}>
@@ -163,7 +219,10 @@ export default function Tab() {
               </Pressable>
             </View>
             <View style={styles.container_tag_row}>
-              <Pressable style={styles.tag} onPress={() => changeTag("dessert")}>
+              <Pressable
+                style={styles.tag}
+                onPress={() => changeTag("dessert")}
+              >
                 <Text style={styles.tag_text}>Dessert🍮</Text>
               </Pressable>
               {/* <Pressable style={styles.tag} onPress={() => changeTag("drink")}>
@@ -199,7 +258,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "90%",
     height: "90%",
-    gap: 10
+    gap: 10,
   },
   container_tag_row: {
     flexDirection: "row",
@@ -248,7 +307,7 @@ const styles = StyleSheet.create({
   tag: {
     backgroundColor: "#FFFFFF",
     borderRadius: 20,
-    height: 40
+    height: 40,
   },
   tag_text: {
     fontSize: 13,
@@ -258,26 +317,26 @@ const styles = StyleSheet.create({
   },
   modalBackground: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)', 
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
   },
   innerContainer: {
-      opacity: 0.95,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: 'white',
-      height: 200,
-      width: '80%',
-      borderRadius: 20,
-      padding: 20,
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 5,
+    opacity: 0.95,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "white",
+    height: 200,
+    width: "80%",
+    borderRadius: 20,
+    padding: 20,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   option: {
     borderRadius: 20,

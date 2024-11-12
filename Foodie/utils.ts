@@ -3,12 +3,61 @@ import { Alert } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import { useRef, useState } from 'react';
-import { useAppContext } from './context/contexts';
 import OpenAI from "openai";
 
+// Search by Image
 const openai = new OpenAI({
   apiKey: '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',
 });
+
+// Search by Image: Image Recognition
+async function OpenAIRecogByBase64(b64:string|undefined|null) {
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      {
+        role: "user",
+        content: [
+          { type: "text", text: "What’s in this image? Give one ingredient name, without punctuations." },
+          {
+            type: "image_url",
+            image_url: {
+              "url":  `data:image/*;base64,${b64}`
+            },
+          },
+        ],
+      },
+    ],
+  });
+  return response.choices[0]["message"]["content"];
+}
+
+// Search by Image: Pick a Image from Gallery
+export const pickImage = async () => {
+  //Reference: https://gist.github.com/Balaagha/9b080d984d5b99e916293d24b4dfa01e
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: true,
+    quality: 0,
+    base64: true,
+  });
+
+  if (!result.canceled) {
+    let newFile = {
+      uri:result.assets[0].uri,
+      base64: result.assets[0].base64,
+      type:`test/${result.assets[0].uri.split(".")[1]}`,
+      name:`test.${result.assets[0].uri.split(".")[1]}`};
+    //Can choose between using URL or Base64
+
+    // const url = await handleUpload(newFile);
+    // const categ = await classifyImage(url);
+    // const categ = await OpenAIRecogByUrl(url);
+    const categ = await OpenAIRecogByBase64(newFile.base64);
+    // console.log(categ);
+    return categ;
+  }
+};
 
 export const registerHelper = async (username:string,email:string,password:string,
 allergies:string[],diets: string[], onChangeId:(id:string)=>void) => {
@@ -56,6 +105,21 @@ export async function getRandomFoodRecipe(
     `${baseURL}/recipes/random?apiKey=${apiKEY}&limitLicense=true&tags=${tag}&number=3&includeNutrition=true`
   );
   const data: IApiFoodRecipeData = await response.json();
+  return data;
+}
+
+export async function getFoodRecipeByIngredients(
+  tag: string
+) {
+  const baseURL = "https://api.spoonacular.com";
+  const apiKEY = "a391c51a20ac4e878b52c3778f616389";
+
+  // TODO: assume no error here
+  const response = await fetch(
+    `${baseURL}/recipes/complexSearch?includeIngredients=${tag}&number=3&instructionsRequired=true&addRecipeInformation=true&addRecipeInstructions=true&addRecipeNutrition=true&fillIngredients=true&apiKey=${apiKEY}`
+  );
+  const data = await response.json();
+  // console.log(data);
   return data;
 }
 
@@ -110,30 +174,7 @@ export async function getRandomCocktailRecipe(
     return data;
   }
 
-export const pickImage = async () => {
-  //Reference: https://gist.github.com/Balaagha/9b080d984d5b99e916293d24b4dfa01e
-  const result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    allowsEditing: true,
-    quality: 0,
-    base64: true,
-  });
 
-  if (!result.canceled) {
-    let newFile = {
-      uri:result.assets[0].uri,
-      base64: result.assets[0].base64,
-      type:`test/${result.assets[0].uri.split(".")[1]}`,
-      name:`test.${result.assets[0].uri.split(".")[1]}`};
-    //Can choose between using URL or Base64
-
-    // const url = await handleUpload(newFile);
-    // const categ = await classifyImage(url);
-    // const categ = await OpenAIRecogByUrl(url);
-    const categ = await OpenAIRecogByBase64(newFile.base64);
-    console.log(categ);
-  }
-};
 
 export const openCamera = async (result:any) => {
   // ref = 'https://stackoverflow.com/questions/74452419/error-call-to-function-exponentimagepicker-launchcameraasync-has-been-rejecte'
@@ -163,6 +204,7 @@ export const openCamera = async (result:any) => {
       // const categ = await classifyImage(url);
       const categ = await OpenAIRecogByBase64(newFile.base64);
       console.log(categ);
+      return categ;
     }
   }
 };
@@ -189,26 +231,7 @@ async function OpenAIRecogByUrl(url:string) {
   return response.choices[0]["message"]["content"];
 }
 
-async function OpenAIRecogByBase64(b64:string|undefined|null) {
-  const response = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      {
-        role: "user",
-        content: [
-          { type: "text", text: "What’s in this image? Give a phrase less than 3 words, without punctuations." },
-          {
-            type: "image_url",
-            image_url: {
-              "url":  `data:image/*;base64,${b64}`
-            },
-          },
-        ],
-      },
-    ],
-  });
-  return response.choices[0]["message"]["content"];
-}
+
 
 const handleUpload = async (image:any)=>{
   const data = new FormData(); 

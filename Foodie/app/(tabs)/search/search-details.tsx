@@ -11,21 +11,26 @@ import {
   GestureResponderEvent,
   Alert,
 } from "react-native";
-import { getRandomFoodRecipe, updateFavoriteFoods } from "../../../utils";
+import {
+  getFoodRecipeByIngredients,
+  getRandomFoodRecipe,
+  updateFavoriteFoods,
+} from "../../../utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import * as Linking from "expo-linking";
 import { useAppContext } from "@/context/contexts";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
 export default function Home() {
   const { id, onChangeId, favFoods, onChangeFavFoods } = useAppContext();
-  const {pressedTag} = useLocalSearchParams();
+  const { pressedTag, type } = useLocalSearchParams();
 
   // states
   const [isSelected, setIsSelected] = useState<number>(0);
   const [tag, setTag] = useState<string>("");
-  const [data, setData] = useState<IApiFoodRecipeData | undefined>(undefined);
+  const [data, setData] = useState<IApiFoodRecipeData | undefined | any>(
+    undefined
+  );
 
   // navigation
   const router = useRouter();
@@ -38,12 +43,19 @@ export default function Home() {
     }
   }, [pressedTag]);
 
-
   useEffect(() => {
     const fetchData = async () => {
-      const recipes = await getRandomFoodRecipe(tag);
-      if (recipes) {
-        setData(recipes);
+      if (type === "byTag") {
+        const recipes = await getRandomFoodRecipe(tag);
+        if (recipes) {
+          setData(recipes.recipes);
+        }
+      }
+      if (type === "byIngredient"){
+        const recipes = await getFoodRecipeByIngredients(tag);
+        if (recipes) {
+          setData(recipes.results);
+        }
       }
     };
     fetchData();
@@ -102,7 +114,10 @@ export default function Home() {
   ): void {
     console.log("user press check detail");
     // console.log(recipe);
-    router.push({ pathname: "home/detail", params: { data: JSON.stringify(recipe)} });
+    router.push({
+      pathname: "home/detail",
+      params: { data: JSON.stringify(recipe) },
+    });
   }
 
   return (
@@ -110,56 +125,53 @@ export default function Home() {
       <Text style={styles.title}>Search Results</Text>
       <View style={styles.container}>
         <ScrollView style={styles.container_recipes}>
-          {data?.recipes
-            .map((recipe: IFoodRecipe, index: number) => (
-              <Pressable
-                key={recipe.id}
-                style={styles.container_recipes_img}
-                onPress={(event) => onPressDetail(event, recipe)}
-              >
-                <View style={styles.img_wrapper}>
-                  <ImageBackground
-                    source={{ uri: recipe.image }}
-                    style={styles.img}
-                    resizeMode="cover"
-                  >
-                    <LinearGradient
-                      colors={[
-                        "rgba(0, 0, 0, 0.4)",
-                        "rgba(0, 0, 0, 0)",
-                        "rgba(0, 0, 0, 0)",
-                        "rgba(0, 0, 0, 0.4)",
-                      ]}
-                      style={styles.gradient}
-                      start={{ x: 0.5, y: 0 }}
-                      end={{ x: 0.5, y: 1 }}
-                    />
-                    <View style={styles.container_text_and_btn}>
-                      <Text style={styles.text}>{recipe.title}</Text>
-                      <Pressable
-                        onPress={(event) => onPressAddFav(event, index)}
-                      >
-                        <View style={styles.circle}>
-                          <MaterialCommunityIcons
-                            name={
-                              favFoods.includes(recipe.id)
-                                ? "heart"
-                                : "heart-plus"
-                            }
-                            size={20}
-                            style={
-                              favFoods.includes(recipe.id)
-                                ? styles.fav_icon_selected
-                                : styles.fav_icon_unselected
-                            }
-                          />
-                        </View>
-                      </Pressable>
-                    </View>
-                  </ImageBackground>
-                </View>
-              </Pressable>
-            ))}
+          {data?.map((recipe, index) => (
+            <Pressable
+              key={recipe.id}
+              style={styles.container_recipes_img}
+              onPress={(event) => onPressDetail(event, recipe)}
+            >
+              <View style={styles.img_wrapper}>
+                <ImageBackground
+                  source={{ uri: recipe.image }}
+                  style={styles.img}
+                  resizeMode="cover"
+                >
+                  <LinearGradient
+                    colors={[
+                      "rgba(0, 0, 0, 0.4)",
+                      "rgba(0, 0, 0, 0)",
+                      "rgba(0, 0, 0, 0)",
+                      "rgba(0, 0, 0, 0.4)",
+                    ]}
+                    style={styles.gradient}
+                    start={{ x: 0.5, y: 0 }}
+                    end={{ x: 0.5, y: 1 }}
+                  />
+                  <View style={styles.container_text_and_btn}>
+                    <Text style={styles.text}>{recipe.title}</Text>
+                    <Pressable onPress={(event) => onPressAddFav(event, index)}>
+                      <View style={styles.circle}>
+                        <MaterialCommunityIcons
+                          name={
+                            favFoods.includes(recipe.id)
+                              ? "heart"
+                              : "heart-plus"
+                          }
+                          size={20}
+                          style={
+                            favFoods.includes(recipe.id)
+                              ? styles.fav_icon_selected
+                              : styles.fav_icon_unselected
+                          }
+                        />
+                      </View>
+                    </Pressable>
+                  </View>
+                </ImageBackground>
+              </View>
+            </Pressable>
+          ))}
         </ScrollView>
       </View>
     </SafeAreaView>
