@@ -8,23 +8,35 @@ import {
   GestureResponderEvent,
   ScrollView,
   Image,
-  Alert
+  Alert,
 } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
-import {  getRecipeDetails, updateFavoriteDrinks, updateIngredients } from "@/utils";
+import {
+  getRecipeDetails,
+  updateFavoriteDrinks,
+  updateIngredients,
+} from "@/utils";
 import { useAppContext } from "@/context/contexts";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Tab() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const { id: userId, favDrinks, onChangeFavDrinks, ingredients, onChangeIngredients } = useAppContext();
+  const {
+    id: userId,
+    favDrinks,
+    onChangeFavDrinks,
+    ingredients,
+    onChangeIngredients,
+  } = useAppContext();
   const [recipe, setRecipe] = useState<ICocktailRecipe | undefined>(undefined);
-  const [drinkIngredients, setDrinkIngredients] = useState<string[] | undefined>(undefined);
-  const [steps, setSteps] = useState<string[]|undefined>(undefined);
-
+  const [drinkIngredients, setDrinkIngredients] = useState<
+    string[] | undefined
+  >(undefined);
+  const [steps, setSteps] = useState<string[] | undefined>(undefined);
 
   useEffect(() => {
     if (id) {
@@ -35,14 +47,14 @@ export default function Tab() {
             setRecipe(recipeData.drinks[0]);
           }
         }
-      }
+      };
       fetchRecipeDetails();
       // console.log(recipe);
     }
   }, [id]);
 
   useEffect(() => {
-    if(recipe){ 
+    if (recipe) {
       const ingredientsList: string[] = [];
       for (let i = 1; i <= 15; i++) {
         const ingredient = recipe[`strIngredient${i}` as keyof ICocktailRecipe];
@@ -52,13 +64,12 @@ export default function Tab() {
       }
       setDrinkIngredients(ingredientsList);
 
-      if (recipe.strInstructions){
+      if (recipe.strInstructions) {
         const parsedStep = recipe.strInstructions.split(".").slice(0, -1);
         setSteps(parsedStep);
       }
     }
   }, [recipe]);
-  
 
   if (!recipe) {
     return (
@@ -80,7 +91,9 @@ export default function Tab() {
 
     if (recipe) {
       if (favDrinks.includes(Number(recipe.idDrink))) {
-        newFavDrinks = favDrinks.filter((drinkId) => drinkId !== Number(recipe.idDrink));
+        newFavDrinks = favDrinks.filter(
+          (drinkId) => drinkId !== Number(recipe.idDrink)
+        );
         alertMessage = "Drink removed from favorites.";
       } else {
         newFavDrinks = [...favDrinks, Number(recipe.idDrink)];
@@ -96,20 +109,30 @@ export default function Tab() {
 
   function onPressAddToShoplist(event: GestureResponderEvent): void {
     if (drinkIngredients) {
-      const existingIngredients = drinkIngredients.filter((ingredient) => ingredients.includes(ingredient));
-      const ingredientsToAdd = drinkIngredients.filter((ingredient) => !ingredients.includes(ingredient));
+      const existingIngredients = drinkIngredients.filter((ingredient) =>
+        ingredients.includes(ingredient)
+      );
+      const ingredientsToAdd = drinkIngredients.filter(
+        (ingredient) => !ingredients.includes(ingredient)
+      );
 
       if (ingredientsToAdd.length > 0) {
         const allIngredients = [...ingredients, ...ingredientsToAdd];
         updateIngredients(userId, allIngredients).then(() => {
           onChangeIngredients(allIngredients);
-          const successMessage = existingIngredients.length > 0
-            ? `Added new ingredients to the shopping list. Already had: ${existingIngredients.join(', ')}.`
-            : "Ingredients added to shopping list!";
+          const successMessage =
+            existingIngredients.length > 0
+              ? `Added new ingredients to the shopping list. Already had: ${existingIngredients.join(
+                  ", "
+                )}.`
+              : "Ingredients added to shopping list!";
           Alert.alert("Success", successMessage);
         });
       } else {
-        Alert.alert("Info", "All ingredients are already in the shopping list.");
+        Alert.alert(
+          "Info",
+          "All ingredients are already in the shopping list."
+        );
       }
     }
   }
@@ -122,36 +145,59 @@ export default function Tab() {
     <SafeAreaView style={styles.safearea}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.container_img}>
-          <Text style={styles.title_h1}>Recipe Detail</Text>
+          {/* <Text style={styles.title_h1}>Recipe Detail</Text> */}
           <ImageBackground
             source={{ uri: recipe?.strDrinkThumb }}
             style={styles.img_wrapper}
             resizeMode="cover"
           >
-            <Pressable style={styles.favorite_icon} onPress={onPressAddFav}>
-              <MaterialCommunityIcons
-                name={favDrinks.includes(Number(recipe.idDrink)) ? "heart" : "heart-plus"}
-                size={30}
-                style={
-                  favDrinks.includes(Number(recipe.idDrink))
-                    ? styles.fav_icon_selected
-                    : styles.fav_icon_unselected
-                }
-              />
-            </Pressable>
+            <LinearGradient
+              colors={[
+                "rgba(0, 0, 0, 0.4)",
+                "rgba(0, 0, 0, 0)",
+                "rgba(0, 0, 0, 0)",
+                "rgba(0, 0, 0, 0.4)",
+              ]}
+              style={styles.gradient}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+            />
+            <View style={styles.container_text_and_btn}>
+              <Text style={styles.text}>{recipe.strDrink}</Text>
+              <Pressable onPress={onPressAddFav}>
+                <View style={styles.circle}>
+                  <MaterialCommunityIcons
+                    name={
+                      favDrinks.includes(Number(recipe.idDrink))
+                        ? "heart"
+                        : "heart-plus"
+                    }
+                    size={20}
+                    style={
+                      favDrinks.includes(Number(recipe.idDrink))
+                        ? styles.fav_icon_selected
+                        : styles.fav_icon_unselected
+                    }
+                  />
+                </View>
+              </Pressable>
+            </View>
           </ImageBackground>
         </View>
 
         <View style={styles.container_title}>
           <Text style={styles.title_h2}>Ingredients</Text>
-          <Text style={styles.subtitle}>{`${drinkIngredients?.length || 0} Items`}</Text>
+          <Text style={styles.subtitle}>{`${
+            drinkIngredients?.length || 0
+          } Items`}</Text>
         </View>
         <View style={styles.container_ingredient}>
-        {drinkIngredients && drinkIngredients.map((ingredient, i) => (
-            <View key={i} style={styles.container_ingredient_item}>
-              <Text style={styles.text_paragraph}>{ingredient}</Text>
-            </View>
-          ))}
+          {drinkIngredients &&
+            drinkIngredients.map((ingredient, i) => (
+              <View key={i} style={styles.container_ingredient_item}>
+                <Text style={styles.text_paragraph}>{ingredient}</Text>
+              </View>
+            ))}
         </View>
         <Pressable style={styles.btn} onPress={onPressAddToShoplist}>
           <Text style={styles.btn_text}>Add To Shoplist</Text>
@@ -165,7 +211,6 @@ export default function Tab() {
               {`${index + 1}. ${step}`}
             </Text>
           ))}
-          
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -212,7 +257,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(217, 217, 217, 0.2)",
     borderRadius: 20,
     paddingVertical: 10,
-    marginBottom: 20
+    marginBottom: 20,
   },
   container_nutrition: {
     width: "90%",
@@ -253,7 +298,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     margin: 10,
-    flexDirection: "row"
+    flexDirection: "row",
   },
   title_h1: {
     fontSize: 24,
@@ -280,13 +325,15 @@ const styles = StyleSheet.create({
   text_paragraph: {
     fontSize: 16,
     paddingHorizontal: 20,
-    paddingVertical: 10
+    paddingVertical: 10,
   },
   img_wrapper: {
     width: "100%",
     flex: 1,
     borderRadius: 20,
     overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "flex-end"
   },
   btn: {
     height: 55,
@@ -316,5 +363,35 @@ const styles = StyleSheet.create({
   },
   fav_icon_unselected: {
     color: "grey",
+  },
+  gradient: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 10,
+  },
+  circle: {
+    height: 25,
+    width: 25,
+    backgroundColor: "white",
+    borderRadius: 25 / 2,
+    alignItems: "center",
+    justifyContent: "center",
+    margin: 10,
+  },
+  text: {
+    flex: 8,
+    fontSize: 18,
+    fontWeight: "bold",
+    margin: 5,
+    color: "#FFFFFF",
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 2, height: 3 },
+    textShadowRadius: 3,
+  },
+  container_text_and_btn: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "95%",
+    padding: 10
   },
 });
