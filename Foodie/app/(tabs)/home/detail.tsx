@@ -157,36 +157,36 @@ export default function Tab() {
         </View>
         <View style={styles.container_title}>
           <Text style={styles.title_h2}>Nutrition Facts</Text>
-          <Text style={styles.subtitle}>{`${getNutritionValue("Calories")} calories`}</Text>
+          <Text style={styles.subtitle}>{`${getNutritionValue("Calories").toFixed(0)} calories`}</Text>
         </View>
         <View style={styles.container_nutrition}>
           <View style={styles.container_nutrition_row}>
             <View style={styles.container_nutrition_item}>
               <MaterialCommunityIcons name={"water"} size={30} />
               <Text style={styles.title_h4}>Fat</Text>
-              <Text style={styles.subtitle}>{`${getNutritionValue("Fat")}g`}</Text>
+              <Text style={styles.subtitle}>{`${getNutritionValue("Fat").toFixed(0)}g`}</Text>
             </View>
             <View style={styles.container_nutrition_item}>
               <MaterialCommunityIcons name={"hamburger-minus"} size={30} />
               <Text style={styles.title_h4}>Cholesterol</Text>
-              <Text style={styles.subtitle}>{`${getNutritionValue("Cholesterol")}mg`}</Text>
+              <Text style={styles.subtitle}>{`${getNutritionValue("Cholesterol").toFixed(0)}mg`}</Text>
             </View>
             <View style={styles.container_nutrition_item}>
               <MaterialCommunityIcons name={"shaker"} size={30} />
               <Text style={styles.title_h4}>Sodium</Text>
-              <Text style={styles.subtitle}>{`${getNutritionValue("Sodium")}mg`}</Text>
+              <Text style={styles.subtitle}>{`${getNutritionValue("Sodium").toFixed(0)}mg`}</Text>
             </View>
           </View>
           <View style={styles.container_nutrition_row}>
             <View style={styles.container_nutrition_item}>
               <MaterialCommunityIcons name={"cube-outline"} size={30} />
               <Text style={styles.title_h4}>Carbs</Text>
-              <Text style={styles.subtitle}>{`${getNutritionValue("Carbohydrates")}g`}</Text>
+              <Text style={styles.subtitle}>{`${getNutritionValue("Carbohydrates").toFixed(0)}g`}</Text>
             </View>
             <View style={styles.container_nutrition_item}>
               <MaterialCommunityIcons name={"pizza"} size={30} />
               <Text style={styles.title_h4}>Protein</Text>
-              <Text style={styles.subtitle}>{`${getNutritionValue("Protein")}g`}</Text>
+              <Text style={styles.subtitle}>{`${getNutritionValue("Protein").toFixed(0)}g`}</Text>
             </View>
             <View style={styles.container_nutrition_item_hide}></View>
           </View>
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#999999",
   },
   text_paragraph: {
