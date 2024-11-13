@@ -13,7 +13,7 @@ export default function FoodTabLayout() {
       <Stack.Screen
         name="detail"
         options={{
-          headerShown: false,
+          // headerShown: false,
           title: "Recipe Detail",
         }}
       />

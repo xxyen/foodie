@@ -152,8 +152,10 @@ export async function getRandomCocktailRecipe(
     );
     const data: IApiDrinkIdData = await response.json();
 
-    // TODO: Random choose 4 drink if data has more than 4drinks
-
+    if (data?.drinks) {
+      data.drinks = data.drinks.sort(() => Math.random() - 0.5);
+    }
+  
     return data;
   }
 
@@ -450,6 +452,31 @@ export async function getRecipeDetails(id: string) {
 
     return data;
 }
+
+export async function updateIngredients(id: any, newIngredients: string[]) {
+  try {
+      const updateResponse = await fetch(`http://localhost:4000/users/${id}`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ingredients: newIngredients }),
+      });
+
+      if (!updateResponse.ok) {
+          const errorData = await updateResponse.json();
+          console.error("Update failed:", errorData.message);
+          alert(errorData.message);
+      } else {
+          const data = await updateResponse.json();
+          console.log(data.message);
+      }
+  } catch (error) {
+      console.error("Request error:", error);
+      alert(error);
+  }
+}
+
 
 // export async function getRecipeDetails(id: number): Promise<IApiFoodRecipeData["recipes"] | undefined> {
 //   const baseURL = "https://api.spoonacular.com";

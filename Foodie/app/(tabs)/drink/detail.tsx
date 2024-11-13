@@ -7,18 +7,22 @@ import {
   Pressable,
   GestureResponderEvent,
   ScrollView,
-  Image
+  Image,
+  Alert
 } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import {  getRecipeDetails } from "@/utils";
+import { useRouter } from "expo-router";
+import {  getRecipeDetails, updateFavoriteDrinks, updateIngredients } from "@/utils";
+import { useAppContext } from "@/context/contexts";
 
 export default function Tab() {
-
   const { id } = useLocalSearchParams();
+  const router = useRouter();
+  const { id: userId, favDrinks, onChangeFavDrinks, ingredients, onChangeIngredients } = useAppContext();
   const [recipe, setRecipe] = useState<ICocktailRecipe | undefined>(undefined);
-  const [ingredients, setIngredients] = useState<string[] | undefined>(undefined);
+  const [drinkIngredients, setDrinkIngredients] = useState<string[] | undefined>(undefined);
   const [steps, setSteps] = useState<string[]|undefined>(undefined);
 
 
@@ -39,14 +43,14 @@ export default function Tab() {
 
   useEffect(() => {
     if(recipe){ 
-      const ingredients: string[] = [];
+      const ingredientsList: string[] = [];
       for (let i = 1; i <= 15; i++) {
         const ingredient = recipe[`strIngredient${i}` as keyof ICocktailRecipe];
         if (ingredient) {
-          ingredients.push(`${ingredient}`);
+          ingredientsList.push(`${ingredient}`);
         }
       }
-      setIngredients(ingredients);
+      setDrinkIngredients(ingredientsList);
 
       if (recipe.strInstructions){
         const parsedStep = recipe.strInstructions.split(".").slice(0, -1);
@@ -64,9 +68,50 @@ export default function Tab() {
     );
   }
 
+  function onPressAddFav(event: GestureResponderEvent): void {
+    if (!userId) {
+      console.log("User not logged in. Redirecting to Profile.");
+      router.push("profile");
+      return;
+    }
+
+    let newFavDrinks: number[] = [];
+    let alertMessage: string;
+
+    if (recipe) {
+      if (favDrinks.includes(Number(recipe.idDrink))) {
+        newFavDrinks = favDrinks.filter((drinkId) => drinkId !== Number(recipe.idDrink));
+        alertMessage = "Drink removed from favorites.";
+      } else {
+        newFavDrinks = [...favDrinks, Number(recipe.idDrink)];
+        alertMessage = "Drink added to favorites!";
+      }
+    }
+
+    updateFavoriteDrinks(userId, newFavDrinks).then(() => {
+      onChangeFavDrinks(newFavDrinks);
+      Alert.alert("Success", alertMessage);
+    });
+  }
 
   function onPressAddToShoplist(event: GestureResponderEvent): void {
-    // throw new Error("Function not implemented.");
+    if (drinkIngredients) {
+      const existingIngredients = drinkIngredients.filter((ingredient) => ingredients.includes(ingredient));
+      const ingredientsToAdd = drinkIngredients.filter((ingredient) => !ingredients.includes(ingredient));
+
+      if (ingredientsToAdd.length > 0) {
+        const allIngredients = [...ingredients, ...ingredientsToAdd];
+        updateIngredients(userId, allIngredients).then(() => {
+          onChangeIngredients(allIngredients);
+          const successMessage = existingIngredients.length > 0
+            ? `Added new ingredients to the shopping list. Already had: ${existingIngredients.join(', ')}.`
+            : "Ingredients added to shopping list!";
+          Alert.alert("Success", successMessage);
+        });
+      } else {
+        Alert.alert("Info", "All ingredients are already in the shopping list.");
+      }
+    }
   }
 
   function onPressAddToDailyIntake(event: GestureResponderEvent): void {
@@ -82,15 +127,27 @@ export default function Tab() {
             source={{ uri: recipe?.strDrinkThumb }}
             style={styles.img_wrapper}
             resizeMode="cover"
-          />
+          >
+            <Pressable style={styles.favorite_icon} onPress={onPressAddFav}>
+              <MaterialCommunityIcons
+                name={favDrinks.includes(Number(recipe.idDrink)) ? "heart" : "heart-plus"}
+                size={30}
+                style={
+                  favDrinks.includes(Number(recipe.idDrink))
+                    ? styles.fav_icon_selected
+                    : styles.fav_icon_unselected
+                }
+              />
+            </Pressable>
+          </ImageBackground>
         </View>
 
         <View style={styles.container_title}>
           <Text style={styles.title_h2}>Ingredients</Text>
-          <Text style={styles.subtitle}>{`${ingredients?.length || 0} Items`}</Text>
+          <Text style={styles.subtitle}>{`${drinkIngredients?.length || 0} Items`}</Text>
         </View>
         <View style={styles.container_ingredient}>
-        {ingredients && ingredients.map((ingredient, i) => (
+        {drinkIngredients && drinkIngredients.map((ingredient, i) => (
             <View key={i} style={styles.container_ingredient_item}>
               <Text style={styles.text_paragraph}>{ingredient}</Text>
             </View>
@@ -248,5 +305,16 @@ const styles = StyleSheet.create({
   ingredient_image: {
     width: 50,
     height: 50,
-  }
+  },
+  favorite_icon: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+  },
+  fav_icon_selected: {
+    color: "red",
+  },
+  fav_icon_unselected: {
+    color: "grey",
+  },
 });

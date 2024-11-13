@@ -52,7 +52,7 @@ import {
         }
       };
       fetchData();
-    }, [id]);
+    });
   
     // functions
     async function onPressLoginOut(event: GestureResponderEvent): Promise<void> {

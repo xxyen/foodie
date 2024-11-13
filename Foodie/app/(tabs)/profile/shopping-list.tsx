@@ -3,6 +3,7 @@ import Checkbox from "expo-checkbox";
 import { useAppContext } from "@/context/contexts";
 import { useState, useEffect } from "react";
 import { getProfile } from "@/utils";
+import { updateIngredients } from "@/utils";
 
 export default function ShoppingList() {
     const { id, onChangeIngredients } = useAppContext();
@@ -62,10 +63,15 @@ export default function ShoppingList() {
 
     const removeSelectedItems = () => {
         const updatedList = ingredients.filter((ingredient) => !selectedItems.has(ingredient));
-        setIngredients(updatedList);
-        onChangeIngredients(updatedList);
-        setSelectedItems(new Set());
-        Alert.alert("Items Removed", "Selected items have been successfully removed.");
+        updateIngredients(id, updatedList).then(() => {
+            setIngredients(updatedList);
+            onChangeIngredients(updatedList);
+            setSelectedItems(new Set());
+            Alert.alert("Items Removed", "Selected items have been successfully removed.");
+        }).catch((error) => {
+            console.error("Failed to update ingredients:", error);
+            Alert.alert("Error", "Failed to update the shopping list.");
+        });
     };
 
     return (

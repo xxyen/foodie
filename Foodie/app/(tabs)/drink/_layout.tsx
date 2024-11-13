@@ -13,7 +13,7 @@ export default function DrinkTabLayout() {
       <Stack.Screen
         name="detail"
         options={{
-          headerShown: false,
+          // headerShown: false,
           title: "Recipe Detail",
         }}
       />
