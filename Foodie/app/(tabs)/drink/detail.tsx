@@ -15,6 +15,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import {
+  getDrinkIngredientImage,
   getRecipeDetails,
   updateFavoriteDrinks,
   updateIngredients,
@@ -196,6 +197,11 @@ export default function Tab() {
             drinkIngredients.map((ingredient, i) => (
               <View key={i} style={styles.container_ingredient_item}>
                 <Text style={styles.text_paragraph}>{ingredient}</Text>
+                <Image
+                style={styles.ingredient_image}
+                resizeMode="contain"
+                source={{ uri: getDrinkIngredientImage(ingredient) }}
+              />
               </View>
             ))}
         </View>

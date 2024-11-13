@@ -14,7 +14,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  getIngredientImage,
+  getFoodIngredientImage,
   updateFavoriteFoods,
   updateIngredients,
 } from "@/utils";
@@ -169,7 +169,7 @@ export default function Tab() {
               <Image
                 style={styles.ingredient_image}
                 resizeMode="contain"
-                source={{ uri: getIngredientImage(ingredient.image) }}
+                source={{ uri: getFoodIngredientImage(ingredient.image) }}
               />
             </View>
           ))}

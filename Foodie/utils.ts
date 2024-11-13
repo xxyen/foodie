@@ -431,8 +431,13 @@ export async function updateFavoriteDrinks(id:any, newFavDrinks:any) {
     }
 }
 
-export function getIngredientImage(name: string){
+export function getFoodIngredientImage(name: string){
   const url = "https://img.spoonacular.com/ingredients_100x100/" + name;
+  // console.log(url);
+  return url;
+}
+export function getDrinkIngredientImage(name: string){
+  const url = `https://www.thecocktaildb.com/images/ingredients/${name}-Small.png`
   // console.log(url);
   return url;
 }
