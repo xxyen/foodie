@@ -107,7 +107,7 @@ export default function Tab() {
     <SafeAreaView style={styles.safearea}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.container_img}>
-          <Text style={styles.title_h1}>Recipe Detail</Text>
+          {/* <Text style={styles.title_h1}>Recipe Detail</Text> */}
           <ImageBackground
             source={{ uri: recipe?.image }}
             style={styles.img_wrapper}
