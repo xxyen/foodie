@@ -16,6 +16,8 @@
     "@react-navigation/drawer": "^6.7.2",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/stack": "^6.4.1",
+    "@types/emoji-strip": "^1.0.2",
+    "emoji-strip": "^1.0.1",
     "expo": "~51.0.28",
     "expo-camera": "~15.0.16",
     "expo-checkbox": "^3.0.0",

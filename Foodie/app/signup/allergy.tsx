@@ -11,6 +11,7 @@ import {
 import { useLocalSearchParams } from "expo-router";
 import { useState, useEffect } from "react";
 import AllergyFood from "./FoodTag";
+import emojiStrip from "emoji-strip";
 
 export default function AllergyScreen({ }) {
 
@@ -23,22 +24,25 @@ export default function AllergyScreen({ }) {
 
 
   function onPressLater(event: GestureResponderEvent): void {
+    router.dismissAll();
     router.push("home");
   }
 
   const img_path = "../../assets/dinner.png";
 
   function onPressNext(event: GestureResponderEvent): void {
-
-    const allergies = allergyFoods.filter((f:string,index:number)=>statues[index]===true);
-
+    const choices = allergyFoods.filter((f:string,index:number)=>statues[index]===true);
+    const allergies = choices.map((a)=>a.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2580-\u27BF]|\uD83E[\uDD10-\uDDFF]/g, '').replace(/\u{1FAD8}/u,'').replace(/\u{1FAA8}/u,'')
+    .toLowerCase().replace(' ','_'));
+    console.log(allergies);
+    
     router.push({
       pathname:"signup/diet",
       params:{
         email:email,
         username:username,
         password:password,
-        allergies:allergies
+        allergies:allergies,
       },
     });
   }

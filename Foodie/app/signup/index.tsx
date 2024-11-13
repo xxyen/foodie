@@ -36,9 +36,10 @@ export default function SignUpScreen() {
   // functions
   function onPressLater(event: GestureResponderEvent): void {
     console.log("user: press later");
+    router.dismissAll();
     // router.back();
-    // router.push("/home");
-    router.push("signup/allergy");
+    router.push("/home");
+    // router.push("signup/allergy");
   }
 
   function onChangeUserName(text: string): void {

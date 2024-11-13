@@ -7,7 +7,8 @@ import {
   Pressable,
   Image,
   GestureResponderEvent,
-  Alert
+  Alert,
+  ScrollView
 } from "react-native";
 import FoodTag from "./FoodTag";
 import { useState } from "react";
@@ -17,6 +18,7 @@ import { useAppContext } from "@/context/contexts";
 export default function AllergyScreen() {
 
   function onPressLater(event: GestureResponderEvent): void {
+    router.dismissAll();
     router.push("home");
   }
 
@@ -31,7 +33,9 @@ export default function AllergyScreen() {
   const [statues, setStatues] = useState<boolean[]>(Array(diets.length).fill(false));
   
   async function onPressNext(event: GestureResponderEvent): Promise<void> {
-    const diet = diets.filter((f:string,index:number)=>statues[index]===true);
+    const choices = diets.filter((f:string,index:number)=>statues[index]===true);
+    const diet = choices.map((d)=>d.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2580-\u27BF]|\uD83E[\uDD10-\uDDFF]/g, '').toLowerCase().replace(' ','_'));
+    console.log(diet);
 
     const allergiesArray = typeof allergies==='string' ? allergies.split(',') : [];
 
@@ -54,8 +58,8 @@ export default function AllergyScreen() {
           Alert.alert("Congratulate!",username+", you have resgistered successfully."); 
         }
       }
-    router.dismissAll();
-    router.push("home");
+    // router.dismissAll();
+    // router.push("home");
   }
 
   const router = useRouter();
@@ -74,10 +78,10 @@ export default function AllergyScreen() {
 
         <View style={styles.container_tag}>
           <Text style={styles.title2}>Any Diet...?</Text>
-          <View style={styles.container_tag_row}>
+          <ScrollView contentContainerStyle={styles.container_tag_row}>
           
             {diets.map((f:string,index:number)=> <FoodTag key={index} food={f} index={index} statues={statues} onChangeStatus={setStatues}/>)}
-          </View>
+          </ScrollView>
         </View>
 
         <Pressable style={styles.btn} onPress={onPressNext}>
@@ -106,6 +110,7 @@ const styles = StyleSheet.create({
   },
   container_tag: {
     width: "100%",
+    height: "45%",
     backgroundColor: "rgba(217, 217, 217, 0.2)",
     borderRadius: 20,
     alignItems: "center",
