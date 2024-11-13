@@ -8,25 +8,28 @@ import {
   GestureResponderEvent,
   ScrollView,
   Image,
-  Alert
+  Alert,
 } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { getIngredientImage, updateFavoriteFoods, updateIngredients } from "@/utils";
+import {
+  getIngredientImage,
+  updateFavoriteFoods,
+  updateIngredients,
+} from "@/utils";
 import { useAppContext } from "@/context/contexts";
-
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Tab() {
-
   const { data } = useLocalSearchParams();
   const router = useRouter();
-  const { id, favFoods, onChangeFavFoods, ingredients, onChangeIngredients } = useAppContext();
+  const { id, favFoods, onChangeFavFoods, ingredients, onChangeIngredients } =
+    useAppContext();
 
   const [recipe, setRecipe] = useState<IFoodRecipe | undefined>(undefined);
-  const [nutrition, setNutrition] = useState< INutrition| undefined>(undefined);
-  const [steps, setSteps] = useState<IFoodStep[]| undefined>(undefined);
-
+  const [nutrition, setNutrition] = useState<INutrition | undefined>(undefined);
+  const [steps, setSteps] = useState<IFoodStep[] | undefined>(undefined);
 
   useEffect(() => {
     if (data) {
@@ -36,7 +39,6 @@ export default function Tab() {
       setSteps(parsedData.analyzedInstructions[0]?.steps);
     }
   }, [data]);
-  
 
   if (!recipe) {
     return (
@@ -71,29 +73,37 @@ export default function Tab() {
       Alert.alert("Success", alertMessage);
     });
   }
-  
+
   function onPressAddToShoplist(event: GestureResponderEvent): void {
     if (recipe) {
-        const newIngredients = recipe.extendedIngredients.map((ingredient) => ingredient.name);
-        const existingIngredients = newIngredients.filter(ingredient => ingredients.includes(ingredient));
-        const ingredientsToAdd = newIngredients.filter(ingredient => !ingredients.includes(ingredient));
+      const newIngredients = recipe.extendedIngredients.map(
+        (ingredient) => ingredient.name
+      );
+      const existingIngredients = newIngredients.filter((ingredient) =>
+        ingredients.includes(ingredient)
+      );
+      const ingredientsToAdd = newIngredients.filter(
+        (ingredient) => !ingredients.includes(ingredient)
+      );
 
-        if (ingredientsToAdd.length > 0) {
-          const allIngredients = [...ingredients, ...ingredientsToAdd];
+      if (ingredientsToAdd.length > 0) {
+        const allIngredients = [...ingredients, ...ingredientsToAdd];
 
-            updateIngredients(id, allIngredients).then(() => {
-                onChangeIngredients(allIngredients); 
-                const successMessage = existingIngredients.length > 0
-                    ? `Added new ingredients to the shopping list. Already had: ${existingIngredients.join(', ')}.`
-                    : "Ingredients added to shopping list!";
-                Alert.alert("Success", successMessage);
-            });
-        } else {
-            Alert.alert("Info", `All ingredients already in the shopping list.`);
-        }
+        updateIngredients(id, allIngredients).then(() => {
+          onChangeIngredients(allIngredients);
+          const successMessage =
+            existingIngredients.length > 0
+              ? `Added new ingredients to the shopping list. Already had: ${existingIngredients.join(
+                  ", "
+                )}.`
+              : "Ingredients added to shopping list!";
+          Alert.alert("Success", successMessage);
+        });
+      } else {
+        Alert.alert("Info", `All ingredients already in the shopping list.`);
+      }
     }
-}
-
+  }
 
   function onPressAddToDailyIntake(event: GestureResponderEvent): void {
     // throw new Error("Function not implemented.");
@@ -101,7 +111,8 @@ export default function Tab() {
 
   // const nutrition = recipe.recipes[0].nutrition?.nutrients;
   const getNutritionValue = (name: string) =>
-    nutrition?.nutrients?.find((nutrient: Nutrient) => nutrient.name === name)?.amount || 0;
+    nutrition?.nutrients?.find((nutrient: Nutrient) => nutrient.name === name)
+      ?.amount || 0;
 
   return (
     <SafeAreaView style={styles.safearea}>
@@ -113,28 +124,53 @@ export default function Tab() {
             style={styles.img_wrapper}
             resizeMode="cover"
           >
-            <Pressable style={styles.favorite_icon} onPress={onPressAddFav}>
-              <MaterialCommunityIcons
-                name={favFoods.includes(recipe.id) ? "heart" : "heart-plus"}
-                size={30}
-                style={
-                  favFoods.includes(recipe.id)
-                    ? styles.fav_icon_selected
-                    : styles.fav_icon_unselected
-                }
-              />
-            </Pressable>
+            <LinearGradient
+              colors={[
+                "rgba(0, 0, 0, 0.4)",
+                "rgba(0, 0, 0, 0)",
+                "rgba(0, 0, 0, 0)",
+                "rgba(0, 0, 0, 0.4)",
+              ]}
+              style={styles.gradient}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 1 }}
+            />
+            <View style={styles.container_text_and_btn}>
+              <Text style={styles.text}>{recipe.title}</Text>
+              <Pressable onPress={(event) => onPressAddFav(event)}>
+                <View style={styles.circle}>
+                  <MaterialCommunityIcons
+                    name={favFoods.includes(recipe.id) ? "heart" : "heart-plus"}
+                    size={20}
+                    style={
+                      favFoods.includes(recipe.id)
+                        ? styles.fav_icon_selected
+                        : styles.fav_icon_unselected
+                    }
+                  />
+                </View>
+              </Pressable>
+            </View>
           </ImageBackground>
         </View>
         <View style={styles.container_title}>
           <Text style={styles.title_h2}>Ingredients</Text>
-          <Text style={styles.subtitle}>{`${recipe?.extendedIngredients.length} Items`}</Text>
+          <Text
+            style={styles.subtitle}
+          >{`${recipe?.extendedIngredients.length} Items`}</Text>
         </View>
         <View style={styles.container_ingredient}>
-        {recipe?.extendedIngredients.map((ingredient, index) => (
-        <View key={`${ingredient.id}-${index}`} style={styles.container_ingredient_item}>
+          {recipe?.extendedIngredients.map((ingredient, index) => (
+            <View
+              key={`${ingredient.id}-${index}`}
+              style={styles.container_ingredient_item}
+            >
               <Text style={styles.text_paragraph}>{ingredient.name}</Text>
-              <Image style={styles.ingredient_image} resizeMode="contain" source={{ uri: getIngredientImage(ingredient.image)}} />
+              <Image
+                style={styles.ingredient_image}
+                resizeMode="contain"
+                source={{ uri: getIngredientImage(ingredient.image) }}
+              />
             </View>
           ))}
         </View>
@@ -153,40 +189,51 @@ export default function Tab() {
               {`${step.number}. ${step.step}`}
             </Text>
           ))}
-          
         </View>
         <View style={styles.container_title}>
           <Text style={styles.title_h2}>Nutrition Facts</Text>
-          <Text style={styles.subtitle}>{`${getNutritionValue("Calories").toFixed(0)} calories`}</Text>
+          <Text style={styles.subtitle}>{`${getNutritionValue(
+            "Calories"
+          ).toFixed(0)} calories`}</Text>
         </View>
         <View style={styles.container_nutrition}>
           <View style={styles.container_nutrition_row}>
             <View style={styles.container_nutrition_item}>
               <MaterialCommunityIcons name={"water"} size={30} />
               <Text style={styles.title_h4}>Fat</Text>
-              <Text style={styles.subtitle}>{`${getNutritionValue("Fat").toFixed(0)}g`}</Text>
+              <Text style={styles.subtitle}>{`${getNutritionValue(
+                "Fat"
+              ).toFixed(0)}g`}</Text>
             </View>
             <View style={styles.container_nutrition_item}>
               <MaterialCommunityIcons name={"hamburger-minus"} size={30} />
               <Text style={styles.title_h4}>Cholesterol</Text>
-              <Text style={styles.subtitle}>{`${getNutritionValue("Cholesterol").toFixed(0)}mg`}</Text>
+              <Text style={styles.subtitle}>{`${getNutritionValue(
+                "Cholesterol"
+              ).toFixed(0)}mg`}</Text>
             </View>
             <View style={styles.container_nutrition_item}>
               <MaterialCommunityIcons name={"shaker"} size={30} />
               <Text style={styles.title_h4}>Sodium</Text>
-              <Text style={styles.subtitle}>{`${getNutritionValue("Sodium").toFixed(0)}mg`}</Text>
+              <Text style={styles.subtitle}>{`${getNutritionValue(
+                "Sodium"
+              ).toFixed(0)}mg`}</Text>
             </View>
           </View>
           <View style={styles.container_nutrition_row}>
             <View style={styles.container_nutrition_item}>
               <MaterialCommunityIcons name={"cube-outline"} size={30} />
               <Text style={styles.title_h4}>Carbs</Text>
-              <Text style={styles.subtitle}>{`${getNutritionValue("Carbohydrates").toFixed(0)}g`}</Text>
+              <Text style={styles.subtitle}>{`${getNutritionValue(
+                "Carbohydrates"
+              ).toFixed(0)}g`}</Text>
             </View>
             <View style={styles.container_nutrition_item}>
               <MaterialCommunityIcons name={"pizza"} size={30} />
               <Text style={styles.title_h4}>Protein</Text>
-              <Text style={styles.subtitle}>{`${getNutritionValue("Protein").toFixed(0)}g`}</Text>
+              <Text style={styles.subtitle}>{`${getNutritionValue(
+                "Protein"
+              ).toFixed(0)}g`}</Text>
             </View>
             <View style={styles.container_nutrition_item_hide}></View>
           </View>
@@ -239,7 +286,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     backgroundColor: "rgba(217, 217, 217, 0.2)",
     borderRadius: 20,
-    paddingVertical: 10
+    paddingVertical: 10,
   },
   container_nutrition: {
     width: "90%",
@@ -280,7 +327,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     margin: 10,
-    flexDirection: "row"
+    flexDirection: "row",
   },
   title_h1: {
     fontSize: 24,
@@ -307,13 +354,15 @@ const styles = StyleSheet.create({
   text_paragraph: {
     fontSize: 16,
     paddingHorizontal: 20,
-    paddingVertical: 10
+    paddingVertical: 10,
   },
   img_wrapper: {
     width: "100%",
     flex: 1,
     borderRadius: 20,
     overflow: "hidden",
+    justifyContent: "flex-end",
+    alignItems: "center"
   },
   btn: {
     height: 55,
@@ -343,5 +392,35 @@ const styles = StyleSheet.create({
   },
   fav_icon_unselected: {
     color: "grey",
-  }
+  },
+  gradient: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 10,
+  },
+  circle: {
+    height: 25,
+    width: 25,
+    backgroundColor: "white",
+    borderRadius: 25 / 2,
+    alignItems: "center",
+    justifyContent: "center",
+    margin: 10,
+  },
+  container_text_and_btn: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "95%",
+    paddingBottom: 10
+  },
+  text: {
+    flex: 8,
+    fontSize: 18,
+    fontWeight: "bold",
+    margin: 5,
+    color: "#FFFFFF",
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 2, height: 3 },
+    textShadowRadius: 3,
+  },
 });
