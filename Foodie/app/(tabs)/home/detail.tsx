@@ -17,6 +17,7 @@ import {
   getFoodIngredientImage,
   updateFavoriteFoods,
   updateIngredients,
+  updateCalories
 } from "@/utils";
 import { useAppContext } from "@/context/contexts";
 import { LinearGradient } from "expo-linear-gradient";
@@ -24,7 +25,7 @@ import { LinearGradient } from "expo-linear-gradient";
 export default function Tab() {
   const { data } = useLocalSearchParams();
   const router = useRouter();
-  const { id, favFoods, onChangeFavFoods, ingredients, onChangeIngredients } =
+  const { id, favFoods, onChangeFavFoods, ingredients, onChangeIngredients, weeklyCalories, onChangeWeeklyCalories } =
     useAppContext();
 
   const [recipe, setRecipe] = useState<IFoodRecipe | undefined>(undefined);
@@ -106,8 +107,25 @@ export default function Tab() {
   }
 
   function onPressAddToDailyIntake(event: GestureResponderEvent): void {
-    // throw new Error("Function not implemented.");
-  }
+    if (!id || !recipe) {
+      Alert.alert("Error", "Unable to add to daily intake. Please log in.");
+      return;
+    }
+  
+    const calories = Number(getNutritionValue("Calories").toFixed(0));
+    const today = new Date().getDay();
+    
+    const isNewWeek = today === 0 && (weeklyCalories.length !== 7 || weeklyCalories.some((cal) => cal !== 0));
+    const updatedCalories = isNewWeek ? Array(7).fill(0) : [...weeklyCalories];
+    
+    updatedCalories[today] = (updatedCalories[today] || 0) + calories;
+  
+    updateCalories(id, updatedCalories).then(() => {
+      onChangeWeeklyCalories(updatedCalories);
+      Alert.alert("Success", "Added to today's diet analysis.");
+    });
+  }  
+  
 
   // const nutrition = recipe.recipes[0].nutrition?.nutrients;
   const getNutritionValue = (name: string) =>

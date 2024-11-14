@@ -37,17 +37,6 @@ export default function Tab() {
   const window_width = Dimensions.get("window").width;
   const window_height = Dimensions.get("window").height;
 
-  // intake demo data
-  const barData = [
-    { value: 800, label: "Mon" },
-    { value: 1300, label: "Tue" },
-    { value: 1300, label: "Wed" },
-    { value: 400, label: "Thu" },
-    { value: 1200, label: "Fri" },
-    { value: 1800, label: "Sat" },
-    { value: 1300, label: "Sun" },
-  ];
-
   // state
   const [userInfo, setUserInfo] = useState<IUserInfo | undefined>(undefined);
 
@@ -58,11 +47,17 @@ export default function Tab() {
         const userData = await getProfile(id);
         if (userData) {
           setUserInfo(userData);
+          onChangeWeeklyCalories(userData.weeklyCalories);
         }
       }
     };
     fetchData();
   });
+
+  const barData = userInfo?.weeklyCalories.map((calories, index) => ({
+    value: calories,
+    label: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][index],
+  })) || [];
 
   // functions
   async function onPressLoginOut(event: GestureResponderEvent): Promise<void> {

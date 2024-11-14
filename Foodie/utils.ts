@@ -484,6 +484,21 @@ export async function updateIngredients(id: any, newIngredients: string[]) {
   }
 }
 
+export async function updateCalories(id: string, weeklyCalories: number[]) {
+  try {
+    const response = await fetch(`http://localhost:4000/users/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ weeklyCalories: weeklyCalories }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message);
+    return data;
+  } catch (error) {
+    console.error("Error updating calories:", error);
+    alert("Failed to update daily intake.");
+  }
+}
 
 // export async function getRecipeDetails(id: number): Promise<IApiFoodRecipeData["recipes"] | undefined> {
 //   const baseURL = "https://api.spoonacular.com";
