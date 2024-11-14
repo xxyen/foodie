@@ -1,9 +1,13 @@
 import {Buffer} from 'buffer';
-import { Alert } from 'react-native';
+import { Alert,Platform } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import { useRef, useState } from 'react';
 import OpenAI from "openai";
+
+const baseUrl = Platform.OS === "android"
+                ? "http://10.0.2.2:4000/users"
+                : "http://localhost:4000/users"
 
 // Search by Image
 const openai = new OpenAI({
@@ -76,7 +80,7 @@ allergies:string[],diets: string[], onChangeId:(id:string)=>void) => {
     })
   };
   try{
-    const response = await fetch(`http://localhost:4000/users/register`, config);
+    const response = await fetch(`${baseUrl}/register`, config);
     const body = await response.json();
     if(response.status!=201){
       alert(body.message);
@@ -97,30 +101,49 @@ export async function getRandomFoodRecipe(
   tag: string
 ): Promise<undefined | IApiFoodRecipeData> {
   const baseURL = "https://api.spoonacular.com";
-  const apiKEY = "9fc2dee7142a457b9faae9e34afc8087";
+  const apiKEY = "369bec8fd4ac4cb48d6871f67f635722";
 
 
   // TODO: assume no error here
-  const response = await fetch(
-    `${baseURL}/recipes/random?apiKey=${apiKEY}&limitLicense=true&tags=${tag}&number=3&includeNutrition=true`
-  );
-  const data: IApiFoodRecipeData = await response.json();
-  return data;
+  try{
+    const response = await fetch(
+      `${baseURL}/recipes/random?apiKey=${apiKEY}&limitLicense=true&tags=${tag}&number=3&includeNutrition=true`
+    );
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+    const data: IApiFoodRecipeData = await response.json();
+    return data;
+  }
+  catch(err){
+    console.error("Error fetching recipe information:", err);
+    return undefined;
+  }
 }
 
 export async function getFoodRecipeByIngredients(
   tag: string
 ) {
   const baseURL = "https://api.spoonacular.com";
+  //  a391c51a20ac4e878b52c3778f616389
   const apiKEY = "a391c51a20ac4e878b52c3778f616389";
 
   // TODO: assume no error here
-  const response = await fetch(
-    `${baseURL}/recipes/complexSearch?includeIngredients=${tag}&number=3&instructionsRequired=true&addRecipeInformation=true&addRecipeInstructions=true&addRecipeNutrition=true&fillIngredients=true&apiKey=${apiKEY}`
-  );
-  const data = await response.json();
-  // console.log(data);
-  return data;
+  try{
+    const response = await fetch(
+      `${baseURL}/recipes/complexSearch?includeIngredients=${tag}&number=3&instructionsRequired=true&addRecipeInformation=true&addRecipeInstructions=true&addRecipeNutrition=true&fillIngredients=true&apiKey=${apiKEY}`
+    );
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+    const data = await response.json();
+    // console.log(data);
+    return data;
+  }
+  catch(err){
+    console.error("Error fetching recipe information:", err);
+    return undefined;
+  }
 }
 
 
@@ -296,7 +319,7 @@ export const getProfile = async (id:string) => {
     }
   };
   try{
-    const response = await fetch(`http://localhost:4000/users/${id}`, config);
+    const response = await fetch(`${baseUrl}/${id}`, config);
     const body = await response.json();
     if(response.status!=200){
       alert(body.message);
@@ -330,7 +353,7 @@ export const parseImage = (buffer: Buffer| undefined) => {
 
 const updateHelper = async(id: string|undefined, config:RequestInit, success: string) => {
   try{
-    const response = await fetch(`http://localhost:4000/users/${id}`, config);
+    const response = await fetch(`${baseUrl}/${id}`, config);
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.indexOf("application/json") !== -1){
       const body = await response.json();
@@ -386,7 +409,7 @@ async function handleTakePicture() {
 export async function updateFavoriteFoods(id:any, newFavFoods:number[]
 ) {
     try {
-        const response = await fetch(`http://localhost:4000/users/${id}`, {
+        const response = await fetch(`${baseUrl}/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -411,7 +434,7 @@ export async function updateFavoriteFoods(id:any, newFavFoods:number[]
 export async function updateFavoriteDrinks(id:any, newFavDrinks:number[]) {
     try {
         console.log("newFavDrinks: ", newFavDrinks);
-        const response = await fetch(`http://localhost:4000/users/${id}`, {
+        const response = await fetch(`${baseUrl}/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -462,7 +485,7 @@ export async function getRecipeDetails(id: string) {
 
 export async function updateIngredients(id: any, newIngredients: string[]) {
   try {
-      const updateResponse = await fetch(`http://localhost:4000/users/${id}`, {
+      const updateResponse = await fetch(`${baseUrl}/${id}`, {
           method: 'PUT',
           headers: {
               'Content-Type': 'application/json',

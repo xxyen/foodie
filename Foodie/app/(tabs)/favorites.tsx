@@ -26,6 +26,8 @@ useEffect(() => {
   };
 
   fetchData();
+  console.log(favFoods);
+  console.log(favDrinks);
 }, [favFoods, favDrinks]);
 
 

@@ -11,6 +11,7 @@ import {
   Pressable,
   TextInput,
   Alert,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAppContext } from "@/context/contexts";
@@ -18,11 +19,15 @@ import { getProfile } from "@/utils";
 import * as Linking from "expo-linking";
 
 export default function LoginScreen() {
-  const { username, onChangeUsername, onChangeId } = useAppContext();
+  const { username, onChangeUsername, onChangeId, onChangeAllergies, 
+    onChangeBuffer, onChangeFavDrinks, onChangeFavFoods, onChangeIngredients, onChangeWeeklyCalories } = useAppContext();
 
   // variables
   const img_path = "../assets/rasberry.png";
   const google_icon_path = "../assets/google_icon.png";
+  const baseUrl = Platform.OS === "android"
+                ? "http://10.0.2.2:4000"
+                : "http://localhost:4000"
 
   // navigation
   const router = useRouter();
@@ -73,6 +78,7 @@ export default function LoginScreen() {
     const res = await loginHelper();
     if (res) {
       const user = await getProfile(res);
+      fetchUserInfo(user);
       router.dismissAll();
       router.push("/home");
       Alert.alert("Congratulate!", user?.username+", you have logged in successfully."); 
@@ -91,7 +97,7 @@ export default function LoginScreen() {
       }),
     };
     try {
-      const response = await fetch(`http://localhost:4000/users/login`, config);
+      const response = await fetch(`${baseUrl}/users/login`, config);
       const body = await response.json();
       if (response.status != 200) {
         alert(body.message);
@@ -109,6 +115,15 @@ export default function LoginScreen() {
   function onPressSignUp(event: GestureResponderEvent): void {
     console.log("user: press sign up btn");
     router.push("./signup");
+  }
+
+  const fetchUserInfo = (user:IUserInfo) => {
+    onChangeAllergies(user?.allergies);
+    onChangeBuffer(user.icon);
+    onChangeFavDrinks(user.favDrinks);
+    onChangeFavFoods(user.favFoods);
+    onChangeIngredients(user.ingredients);
+    onChangeWeeklyCalories(user.weeklyCalories);
   }
 
   return (

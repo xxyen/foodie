@@ -8,6 +8,7 @@ import {
   GestureResponderEvent,
   Dimensions,
   Linking,
+  Platform
 } from "react-native";
 import { useAppContext } from "@/context/contexts";
 import { useRouter } from "expo-router";
@@ -34,6 +35,9 @@ export default function Tab() {
   // variables
   const img_path = "../../../assets/peanut.png";
   const img_path1 = "../../../assets/smile.png";
+  const baseUrl = Platform.OS === "android"
+  ? "http://10.0.2.2:4000"
+  : "http://localhost:4000"
   const window_width = Dimensions.get("window").width;
   const window_height = Dimensions.get("window").height;
 
@@ -69,7 +73,7 @@ export default function Tab() {
     if (userInfo?.googleId) {
       try {
         const response = await Linking.openURL(
-          `http://localhost:4000/api/logout`
+          `${baseUrl}/api/logout`
         );
       } catch (err) {
         console.log(err);
