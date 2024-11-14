@@ -97,7 +97,7 @@ export async function getRandomFoodRecipe(
   tag: string
 ): Promise<undefined | IApiFoodRecipeData> {
   const baseURL = "https://api.spoonacular.com";
-  const apiKEY = "9fc2dee7142a457b9faae9e34afc8087";
+  const apiKEY = "fde5ad6eae294cb38530ad2350f0969c";
 
 
   // TODO: assume no error here
@@ -112,7 +112,7 @@ export async function getFoodRecipeByIngredients(
   tag: string
 ) {
   const baseURL = "https://api.spoonacular.com";
-  const apiKEY = "a391c51a20ac4e878b52c3778f616389";
+  const apiKEY = "fde5ad6eae294cb38530ad2350f0969c";
 
   // TODO: assume no error here
   const response = await fetch(
@@ -126,7 +126,7 @@ export async function getFoodRecipeByIngredients(
 
 export async function getRecipeById(id: number): Promise<undefined | IApiFoodRecipeData> {
   const baseURL = "https://api.spoonacular.com";
-  const apiKEY = "a391c51a20ac4e878b52c3778f616389";
+  const apiKEY = "fde5ad6eae294cb38530ad2350f0969c";
 
   try {
     const response = await fetch(`${baseURL}/recipes/${id}/information?apiKey=${apiKEY}`);
@@ -253,7 +253,7 @@ const handleUpload = async (image:any)=>{
 
 export async function classifyImage(url:any){
   const baseURL = "https://api.spoonacular.com";
-  const apiKEY = "9fc2dee7142a457b9faae9e34afc8087";
+  const apiKEY = "fde5ad6eae294cb38530ad2350f0969c";
 
   const config = {
     method : 'GET',
@@ -481,6 +481,42 @@ export async function updateIngredients(id: any, newIngredients: string[]) {
   } catch (error) {
       console.error("Request error:", error);
       alert(error);
+  }
+}
+
+export async function updateCalories(id: string, weeklyCalories: number[]) {
+  try {
+    const response = await fetch(`http://localhost:4000/users/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ weeklyCalories: weeklyCalories }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message);
+    return data;
+  } catch (error) {
+    console.error("Error updating calories:", error);
+    alert("Failed to update daily intake.");
+  }
+}
+
+export async function getIngredientImage(name: string): Promise<string> {
+  const apiKEY = "fde5ad6eae294cb38530ad2350f0969c";
+  const url = `https://api.spoonacular.com/food/ingredients/search?query=${name}&number=1&apiKey=${apiKEY}`;
+  
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+    if (data.results && data.results.length > 0) {
+      const imagePath = `https://spoonacular.com/cdn/ingredients_100x100/${data.results[0].image}`;
+      return imagePath;
+    } else {
+      return `https://www.thecocktaildb.com/images/ingredients/${name.toLowerCase()}-Small.png`;
+    }
+  } catch (error) {
+    console.error("Error fetching ingredient image:", error);
+    return "";
   }
 }
 
