@@ -47,27 +47,39 @@ export default function Tab() {
         const userData = await getProfile(id);
         if (userData) {
           setUserInfo(userData);
+
+          if (userInfo?.ingredients && userInfo.ingredients.length > 0) {
+              const imagePromises = userInfo.ingredients.slice(0, 3).map(async (ingredient) => {
+                const imageUrl = await getIngredientImage(ingredient);
+                return imageUrl;
+              });
+              const images = await Promise.all(imagePromises);
+              console.log(images);
+              setIngredientImages(images);
+            } else {
+              setIngredientImages([]); 
+            }
         }
       }
     };
     fetchUserData();
-  }, [userInfo?.ingredients]); 
+  }, [id]); 
 
-  useEffect(() => {
-    const fetchIngredientImages = async () => {
-      if (userInfo?.ingredients && userInfo.ingredients.length > 0) {
-        const imagePromises = userInfo.ingredients.slice(0, 3).map(async (ingredient) => {
-          const imageUrl = await getIngredientImage(ingredient);
-          return imageUrl;
-        });
-        const images = await Promise.all(imagePromises);
-        setIngredientImages(images);
-      } else {
-        setIngredientImages([]); 
-      }
-    };
-    fetchIngredientImages();
-  }, [userInfo?.ingredients]);
+  // useEffect(() => {
+  //   const fetchIngredientImages = async () => {
+  //     if (userInfo?.ingredients && userInfo.ingredients.length > 0) {
+  //       const imagePromises = userInfo.ingredients.slice(0, 3).map(async (ingredient) => {
+  //         const imageUrl = await getIngredientImage(ingredient);
+  //         return imageUrl;
+  //       });
+  //       const images = await Promise.all(imagePromises);
+  //       setIngredientImages(images);
+  //     } else {
+  //       setIngredientImages([]); 
+  //     }
+  //   };
+  //   fetchIngredientImages();
+  // }, [id]);
   
   const barData = userInfo?.weeklyCalories.map((calories, index) => ({
     value: calories,
@@ -128,7 +140,7 @@ export default function Tab() {
           >
             <Text style={styles.title}>My Shopping List</Text>
             <View style={styles.container_row}>
-            {ingredientImages.length > 0 ? (
+            {/* {ingredientImages.length > 0 ? (
               ingredientImages.map((img, index) => (
                 img ? (
                   <Image key={index} source={{ uri: img }} style={styles.img} resizeMode="contain" />
@@ -138,7 +150,16 @@ export default function Tab() {
               ))
             ) : (
               <Text>No ingredients in shopping list</Text>
-            )}
+            )} */}
+            {
+              ingredientImages.map((img, index) => (
+                img ? (
+                  <Image key={index} source={{ uri: img }} style={styles.img} resizeMode="contain" />
+                ) : (
+                  <Text key={index}>Image not available</Text>
+                )
+              ))
+}
           </View>
 
             <View style={styles.more}>

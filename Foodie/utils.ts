@@ -97,7 +97,7 @@ export async function getRandomFoodRecipe(
   tag: string
 ): Promise<undefined | IApiFoodRecipeData> {
   const baseURL = "https://api.spoonacular.com";
-  const apiKEY = "9fc2dee7142a457b9faae9e34afc8087";
+  const apiKEY = "fde5ad6eae294cb38530ad2350f0969c";
 
 
   // TODO: assume no error here
@@ -112,7 +112,7 @@ export async function getFoodRecipeByIngredients(
   tag: string
 ) {
   const baseURL = "https://api.spoonacular.com";
-  const apiKEY = "a391c51a20ac4e878b52c3778f616389";
+  const apiKEY = "fde5ad6eae294cb38530ad2350f0969c";
 
   // TODO: assume no error here
   const response = await fetch(
@@ -126,7 +126,7 @@ export async function getFoodRecipeByIngredients(
 
 export async function getRecipeById(id: number): Promise<undefined | IApiFoodRecipeData> {
   const baseURL = "https://api.spoonacular.com";
-  const apiKEY = "a391c51a20ac4e878b52c3778f616389";
+  const apiKEY = "fde5ad6eae294cb38530ad2350f0969c";
 
   try {
     const response = await fetch(`${baseURL}/recipes/${id}/information?apiKey=${apiKEY}`);
@@ -253,7 +253,7 @@ const handleUpload = async (image:any)=>{
 
 export async function classifyImage(url:any){
   const baseURL = "https://api.spoonacular.com";
-  const apiKEY = "9fc2dee7142a457b9faae9e34afc8087";
+  const apiKEY = "fde5ad6eae294cb38530ad2350f0969c";
 
   const config = {
     method : 'GET',
@@ -501,7 +501,7 @@ export async function updateCalories(id: string, weeklyCalories: number[]) {
 }
 
 export async function getIngredientImage(name: string): Promise<string> {
-  const apiKEY = "9fc2dee7142a457b9faae9e34afc8087";
+  const apiKEY = "fde5ad6eae294cb38530ad2350f0969c";
   const url = `https://api.spoonacular.com/food/ingredients/search?query=${name}&number=1&apiKey=${apiKEY}`;
   
   try {
