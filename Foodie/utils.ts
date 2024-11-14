@@ -500,6 +500,27 @@ export async function updateCalories(id: string, weeklyCalories: number[]) {
   }
 }
 
+export async function getIngredientImage(name: string): Promise<string> {
+  const apiKEY = "9fc2dee7142a457b9faae9e34afc8087";
+  const url = `https://api.spoonacular.com/food/ingredients/search?query=${name}&number=1&apiKey=${apiKEY}`;
+  
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+    if (data.results && data.results.length > 0) {
+      const imagePath = `https://spoonacular.com/cdn/ingredients_100x100/${data.results[0].image}`;
+      return imagePath;
+    } else {
+      return `https://www.thecocktaildb.com/images/ingredients/${name.toLowerCase()}-Small.png`;
+    }
+  } catch (error) {
+    console.error("Error fetching ingredient image:", error);
+    return "";
+  }
+}
+
+
 // export async function getRecipeDetails(id: number): Promise<IApiFoodRecipeData["recipes"] | undefined> {
 //   const baseURL = "https://api.spoonacular.com";
 //   const apiKEY = "af648e0c5ba441cdbb8dcdec0e2b3a1d";
