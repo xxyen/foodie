@@ -47,7 +47,6 @@ export default function Tab() {
         const userData = await getProfile(id);
         if (userData) {
           setUserInfo(userData);
-          onChangeWeeklyCalories(userData.weeklyCalories);
         }
       }
     };

@@ -17,7 +17,8 @@ import {
   getFoodIngredientImage,
   updateFavoriteFoods,
   updateIngredients,
-  updateCalories
+  updateCalories,
+  getProfile
 } from "@/utils";
 import { useAppContext } from "@/context/contexts";
 import { LinearGradient } from "expo-linear-gradient";
@@ -40,6 +41,18 @@ export default function Tab() {
       setSteps(parsedData.analyzedInstructions[0]?.steps);
     }
   }, [data]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (id) {
+        const userData = await getProfile(id);
+        if (userData) {
+          onChangeWeeklyCalories(userData.weeklyCalories);
+        }
+      }
+    };
+    fetchData();
+  });
 
   if (!recipe) {
     return (
