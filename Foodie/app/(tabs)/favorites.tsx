@@ -158,6 +158,9 @@ const fetchDrinks = useCallback(async () => {
             Alert.alert("Success", alertMessage);
           });
       }
+        function onPressDetail(event: GestureResponderEvent, recipeId: string): void {
+          router.push({ pathname: "drink/detail", params: { id: recipeId } });
+        }
 
         const renderDrinkItem = (drink,colIndex) => (
          <Pressable key={ drink.idDrink} style={styles.container_drink_img} onPress={(event) => onPressDetail(event, drink.idDrink)}>
