@@ -55,13 +55,14 @@ export default function Home() {
          alertMessage = "Drink removed from favorites.";
     } else {
          // add new favorite
-         newFavDrinks = [...favDrinks, selectedDrinkId];
+         console.log("previous:",favDrinks)
+         newFavDrinks = [...favDrinks, Number(selectedDrinkId)];
          console.log("add:", newFavDrinks);
          alertMessage = "Drink added to favorites!";
     }
 
     updateFavoriteDrinks(id, newFavDrinks).then(() => {
-         onChangeFavDrinks([Number(newFavDrinks)]); // TODO
+         onChangeFavDrinks(newFavDrinks);
          Alert.alert("Success", alertMessage);
     });
   }

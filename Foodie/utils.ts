@@ -97,7 +97,7 @@ export async function getRandomFoodRecipe(
   tag: string
 ): Promise<undefined | IApiFoodRecipeData> {
   const baseURL = "https://api.spoonacular.com";
-  const apiKEY = "a391c51a20ac4e878b52c3778f616389";
+  const apiKEY = "9fc2dee7142a457b9faae9e34afc8087";
 
 
   // TODO: assume no error here
@@ -122,6 +122,7 @@ export async function getFoodRecipeByIngredients(
   // console.log(data);
   return data;
 }
+
 
 export async function getRecipeById(id: number): Promise<undefined | IApiFoodRecipeData> {
   const baseURL = "https://api.spoonacular.com";
@@ -152,12 +153,14 @@ export async function getRandomCocktailRecipe(
     );
     const data: IApiDrinkIdData = await response.json();
 
-    // TODO: Random choose 4 drink if data has more than 4drinks
-
+    if (data?.drinks) {
+      data.drinks = data.drinks.sort(() => Math.random() - 0.5);
+    }
+  
     return data;
   }
 
-  export async function searchCocktailById(id: string): Promise<undefined | IApiDrinkIdData> {
+  export async function searchCocktailById(id: number): Promise<undefined | IApiDrinkIdData> {
     const baseURL = "https://www.thecocktaildb.com";
     const apiKEY = "1";
 
@@ -380,7 +383,7 @@ async function handleTakePicture() {
   }
 }
 
-export async function updateFavoriteFoods(id:any, newFavFoods:any
+export async function updateFavoriteFoods(id:any, newFavFoods:number[]
 ) {
     try {
         const response = await fetch(`http://localhost:4000/users/${id}`, {
@@ -405,8 +408,9 @@ export async function updateFavoriteFoods(id:any, newFavFoods:any
     }
 }
 
-export async function updateFavoriteDrinks(id:any, newFavDrinks:any) {
+export async function updateFavoriteDrinks(id:any, newFavDrinks:number[]) {
     try {
+        console.log("newFavDrinks: ", newFavDrinks);
         const response = await fetch(`http://localhost:4000/users/${id}`, {
             method: 'PUT',
             headers: {
@@ -429,8 +433,13 @@ export async function updateFavoriteDrinks(id:any, newFavDrinks:any) {
     }
 }
 
-export function getIngredientImage(name: string){
+export function getFoodIngredientImage(name: string){
   const url = "https://img.spoonacular.com/ingredients_100x100/" + name;
+  // console.log(url);
+  return url;
+}
+export function getDrinkIngredientImage(name: string){
+  const url = `https://www.thecocktaildb.com/images/ingredients/${name}-Small.png`
   // console.log(url);
   return url;
 }
@@ -450,6 +459,31 @@ export async function getRecipeDetails(id: string) {
 
     return data;
 }
+
+export async function updateIngredients(id: any, newIngredients: string[]) {
+  try {
+      const updateResponse = await fetch(`http://localhost:4000/users/${id}`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ingredients: newIngredients }),
+      });
+
+      if (!updateResponse.ok) {
+          const errorData = await updateResponse.json();
+          console.error("Update failed:", errorData.message);
+          alert(errorData.message);
+      } else {
+          const data = await updateResponse.json();
+          console.log(data.message);
+      }
+  } catch (error) {
+      console.error("Request error:", error);
+      alert(error);
+  }
+}
+
 
 // export async function getRecipeDetails(id: number): Promise<IApiFoodRecipeData["recipes"] | undefined> {
 //   const baseURL = "https://api.spoonacular.com";

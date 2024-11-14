@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, SafeAreaView, Platform, Alert,ScrollView,Pressable,ImageBackground } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAppContext } from "@/context/contexts";
 import { useRouter } from "expo-router";
 import { updateFavoriteFoods, updateFavoriteDrinks,getRecipeById, searchCocktailById } from "../../utils";
@@ -8,22 +8,47 @@ import { LinearGradient } from "expo-linear-gradient";
 
 export default function Tab() {
     const [favFoodObjects, setFavFoodObjects] = useState([]);
+    const [favDrinkObjects, setFavDrinkObjects] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState('Food');
     const { id, favDrinks, favFoods, onChangeFavDrinks, onChangeFavFoods } = useAppContext();
     const router = useRouter();
     const [isSelected, setIsSelected] = useState(0);
 
-  useEffect(() => {
-      // transfer favFood id lists to objects
-    const fetchRecipes = async () => {
-      const promises = favFoods.map(id => getRecipeById(id));
-      const recipes = await Promise.all(promises);
-      setFavFoodObjects(recipes);
-    };
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      await fetchRecipes();
+      await fetchDrinks();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
-    fetchRecipes();
-  }, [favFoods]);
+  fetchData();
+}, [favFoods, favDrinks]);
+
+
+const fetchRecipes = useCallback(async () => {
+  try {
+    const promises = favFoods.map(id => getRecipeById(id));
+    const recipes = await Promise.all(promises);
+    setFavFoodObjects(recipes);
+  } catch (error) {
+    console.error("Failed to fetch recipes:", error);
+  }
+}, [favFoods]);
+
+const fetchDrinks = useCallback(async () => {
+  try {
+    const promises = favDrinks.map(id => searchCocktailById(id));
+    const drinks = await Promise.all(promises);
+    setFavDrinkObjects(drinks);
+    console.log(drinks);
+  } catch (error) {
+    console.error("Failed to fetch drinks:", error);
+  }
+}, [favDrinks]);
 
      const renderFoodItem = (recipe: IFoodRecipe, index: number) => (
                       <Pressable
@@ -51,7 +76,7 @@ export default function Tab() {
                             <View style={styles.container_text_and_btn}>
                               <Text style={styles.text}>{recipe.title}</Text>
                               <Pressable
-                                onPress={(event) => onPressAddFav(recipe.id)}
+                                onPress={(event) => onPressAddFavFood(recipe.id)}
                               >
                                 <View style={styles.circle}>
                                   <MaterialCommunityIcons
@@ -112,8 +137,33 @@ export default function Tab() {
         router.push({ pathname: "home/detail", params: { data: JSON.stringify(recipe)} });
       }
 
-        const renderDrinkItem = (drink) => (
-         <Pressable key={colIndex} style={styles.container_recipes_img} onPress={(event) => onPressDetail(event, drink.idDrink)}>
+      function onPressAddFavDrink(idDrink: number): void {
+          let newFavDrinks: number[] = [];
+          let alertMessage: string;
+
+
+          if (favDrinks.includes(Number(idDrink))) {
+              newFavDrinks = favDrinks.filter(
+                (drinkId) => drinkId !== Number(idDrink)
+              );
+              alertMessage = "Drink removed from favorites.";
+            } else {
+              newFavDrinks = [...favDrinks, Number(idDrink)];
+              alertMessage = "Drink added to favorites!";
+            }
+
+
+          updateFavoriteDrinks(id, newFavDrinks).then(() => {
+            onChangeFavDrinks(newFavDrinks);
+            Alert.alert("Success", alertMessage);
+          });
+      }
+        function onPressDetail(event: GestureResponderEvent, recipeId: string): void {
+          router.push({ pathname: "drink/detail", params: { id: recipeId } });
+        }
+
+        const renderDrinkItem = (drink,colIndex) => (
+         <Pressable key={ drink.idDrink} style={styles.container_drink_img} onPress={(event) => onPressDetail(event, drink.idDrink)}>
                           <View style={styles.img_wrapper}>
                             <ImageBackground
                               source={{ uri: drink.strDrinkThumb }}
@@ -131,8 +181,8 @@ export default function Tab() {
                                 start={{ x: 0.5, y: 0 }}
                                 end={{ x: 0.5, y: 1 }}
                               />
-                              <Pressable onPress={() => onPressAddFav(drink.idDrink)}>
-                                <View style={styles.circle}>
+                              <Pressable onPress={() => onPressAddFavDrink(drink.idDrink)}>
+                                <View style={styles.circle_drink}>
                                   <MaterialCommunityIcons
                                     name={favDrinks.includes(Number(drink.idDrink)) ? "heart" : "heart-plus"}
                                     size={20}
@@ -195,13 +245,24 @@ export default function Tab() {
             <Text style={styles.emptyMessage}>No favorite food items added.</Text>
           )
         ) : (
-          favDrinks.length > 0 ? (
-            <View style={styles.gridContainer}>
-              {favDrinks.map(renderDrinkItem)}
+
+          favDrinkObjects.length > 0 ? (
+          <View>
+          {Array.from({ length: Math.ceil(favDrinkObjects.length / 2) }).map((_, rowIndex) => (
+            <View key={rowIndex} style={styles.container_drinkrow}>
+              {favDrinkObjects.slice(rowIndex * 2, rowIndex * 2 + 2).map((drinkObj, colIndex) => (
+                drinkObj.drinks[0] ? renderDrinkItem(drinkObj.drinks[0], rowIndex * 2 + colIndex) : null
+              ))}
             </View>
+          ))}
+
+           </View>
+
+
           ) : (
             <Text style={styles.emptyMessage}>No favorite drinks added.</Text>
           )
+
         )}
       </ScrollView>
 
@@ -257,7 +318,7 @@ selected: {
     flex: 1,
     width: "100%",
     height:"100%",
-    paddingHorizontal: "5%",
+//     paddingHorizontal: "5%",
 
   },
     img_wrapper: {
@@ -278,12 +339,34 @@ selected: {
 
     elevation: 20, // TODO: seems like not work
   },
+    container_drink_img: {
+      alignContent: "center",
+      justifyContent: "center",
+      alignSelf: "center",
+      width: "40%",
+      marginVertical: 20,
+
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.25,
+      shadowRadius: 5,
+
+      elevation: 20, // TODO: seems like not work
+    },
     container_text_and_btn: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
       width: "95%",
     },
+      container_drinkrow: {
+        width: "100%",
+        flexDirection: "row",
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        gap: 20,
+        marginLeft:"8%",
+      },
   text: {
     flex: 8,
     fontSize: 18,
@@ -294,7 +377,7 @@ selected: {
     textShadowOffset: { width: 2, height: 3 },
     textShadowRadius: 3,
   },
-    circle: {
+    circle_drink: {
       height: 25,
       width: 25,
       backgroundColor: "white",
@@ -302,7 +385,17 @@ selected: {
       alignItems: "center",
       justifyContent: "center",
       margin: 10,
+      marginLeft:"80%",
     },
+        circle: {
+          height: 25,
+          width: 25,
+          backgroundColor: "white",
+          borderRadius: 25 / 2,
+          alignItems: "center",
+          justifyContent: "center",
+          margin: 10,
+        },
   img: {
     height: 180,
     width: "100%",
@@ -323,4 +416,8 @@ emptyMessage: {
          alignItems: 'center',
          alignSelf: 'center',
       },
+        gradient: {
+          ...StyleSheet.absoluteFillObject,
+          borderRadius: 10,
+        },
 });
