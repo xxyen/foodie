@@ -73,7 +73,7 @@ export default function Tab() {
     if (userInfo?.googleId) {
       try {
         const response = await Linking.openURL(
-          `${baseUrl}/api/logout`
+          `http://localhost:4000/api/logout`
         );
       } catch (err) {
         console.log(err);

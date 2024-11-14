@@ -19,8 +19,7 @@ import { getProfile } from "@/utils";
 import * as Linking from "expo-linking";
 
 export default function LoginScreen() {
-  const { username, onChangeUsername, onChangeId, onChangeAllergies, 
-    onChangeBuffer, onChangeFavDrinks, onChangeFavFoods, onChangeIngredients, onChangeWeeklyCalories } = useAppContext();
+  const { username, onChangeUsername, onChangeId } = useAppContext();
 
   // variables
   const img_path = "../assets/rasberry.png";
@@ -78,7 +77,6 @@ export default function LoginScreen() {
     const res = await loginHelper();
     if (res) {
       const user = await getProfile(res);
-      fetchUserInfo(user);
       router.dismissAll();
       router.push("/home");
       Alert.alert("Congratulate!", user?.username+", you have logged in successfully."); 
@@ -117,14 +115,6 @@ export default function LoginScreen() {
     router.push("./signup");
   }
 
-  const fetchUserInfo = (user:IUserInfo) => {
-    onChangeAllergies(user?.allergies);
-    onChangeBuffer(user.icon);
-    onChangeFavDrinks(user.favDrinks);
-    onChangeFavFoods(user.favFoods);
-    onChangeIngredients(user.ingredients);
-    onChangeWeeklyCalories(user.weeklyCalories);
-  }
 
   return (
     <>

@@ -24,10 +24,7 @@ useEffect(() => {
       console.error("Error fetching data:", error);
     }
   };
-
   fetchData();
-  console.log(favFoods);
-  console.log(favDrinks);
 }, [favFoods, favDrinks]);
 
 
@@ -46,7 +43,6 @@ const fetchDrinks = useCallback(async () => {
     const promises = favDrinks.map(id => searchCocktailById(id));
     const drinks = await Promise.all(promises);
     setFavDrinkObjects(drinks);
-    console.log(drinks);
   } catch (error) {
     console.error("Failed to fetch drinks:", error);
   }
