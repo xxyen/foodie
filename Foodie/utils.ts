@@ -123,6 +123,7 @@ export async function getFoodRecipeByIngredients(
   return data;
 }
 
+
 export async function getRecipeById(id: number): Promise<undefined | IApiFoodRecipeData> {
   const baseURL = "https://api.spoonacular.com";
   const apiKEY = "a391c51a20ac4e878b52c3778f616389";
@@ -159,7 +160,7 @@ export async function getRandomCocktailRecipe(
     return data;
   }
 
-  export async function searchCocktailById(id: string): Promise<undefined | IApiDrinkIdData> {
+  export async function searchCocktailById(id: number): Promise<undefined | IApiDrinkIdData> {
     const baseURL = "https://www.thecocktaildb.com";
     const apiKEY = "1";
 
@@ -382,7 +383,7 @@ async function handleTakePicture() {
   }
 }
 
-export async function updateFavoriteFoods(id:any, newFavFoods:any
+export async function updateFavoriteFoods(id:any, newFavFoods:number[]
 ) {
     try {
         const response = await fetch(`http://localhost:4000/users/${id}`, {
@@ -407,8 +408,9 @@ export async function updateFavoriteFoods(id:any, newFavFoods:any
     }
 }
 
-export async function updateFavoriteDrinks(id:any, newFavDrinks:any) {
+export async function updateFavoriteDrinks(id:any, newFavDrinks:number[]) {
     try {
+        console.log("newFavDrinks: ", newFavDrinks);
         const response = await fetch(`http://localhost:4000/users/${id}`, {
             method: 'PUT',
             headers: {
