@@ -13,7 +13,7 @@ import { useAppContext } from "@/context/contexts";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { BarChart } from "react-native-gifted-charts";
-import { getProfile, parseImage, getFoodIngredientImage } from "@/utils";
+import { getProfile, parseImage, getFoodIngredientImage, getIngredientImage } from "@/utils";
 
 export default function Tab() {
   const {
@@ -37,32 +37,54 @@ export default function Tab() {
   const window_width = Dimensions.get("window").width;
   const window_height = Dimensions.get("window").height;
 
-  // intake demo data
-  const barData = [
-    { value: 800, label: "Mon" },
-    { value: 1300, label: "Tue" },
-    { value: 1300, label: "Wed" },
-    { value: 400, label: "Thu" },
-    { value: 1200, label: "Fri" },
-    { value: 1800, label: "Sat" },
-    { value: 1300, label: "Sun" },
-  ];
-
   // state
   const [userInfo, setUserInfo] = useState<IUserInfo | undefined>(undefined);
+  const [ingredientImages, setIngredientImages] = useState<string[]>([]);
 
-  // Render
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUserData = async () => {
       if (id) {
         const userData = await getProfile(id);
         if (userData) {
           setUserInfo(userData);
+
+          if (userInfo?.ingredients && userInfo.ingredients.length > 0) {
+              const imagePromises = userInfo.ingredients.slice(0, 3).map(async (ingredient) => {
+                const imageUrl = await getIngredientImage(ingredient);
+                return imageUrl;
+              });
+              const images = await Promise.all(imagePromises);
+              console.log(images);
+              setIngredientImages(images);
+            } else {
+              setIngredientImages([]); 
+            }
         }
       }
     };
-    fetchData();
-  });
+    fetchUserData();
+  }, [id]); 
+
+  // useEffect(() => {
+  //   const fetchIngredientImages = async () => {
+  //     if (userInfo?.ingredients && userInfo.ingredients.length > 0) {
+  //       const imagePromises = userInfo.ingredients.slice(0, 3).map(async (ingredient) => {
+  //         const imageUrl = await getIngredientImage(ingredient);
+  //         return imageUrl;
+  //       });
+  //       const images = await Promise.all(imagePromises);
+  //       setIngredientImages(images);
+  //     } else {
+  //       setIngredientImages([]); 
+  //     }
+  //   };
+  //   fetchIngredientImages();
+  // }, [id]);
+  
+  const barData = userInfo?.weeklyCalories.map((calories, index) => ({
+    value: calories,
+    label: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][index],
+  })) || [];
 
   // functions
   async function onPressLoginOut(event: GestureResponderEvent): Promise<void> {
@@ -112,33 +134,34 @@ export default function Tab() {
             resizeMode="contain"
           />
           <Text style={styles.title}>{userInfo?.username}</Text>
-          {/* <View style={styles.shopping_list}>
-              <Text style={styles.title}>My Shopping List</Text>
-              <View style={styles.container_row}></View>
-            </View> */}
           <Pressable
             style={styles.shopping_list}
             onPress={() => router.push("profile/shopping-list")}
           >
             <Text style={styles.title}>My Shopping List</Text>
             <View style={styles.container_row}>
-              <Image
-                source={require(img_path)}
-                style={styles.img}
-                resizeMode="contain"
-              />
-              <Image
-                source={require(img_path)}
-                style={styles.img}
-                resizeMode="contain"
-              />
+            {/* {ingredientImages.length > 0 ? (
+              ingredientImages.map((img, index) => (
+                img ? (
+                  <Image key={index} source={{ uri: img }} style={styles.img} resizeMode="contain" />
+                ) : (
+                  <Text key={index}>Image not available</Text>
+                )
+              ))
+            ) : (
+              <Text>No ingredients in shopping list</Text>
+            )} */}
+            {
+              ingredientImages.map((img, index) => (
+                img ? (
+                  <Image key={index} source={{ uri: img }} style={styles.img} resizeMode="contain" />
+                ) : (
+                  <Text key={index}>Image not available</Text>
+                )
+              ))
+}
+          </View>
 
-              <Image
-                source={require(img_path)}
-                style={styles.img}
-                resizeMode="contain"
-              />
-            </View>
             <View style={styles.more}>
               <Text>➕</Text>
             </View>
