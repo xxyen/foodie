@@ -32,11 +32,19 @@ export default function Tab() {
   const [gallery, setGallery] = useState(false);
   const [camera, setCamera] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [searchText, setSearchText] = useState("");
 
   // functions
   function onChangeSearchText(text: string): void {
-    throw new Error("Function not implemented.");
+    setSearchText(text);
   }
+
+  const openModal = () => {
+      router.push({
+        pathname: "/search/search-by-text",
+        params: { searchText },
+      });
+    };
 
   function onPressSearchByImage(event: GestureResponderEvent): void {
     // throw new Error("Function not implemented.");
@@ -103,12 +111,15 @@ export default function Tab() {
         <View style={styles.container_header}>
           <Text style={styles.title}>Search</Text>
         </View>
+         <Pressable onPress={openModal} style={styles.search_text_pressable}>
         <TextInput
           style={styles.search_input}
           onChangeText={onChangeSearchText}
           placeholder="What would you like to eat today?"
           placeholderTextColor="rgba(128,128,128, 0.9)"
+          onFocus={openModal}
         />
+        </Pressable>
         <View style={styles.container_header}>
           <Text style={styles.title2}>Search By Image</Text>
         </View>
@@ -345,5 +356,11 @@ const styles = StyleSheet.create({
     padding: 5,
     fontSize: 32,
     marginVertical: 10,
+  },
+
+  search_text_pressable:{
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 });

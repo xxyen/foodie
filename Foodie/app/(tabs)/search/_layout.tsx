@@ -18,6 +18,14 @@ export default function ProfileLayout() {
         }}
       />
 
+      <Stack.Screen
+              name="search-by-text"
+              options={{
+                title: "Search By Text",
+                presentation: "modal",
+              }}
+            />
+
     </Stack>
   );
 }
