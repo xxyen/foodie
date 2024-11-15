@@ -11,7 +11,7 @@ import {
   GestureResponderEvent,
   Alert,
 } from "react-native";
-import { getRandomFoodRecipe, updateFavoriteFoods } from "../../../utils";
+import { getProfile, getRandomFoodRecipe, updateFavoriteFoods } from "../../../utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
 import { useAppContext } from "@/context/contexts";
@@ -19,7 +19,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 
 export default function Home() {
-  const { id, onChangeId, favFoods, onChangeFavFoods } = useAppContext();
+  const { id, onChangeId, favFoods, onChangeFavFoods, onChangeAllergies,onChangeBuffer,
+    onChangeFavDrinks, onChangeIngredients, onChangeWeeklyCalories, } = useAppContext();
 
   // states
   const [isSelected, setIsSelected] = useState<number>(0);
@@ -76,9 +77,14 @@ export default function Home() {
   }, [tag]);
 
   useEffect(() => {
-    if (id) {
-      console.log("Updated userId: ", id);
+    const userDataInitialization = async() => {
+      if (id) {
+        console.log("Updated userId: ", id);
+        const user = await getProfile(id);
+        fetchUserInfo(user);
+      }
     }
+    userDataInitialization();
   }, [id]);
 
   // functions
@@ -130,6 +136,16 @@ export default function Home() {
     // console.log(recipe);
     router.push({ pathname: "home/detail", params: { data: JSON.stringify(recipe)} });
   }
+
+  const fetchUserInfo = (user:IUserInfo) => {
+    onChangeAllergies(user?.allergies);
+    onChangeBuffer(user.icon);
+    onChangeFavDrinks(user.favDrinks);
+    onChangeFavFoods(user.favFoods);
+    onChangeIngredients(user.ingredients);
+    onChangeWeeklyCalories(user.weeklyCalories);
+  }
+
 
   return (
     <SafeAreaView style={styles.safearea}>

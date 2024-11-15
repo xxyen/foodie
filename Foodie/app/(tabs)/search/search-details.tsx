@@ -24,7 +24,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
 export default function Home() {
-  const { id, onChangeId, favFoods, onChangeFavFoods } = useAppContext();
+  const { id, onChangeId, favFoods, onChangeFavFoods} = useAppContext();
+  
   const { pressedTag, type } = useLocalSearchParams();
 
   // states

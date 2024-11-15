@@ -11,6 +11,7 @@ import {
   Pressable,
   TextInput,
   Alert,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAppContext } from "@/context/contexts";
@@ -23,6 +24,9 @@ export default function LoginScreen() {
   // variables
   const img_path = "../assets/rasberry.png";
   const google_icon_path = "../assets/google_icon.png";
+  const baseUrl = Platform.OS === "android"
+                ? "http://10.0.2.2:4000"
+                : "http://localhost:4000"
 
   // navigation
   const router = useRouter();
@@ -91,7 +95,7 @@ export default function LoginScreen() {
       }),
     };
     try {
-      const response = await fetch(`http://localhost:4000/users/login`, config);
+      const response = await fetch(`${baseUrl}/users/login`, config);
       const body = await response.json();
       if (response.status != 200) {
         alert(body.message);
@@ -110,6 +114,7 @@ export default function LoginScreen() {
     console.log("user: press sign up btn");
     router.push("./signup");
   }
+
 
   return (
     <>

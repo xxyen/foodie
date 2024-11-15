@@ -1,9 +1,13 @@
 import {Buffer} from 'buffer';
-import { Alert } from 'react-native';
+import { Alert,Platform } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import { useRef, useState } from 'react';
 import OpenAI from "openai";
+
+const baseUrl = Platform.OS === "android"
+                ? "http://10.0.2.2:4000/users"
+                : "http://localhost:4000/users"
 
 // Search by Image
 const openai = new OpenAI({
@@ -32,15 +36,20 @@ async function OpenAIRecogByBase64(b64:string|undefined|null) {
   return response.choices[0]["message"]["content"];
 }
 
-// Search by Image: Pick a Image from Gallery
-export const pickImage = async () => {
-  //Reference: https://gist.github.com/Balaagha/9b080d984d5b99e916293d24b4dfa01e
+export const galleryImage = async() =>{
   const result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsEditing: true,
     quality: 0,
     base64: true,
   });
+  return result;
+}
+
+// Search by Image: Pick a Image from Gallery
+export const pickImage = async () => {
+  //Reference: https://gist.github.com/Balaagha/9b080d984d5b99e916293d24b4dfa01e
+  const result = await galleryImage();
 
   if (!result.canceled) {
     let newFile = {
@@ -59,6 +68,21 @@ export const pickImage = async () => {
   }
 };
 
+export const updateIconByGallery = async(id:any) => {
+  const result = await galleryImage();
+  if (!result.canceled) {
+      const uri = await fetch(result.assets[0].uri);
+      const arrayBufferUri = await uri.arrayBuffer();
+      const bufferUri = Buffer.from(arrayBufferUri);
+      const res = await updateImage(id,bufferUri);
+      if(res===200){
+          return bufferUri;
+      }
+
+  }
+  return undefined;
+}
+
 export const registerHelper = async (username:string,email:string,password:string,
 allergies:string[],diets: string[], onChangeId:(id:string)=>void) => {
   
@@ -76,7 +100,7 @@ allergies:string[],diets: string[], onChangeId:(id:string)=>void) => {
     })
   };
   try{
-    const response = await fetch(`http://localhost:4000/users/register`, config);
+    const response = await fetch(`${baseUrl}/register`, config);
     const body = await response.json();
     if(response.status!=201){
       alert(body.message);
@@ -101,12 +125,22 @@ export async function getRandomFoodRecipe(
 
 
   // TODO: assume no error here
-  const response = await fetch(
-    `${baseURL}/recipes/random?apiKey=${apiKEY}&limitLicense=true&tags=${tag}&number=3&includeNutrition=true`
-  );
-  const data: IApiFoodRecipeData = await response.json();
-  return data;
+  try{
+    const response = await fetch(
+      `${baseURL}/recipes/random?apiKey=${apiKEY}&limitLicense=true&tags=${tag}&number=3&includeNutrition=true`
+    );
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+    const data: IApiFoodRecipeData = await response.json();
+    return data;
+  }
+  catch(err){
+    console.error("Error fetching recipe information:", err);
+    return undefined;
+  }
 }
+
 
 export async function getFoodRecipeAutoComplete(
   searchText: string
@@ -129,15 +163,25 @@ export async function getFoodRecipeByIngredients(
   tag: string
 ) {
   const baseURL = "https://api.spoonacular.com";
+  //  a391c51a20ac4e878b52c3778f616389
   const apiKEY = "a391c51a20ac4e878b52c3778f616389";
 
   // TODO: assume no error here
-  const response = await fetch(
-    `${baseURL}/recipes/complexSearch?includeIngredients=${tag}&number=3&instructionsRequired=true&addRecipeInformation=true&addRecipeInstructions=true&addRecipeNutrition=true&fillIngredients=true&apiKey=${apiKEY}`
-  );
-  const data = await response.json();
-  // console.log(data);
-  return data;
+  try{
+    const response = await fetch(
+      `${baseURL}/recipes/complexSearch?includeIngredients=${tag}&number=3&instructionsRequired=true&addRecipeInformation=true&addRecipeInstructions=true&addRecipeNutrition=true&fillIngredients=true&apiKey=${apiKEY}`
+    );
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+    const data = await response.json();
+    // console.log(data);
+    return data;
+  }
+  catch(err){
+    console.error("Error fetching recipe information:", err);
+    return undefined;
+  }
 }
 
 
@@ -195,24 +239,29 @@ export async function getRandomCocktailRecipe(
   }
 
 
+export const openCamerHelper = async() => {
+    // ref = 'https://stackoverflow.com/questions/74452419/error-call-to-function-exponentimagepicker-launchcameraasync-has-been-rejecte'
+
+    const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
+    if (cameraPermission.granted === false) {
+      return;
+    }
+  
+    const res = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      aspect: [4, 3],
+      quality: 1,
+      base64: true,
+    });
+
+    return res;
+}
 
 export const openCamera = async (result:any) => {
-  // ref = 'https://stackoverflow.com/questions/74452419/error-call-to-function-exponentimagepicker-launchcameraasync-has-been-rejecte'
+  const res = await openCamerHelper();
 
-  const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
-  if (cameraPermission.granted === false) {
-    return;
-  }
-
-  const res = await ImagePicker.launchCameraAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    allowsEditing: false,
-    aspect: [4, 3],
-    quality: 1,
-    base64: true,
-  });
-
-  if (!res.canceled) {
+  if (res && !res.canceled) {
     const { assets } = res;
     if (assets && assets.length > 0) {
       let newFile = {
@@ -223,11 +272,30 @@ export const openCamera = async (result:any) => {
       // const url = await handleUpload(newFile);
       // const categ = await classifyImage(url);
       const categ = await OpenAIRecogByBase64(newFile.base64);
-      console.log(categ);
       return categ;
     }
   }
 };
+
+
+export const updateIconByCamera = async(id:any) => {
+  const result = await openCamerHelper();
+
+  if (result && !result.canceled) {
+    const { assets } = result;
+    if (assets && assets.length > 0) {
+      const uri = result.assets[0].uri;
+      const fetchUri = await fetch(uri);
+      const arrayBufferUri = await fetchUri.arrayBuffer();
+      const bufferUri = Buffer.from(arrayBufferUri);
+      const res = await updateImage(id,bufferUri);
+      if(res===200){
+          return bufferUri;
+      }
+    }
+  }
+  return undefined;
+}
 
 async function OpenAIRecogByUrl(url:string) {
   //Ref: https://platform.openai.com/docs/guides/vision?lang=node
@@ -313,7 +381,7 @@ export const getProfile = async (id:string) => {
     }
   };
   try{
-    const response = await fetch(`http://localhost:4000/users/${id}`, config);
+    const response = await fetch(`${baseUrl}/${id}`, config);
     const body = await response.json();
     if(response.status!=200){
       alert(body.message);
@@ -347,7 +415,7 @@ export const parseImage = (buffer: Buffer| undefined) => {
 
 const updateHelper = async(id: string|undefined, config:RequestInit, success: string) => {
   try{
-    const response = await fetch(`http://localhost:4000/users/${id}`, config);
+    const response = await fetch(`${baseUrl}/${id}`, config);
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.indexOf("application/json") !== -1){
       const body = await response.json();
@@ -403,7 +471,7 @@ async function handleTakePicture() {
 export async function updateFavoriteFoods(id:any, newFavFoods:number[]
 ) {
     try {
-        const response = await fetch(`http://localhost:4000/users/${id}`, {
+        const response = await fetch(`${baseUrl}/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -428,7 +496,7 @@ export async function updateFavoriteFoods(id:any, newFavFoods:number[]
 export async function updateFavoriteDrinks(id:any, newFavDrinks:number[]) {
     try {
         console.log("newFavDrinks: ", newFavDrinks);
-        const response = await fetch(`http://localhost:4000/users/${id}`, {
+        const response = await fetch(`${baseUrl}/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -479,7 +547,7 @@ export async function getRecipeDetails(id: string) {
 
 export async function updateIngredients(id: any, newIngredients: string[]) {
   try {
-      const updateResponse = await fetch(`http://localhost:4000/users/${id}`, {
+      const updateResponse = await fetch(`${baseUrl}/${id}`, {
           method: 'PUT',
           headers: {
               'Content-Type': 'application/json',
@@ -503,7 +571,7 @@ export async function updateIngredients(id: any, newIngredients: string[]) {
 
 export async function updateCalories(id: string, weeklyCalories: number[]) {
   try {
-    const response = await fetch(`http://localhost:4000/users/${id}`, {
+    const response = await fetch(`${baseUrl}/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ weeklyCalories: weeklyCalories }),
@@ -538,6 +606,37 @@ export async function getIngredientImage(name: string): Promise<string> {
   }
 }
 
+export async function changeAllergies(id:string|undefined, allergies:string[]){
+  try {
+    const updateResponse = await fetch(`${baseUrl}/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ allergies: allergies }),
+    });
+
+    if (!updateResponse.ok) {
+        const errorData = await updateResponse.json();
+        console.error("Update failed:", errorData.message);
+        alert(errorData.message);
+        return false;
+    } else {
+        const data = await updateResponse.json();
+        console.log(data.message);
+        return true;
+    }
+  } catch (error) {
+      console.error("Request error:", error);
+      alert(error);
+      return false;
+  }
+}
+
+export function extractEmoji(inputs:string[]){
+  return inputs.map((a)=>a.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2580-\u27BF]|\uD83E[\uDD10-\uDDFF]/g, '').replace(/\u{1FAD8}/u,'').replace(/\u{1FAA8}/u,'')
+  .toLowerCase().replace(' ','_'));
+}
 
 
 // export async function getRecipeDetails(id: number): Promise<IApiFoodRecipeData["recipes"] | undefined> {

@@ -11,6 +11,7 @@ import {
   Pressable,
   TextInput,
   Alert,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import * as Linking from "expo-linking";
@@ -23,6 +24,10 @@ export default function SignUpScreen() {
   // variables
   const img_path = "../../assets/chickenleg.png";
   const google_icon_path = "../../assets/google_icon.png";
+  const baseUrl = Platform.OS === "android"
+  ? "http://10.0.2.2:4000"
+  : "http://localhost:4000"
+
 
   // navigation
   const router = useRouter();
@@ -36,9 +41,10 @@ export default function SignUpScreen() {
   // functions
   function onPressLater(event: GestureResponderEvent): void {
     console.log("user: press later");
+    router.dismissAll();
     // router.back();
-    // router.push("/home");
-    router.push("signup/allergy");
+    router.push("/home");
+    // router.push("signup/allergy");
   }
 
   function onChangeUserName(text: string): void {
@@ -140,7 +146,7 @@ export default function SignUpScreen() {
       })
     };
     try{
-      const response = await fetch(`http://localhost:4000/users/register`, config);
+      const response = await fetch(`${baseUrl}/register`, config);
       const body = await response.json();
       if(response.status!=201){
         alert(body.message);
