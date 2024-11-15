@@ -571,7 +571,7 @@ export async function updateIngredients(id: any, newIngredients: string[]) {
 
 export async function updateCalories(id: string, weeklyCalories: number[]) {
   try {
-    const response = await fetch(`http://localhost:4000/users/${id}`, {
+    const response = await fetch(`${baseUrl}/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ weeklyCalories: weeklyCalories }),
@@ -606,6 +606,37 @@ export async function getIngredientImage(name: string): Promise<string> {
   }
 }
 
+export async function changeAllergies(id:string|undefined, allergies:string[]){
+  try {
+    const updateResponse = await fetch(`${baseUrl}/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ allergies: allergies }),
+    });
+
+    if (!updateResponse.ok) {
+        const errorData = await updateResponse.json();
+        console.error("Update failed:", errorData.message);
+        alert(errorData.message);
+        return false;
+    } else {
+        const data = await updateResponse.json();
+        console.log(data.message);
+        return true;
+    }
+  } catch (error) {
+      console.error("Request error:", error);
+      alert(error);
+      return false;
+  }
+}
+
+export function extractEmoji(inputs:string[]){
+  return inputs.map((a)=>a.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2580-\u27BF]|\uD83E[\uDD10-\uDDFF]/g, '').replace(/\u{1FAD8}/u,'').replace(/\u{1FAA8}/u,'')
+  .toLowerCase().replace(' ','_'));
+}
 
 
 // export async function getRecipeDetails(id: number): Promise<IApiFoodRecipeData["recipes"] | undefined> {

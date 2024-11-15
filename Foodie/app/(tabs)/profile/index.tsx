@@ -8,21 +8,25 @@ import {
   GestureResponderEvent,
   Dimensions,
   Linking,
-  Platform
+  Platform,
+  ScrollView
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { useAppContext } from "@/context/contexts";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { BarChart } from "react-native-gifted-charts";
-import { getProfile, parseImage, getFoodIngredientImage, getIngredientImage } from "@/utils";
+import { getProfile, parseImage, getFoodIngredientImage, getIngredientImage, changeAllergies } from "@/utils";
 import PickerModal from "@/Components/PickerModal";
+import FoodTag from "@/app/signup/FoodTag";
+import ExtraAllergies from "./ExtraAllergies";
 
 export default function Tab() {
   const {
     username,
     id,
     icon,
+    allergies,
     onChangeUsername,
     onChangeEmail,
     onChangeAllergies,
@@ -48,6 +52,8 @@ export default function Tab() {
   const [userInfo, setUserInfo] = useState<IUserInfo | undefined>(undefined);
   const [ingredientImages, setIngredientImages] = useState<string[]>([]);
   const [modal, setModal] = useState(false);
+  const [statues, setStatues] = useState<boolean[]>(Array(allergies.length).fill(false));
+  const [allergyModal, setAllergyModal] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -72,6 +78,10 @@ export default function Tab() {
     };
     fetchUserData();
   }, [id]); 
+
+  useEffect(()=>{
+    setStatues(Array(allergies.length).fill(false));
+  },[allergies])
 
   // useEffect(() => {
   //   const fetchIngredientImages = async () => {
@@ -112,6 +122,17 @@ export default function Tab() {
   
   function onPressUpdateIcon(event: GestureResponderEvent): void{
     setModal(true);
+  }
+
+  async function onPressRemoveAllergy(event: GestureResponderEvent): Promise<void>{
+    const chosen = allergies.filter((a,index)=>statues[index]===false);
+    await changeAllergies(id,chosen);
+    onChangeAllergies(chosen);
+    setStatues(Array(chosen.length).fill(false));
+  }
+
+  async function onPressAddAllergy(event: GestureResponderEvent): Promise<void>{
+    setAllergyModal((visible)=>!visible);
   }
 
   function onPressLogin(event: GestureResponderEvent): void {
@@ -187,7 +208,7 @@ export default function Tab() {
           </Pressable>
           <View style={styles.intake}>
             <View style={{ justifyContent: "flex-start" }}>
-              <Text style={styles.title}>Calorie intake</Text>
+              <Text style={styles.title}>Calorie Intake</Text>
             </View>
 
             <View>
@@ -209,14 +230,28 @@ export default function Tab() {
             </View>
           </View>
           <View style={styles.shopping_list}>
-            <Text style={styles.title}>My Food allergies</Text>
             <View style={styles.container_row}>
+              <Pressable onPress={onPressRemoveAllergy}>
+                <FontAwesome name="minus" size={15} color={"blue"}/>
+              </Pressable>
+              <Text style={styles.title}>My Food Allergies</Text>
+              <Pressable onPress={onPressAddAllergy}>
+                <FontAwesome name="plus" size={15} color={"red"}/>
+              </Pressable>
+            </View>
+            <ScrollView contentContainerStyle={styles.container_tag_row}>
+              {allergies.map((a:string, index:number)=> <FoodTag key={index} food={a} index={index} statues={statues} onChangeStatus={setStatues}/>)}
+            </ScrollView>
+            {allergyModal && (
+              <ExtraAllergies visible={allergyModal} onChangeVisible={setAllergyModal}/>
+            )}
+            {/* <View style={styles.container_row}>
               <Image
                 source={require(img_path)}
                 style={styles.img}
                 resizeMode="contain"
               />
-            </View>
+            </View> */}
           </View>
           <Pressable style={styles.btn_logout} onPress={onPressLoginOut}>
             <Text style={styles.btn_text}>Log Out</Text>
@@ -373,5 +408,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     width: "100%",
+  },
+  container_tag_row: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "90%",
+    gap: 10,
+    flexWrap: "wrap",
   },
 });
