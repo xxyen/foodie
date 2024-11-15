@@ -16,6 +16,7 @@ import {
 import { pickImage, openCamera } from "@/utils";
 import { useCameraPermissions } from "expo-camera";
 import { useRouter } from "expo-router";
+import PickerModal from "@/Components/PickerModal";
 
 export default function Tab() {
   // variables
@@ -137,6 +138,7 @@ export default function Tab() {
               </Modal>
             </View>
           )}
+          {/* {modal && (<PickerModal visible={modal} onChangeVisible={setModal} action={1}/>)} */}
           {camera && permission && !permission?.granted && (
             <View style={styles.modalBackground}>
               <Modal transparent visible={camera && !permission?.granted}>

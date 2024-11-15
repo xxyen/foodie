@@ -10,16 +10,19 @@ import {
   Linking,
   Platform
 } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
 import { useAppContext } from "@/context/contexts";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { BarChart } from "react-native-gifted-charts";
 import { getProfile, parseImage, getFoodIngredientImage } from "@/utils";
+import PickerModal from "@/Components/PickerModal";
 
 export default function Tab() {
   const {
     username,
     id,
+    icon,
     onChangeUsername,
     onChangeEmail,
     onChangeAllergies,
@@ -54,6 +57,7 @@ export default function Tab() {
 
   // state
   const [userInfo, setUserInfo] = useState<IUserInfo | undefined>(undefined);
+  const [modal, setModal] = useState(false);
 
   // Render
   useEffect(() => {
@@ -83,6 +87,10 @@ export default function Tab() {
     logout();
     setUserInfo(undefined);
   }
+  
+  function onPressUpdateIcon(event: GestureResponderEvent): void{
+    setModal(true);
+  }
 
   function onPressLogin(event: GestureResponderEvent): void {
     console.log("user: press login btn");
@@ -110,12 +118,19 @@ export default function Tab() {
     <SafeAreaView style={styles.safearea}>
       {id ? (
         <View style={styles.container}>
-          <Image
-            source={{ uri: parseImage(userInfo?.icon) }}
-            style={styles.avatar}
-            resizeMode="contain"
-          />
+          <Pressable onPress={onPressUpdateIcon} >
+            <Image
+              source={{ uri: parseImage(icon) }}
+              style={styles.avatar}
+              resizeMode="contain"
+            />
+            <FontAwesome name={"plus-square"} size={15} color={"black"} 
+            style={{gap:0, margin:0, paddingHorizontal:35}}/>
+          </Pressable>
           <Text style={styles.title}>{userInfo?.username}</Text>
+          {modal && (
+            <PickerModal visible={modal} onChangeVisible={setModal} action={2}/>
+          )}
           {/* <View style={styles.shopping_list}>
               <Text style={styles.title}>My Shopping List</Text>
               <View style={styles.container_row}></View>

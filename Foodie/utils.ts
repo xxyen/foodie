@@ -36,15 +36,20 @@ async function OpenAIRecogByBase64(b64:string|undefined|null) {
   return response.choices[0]["message"]["content"];
 }
 
-// Search by Image: Pick a Image from Gallery
-export const pickImage = async () => {
-  //Reference: https://gist.github.com/Balaagha/9b080d984d5b99e916293d24b4dfa01e
+export const galleryImage = async() =>{
   const result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsEditing: true,
     quality: 0,
     base64: true,
   });
+  return result;
+}
+
+// Search by Image: Pick a Image from Gallery
+export const pickImage = async () => {
+  //Reference: https://gist.github.com/Balaagha/9b080d984d5b99e916293d24b4dfa01e
+  const result = await galleryImage();
 
   if (!result.canceled) {
     let newFile = {
@@ -62,6 +67,21 @@ export const pickImage = async () => {
     return categ;
   }
 };
+
+export const updateIconByGallery = async(id:any) => {
+  const result = await galleryImage();
+  if (!result.canceled) {
+      const uri = await fetch(result.assets[0].uri);
+      const arrayBufferUri = await uri.arrayBuffer();
+      const bufferUri = Buffer.from(arrayBufferUri);
+      const res = await updateImage(id,bufferUri);
+      if(res===200){
+          return bufferUri;
+      }
+
+  }
+  return undefined;
+}
 
 export const registerHelper = async (username:string,email:string,password:string,
 allergies:string[],diets: string[], onChangeId:(id:string)=>void) => {
@@ -201,24 +221,29 @@ export async function getRandomCocktailRecipe(
   }
 
 
+export const openCamerHelper = async() => {
+    // ref = 'https://stackoverflow.com/questions/74452419/error-call-to-function-exponentimagepicker-launchcameraasync-has-been-rejecte'
+
+    const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
+    if (cameraPermission.granted === false) {
+      return;
+    }
+  
+    const res = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      aspect: [4, 3],
+      quality: 1,
+      base64: true,
+    });
+
+    return res;
+}
 
 export const openCamera = async (result:any) => {
-  // ref = 'https://stackoverflow.com/questions/74452419/error-call-to-function-exponentimagepicker-launchcameraasync-has-been-rejecte'
+  const res = await openCamerHelper();
 
-  const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
-  if (cameraPermission.granted === false) {
-    return;
-  }
-
-  const res = await ImagePicker.launchCameraAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    allowsEditing: false,
-    aspect: [4, 3],
-    quality: 1,
-    base64: true,
-  });
-
-  if (!res.canceled) {
+  if (res && !res.canceled) {
     const { assets } = res;
     if (assets && assets.length > 0) {
       let newFile = {
@@ -229,11 +254,30 @@ export const openCamera = async (result:any) => {
       // const url = await handleUpload(newFile);
       // const categ = await classifyImage(url);
       const categ = await OpenAIRecogByBase64(newFile.base64);
-      console.log(categ);
       return categ;
     }
   }
 };
+
+
+export const updateIconByCamera = async(id:any) => {
+  const result = await openCamerHelper();
+
+  if (result && !result.canceled) {
+    const { assets } = result;
+    if (assets && assets.length > 0) {
+      const uri = result.assets[0].uri;
+      const fetchUri = await fetch(uri);
+      const arrayBufferUri = await fetchUri.arrayBuffer();
+      const bufferUri = Buffer.from(arrayBufferUri);
+      const res = await updateImage(id,bufferUri);
+      if(res===200){
+          return bufferUri;
+      }
+    }
+  }
+  return undefined;
+}
 
 async function OpenAIRecogByUrl(url:string) {
   //Ref: https://platform.openai.com/docs/guides/vision?lang=node
