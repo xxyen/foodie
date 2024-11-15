@@ -13,8 +13,10 @@ import {
 } from "react-native";
 import {
   getFoodRecipeByIngredients,
+  getRecipeById,
   getRandomFoodRecipe,
   updateFavoriteFoods,
+  getFoodRecipeAutoComplete,
 } from "../../../utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useAppContext } from "@/context/contexts";
@@ -56,6 +58,22 @@ export default function Home() {
         if (recipes) {
           setData(recipes.results);
         }
+      }
+
+      if (type == "text"){
+       const recipes = await getFoodRecipeAutoComplete(pressedTag);
+        if (recipes && recipes.length > 0) {
+             const topFiveRecipes = recipes.slice(0, 5);
+             const recipeDetails = await Promise.all(
+               topFiveRecipes.map(async (recipe) => {
+                 const recipeDetail = await getRecipeById(recipe.id);
+                 return recipeDetail;
+               })
+             );
+
+
+             setData(recipeDetails);
+           }
       }
     };
     fetchData();

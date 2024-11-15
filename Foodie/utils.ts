@@ -97,7 +97,7 @@ export async function getRandomFoodRecipe(
   tag: string
 ): Promise<undefined | IApiFoodRecipeData> {
   const baseURL = "https://api.spoonacular.com";
-  const apiKEY = "9fc2dee7142a457b9faae9e34afc8087";
+  const apiKEY = "a391c51a20ac4e878b52c3778f616389";
 
 
   // TODO: assume no error here
@@ -105,6 +105,23 @@ export async function getRandomFoodRecipe(
     `${baseURL}/recipes/random?apiKey=${apiKEY}&limitLicense=true&tags=${tag}&number=3&includeNutrition=true`
   );
   const data: IApiFoodRecipeData = await response.json();
+  return data;
+}
+
+export async function getFoodRecipeAutoComplete(
+  searchText: string
+) {
+
+console.log(searchText);
+  const baseURL = "https://api.spoonacular.com";
+  const apiKEY = "a391c51a20ac4e878b52c3778f616389";
+
+  // TODO: assume no error here
+  const response = await fetch(
+    `${baseURL}/recipes/autocomplete?query=${searchText}&number=10&apiKey=${apiKEY}`
+  );
+  const data = await response.json();
+  // console.log(data);
   return data;
 }
 
