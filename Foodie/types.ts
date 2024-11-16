@@ -184,6 +184,17 @@ interface IAppContextType {
   onChangeBuffer: (icon: Buffer | undefined) => void;
 }
 
+interface ICodeContextType {
+  code: string;
+  freeze: number[];
+  attempt: number;
+  disabled: boolean;
+  onChangeCode: (code:string)=>void;
+  onChangeFreeze: (freeze:number[])=>void;
+  onChangeAttempt: (attempt:number)=>void;
+  onChangeDisabled : (disabled: boolean)=>void;
+}
+
 
 interface ICocktailRecipe {
   idDrink: string;

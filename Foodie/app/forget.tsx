@@ -1,18 +1,24 @@
 import { Pressable, Text, TextInput, View, Alert, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { existingAccount, sendEmail } from "@/utils";
 import { useRouter } from "expo-router";
 import { send, EmailJSResponseStatus } from '@emailjs/react-native';
+import { useCodeContext } from "@/context/codeContexts";
 
 
 export default function forgetScreen(){
 
+    const {code, disabled, freeze, attempt, 
+        onChangeCode, onChangeDisabled, onChangeAttempt} = useCodeContext();
+
     const [email, setEmail] = useState<string>('');
-    const [code, setCode] = useState<string>('');
+    // const [code, setCode] = useState<string>('');
     const [verifyCode, setVerifyCode] = useState<string>('');
-    const [disabled, setDisabled] = useState(false);
+    // const [disabled, setDisabled] = useState(false);
     const router = useRouter();
+
+    useEffect(()=>{},[disabled]);
 
     const onPressLater = ()=>{
         router.dismissAll();
@@ -29,16 +35,22 @@ export default function forgetScreen(){
 
     const onPressSubmit = async () => {
         const code = randomCode();
-        setCode(code);
-        setDisabled(true);
-        setTimeout(() => setDisabled(false), 60000);
+        onChangeCode(code);
+        onChangeDisabled(true);
+        const freezeTime = attempt >= freeze.length ? freeze[freeze.length - 1] : freeze[attempt] ;
+        console.log(freezeTime);
+        setTimeout(() => onChangeDisabled(false),freezeTime);
+        setTimeout(() => onChangeCode(''),180000);
         await sendEmail(email,"Foodie: Validation Code",
-            "Your code is : "+code+".\n\nBest Regards,\nFoodie");
+            "Your code is : "+code+". It will expire in 3 minutes.\n\nBest Regards,\nFoodie");
+        onChangeAttempt(attempt+1);
     };
 
     const onPressVerify = ()=>{
         console.log(verifyCode,code);
         if(code!=='' && verifyCode===code){
+            onChangeAttempt(0);
+            onChangeCode('');
             router.push({
                 pathname:"/newPassword",
                 params:{
