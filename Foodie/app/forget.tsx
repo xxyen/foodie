@@ -38,7 +38,6 @@ export default function forgetScreen(){
         onChangeCode(code);
         onChangeDisabled(true);
         const freezeTime = attempt >= freeze.length ? freeze[freeze.length - 1] : freeze[attempt] ;
-        console.log(freezeTime);
         setTimeout(() => onChangeDisabled(false),freezeTime);
         setTimeout(() => onChangeCode(''),180000);
         await sendEmail(email,"Foodie: Validation Code",
