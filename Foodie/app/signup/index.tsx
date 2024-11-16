@@ -16,6 +16,7 @@ import {
 import { useRouter } from "expo-router";
 import * as Linking from "expo-linking";
 import { useAppContext } from "@/context/contexts";
+import { validateEmail, validPassword } from "@/utils";
 
 export default function SignUpScreen() {
 
@@ -163,24 +164,6 @@ export default function SignUpScreen() {
     
   }
 
-  const validateEmail = (input:string) => {
-    const regex = /^\w+@(\w+.)+[a-zA-Z]+$/;
-    return regex.test(input);
-  }
-
-  const validPassword = (input:string) => {
-    const cap = /[A-Z]+/;
-    const dgt = /[0-9]+/;
-    const low = /[a-z]+/;
-    const spc = /[^A-Za-z0-9]+/;
-    if(input.length>=8 && cap.test(input) && dgt.test(input) && low.test(input) && spc.test(input)){
-      return true;
-    }
-    else{
-      return false;
-    }
-
-  }
 
   return (
     <>

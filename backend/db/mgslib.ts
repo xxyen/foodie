@@ -34,7 +34,7 @@ export const login = async (username : string, password: string) => {
     let res = '-1';
     try{
         const user:UserCredential|null = await User.findOne({
-            $or: [{ username }, { email: username }],
+            $or: [{ username }, { email: username.toLowerCase() }],
             password: password
         });
         if(user){
@@ -70,6 +70,24 @@ export const get = async (uid : string) => {
     }
 }
 
+export const getEmail = async (email : string) => {
+    try{
+        const user = await User.findOne({
+            email: email.toLowerCase()
+        });
+        if(user){
+            return 1;
+        }
+        else{
+            return -1;
+        }
+    }
+    catch (err) {
+        console.error('Error occurred:', err);
+        return -2;
+    }
+}
+
 export const update = async (uid: string, userInfo: UserInfo) => {
     let res = -1;
     try{
@@ -87,6 +105,25 @@ export const update = async (uid: string, userInfo: UserInfo) => {
         res = -2;
     }finally{
         return res;
+    }
+}
+
+export const updateByEmail = async (email : string, userInfo: UserInfo) => {
+    try{
+        const user = await User.findOne({
+            email: email.toLowerCase()
+        });
+        if(user){
+            await User.findByIdAndUpdate(user._id, userInfo);
+            return 1;
+        }
+        else{
+            return -1;
+        }
+    }
+    catch (err) {
+        console.error('Error occurred:', err);
+        return -2;
     }
 }
 

@@ -16,6 +16,14 @@ export default function DrawerLayout() {
         name="signup"
         options={{ headerShown: false, presentation: "modal" }}
       />
+      <Stack.Screen
+        name="forget"
+        options={{ headerShown: false, presentation: "modal" }}
+      />
+      <Stack.Screen
+        name="newPassword"
+        options={{ headerShown: false, presentation: "modal" }}
+      />
     </Stack>
     </ContextProvider>
 
