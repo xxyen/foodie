@@ -41,7 +41,7 @@ export default function LoginScreen() {
   // functions
   function onPressLater(event: GestureResponderEvent): void {
     console.log("user: press later");
-    router.back();
+    router.dismissAll();
     router.push("/home");
   }
 
@@ -174,7 +174,7 @@ export default function LoginScreen() {
                 <Text style={styles.rememberme}>Remember me</Text>
               </Pressable>
             </View>
-            <Pressable onPress={onPressForgotPassword}>
+            <Pressable onPress={()=>router.push("/forget")}>
               <Text>Forgot Password?</Text>
             </Pressable>
           </View>

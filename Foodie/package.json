@@ -9,7 +9,9 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@emailjs/react-native": "^4.2.2",
     "@expo/vector-icons": "^14.0.4",
+    "@react-email/components": "^0.0.28",
     "@react-native-community/checkbox": "^0.5.17",
     "@react-native-firebase/app": "^21.3.0",
     "@react-native-firebase/storage": "^21.3.0",
@@ -17,6 +19,7 @@
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/stack": "^6.4.1",
     "@types/emoji-strip": "^1.0.2",
+    "@types/qs": "^6.9.17",
     "emoji-strip": "^1.0.1",
     "expo": "^51.0.39",
     "expo-camera": "~15.0.16",
@@ -26,6 +29,7 @@
     "expo-router": "^3.5.23",
     "expo-status-bar": "~1.12.1",
     "fs": "^0.0.1-security",
+    "nodemailer": "^6.9.16",
     "openai": "^4.71.1",
     "react": "18.2.0",
     "react-native": "0.74.5",
