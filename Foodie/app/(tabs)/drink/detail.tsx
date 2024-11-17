@@ -9,6 +9,7 @@ import {
   ScrollView,
   Image,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useLocalSearchParams } from "expo-router";
@@ -38,6 +39,7 @@ export default function Tab() {
     string[] | undefined
   >(undefined);
   const [steps, setSteps] = useState<string[] | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (id) {
@@ -68,14 +70,18 @@ export default function Tab() {
       if (recipe.strInstructions) {
         const parsedStep = recipe.strInstructions.split(".").slice(0, -1);
         setSteps(parsedStep);
+        setLoading(false);
       }
     }
   }, [recipe]);
 
-  if (!recipe) {
+  if (loading) {
     return (
       <SafeAreaView style={styles.safearea}>
-        <Text>Loading...</Text>
+        <View style={styles.loader}>
+          <ActivityIndicator size="large" color="#67A5A9" />
+          <Text style={styles.loadingText}>Loading Recipe...</Text>
+        </View>
       </SafeAreaView>
     );
   }
@@ -400,4 +406,9 @@ const styles = StyleSheet.create({
     width: "95%",
     padding: 10
   },
+    loader: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
 });

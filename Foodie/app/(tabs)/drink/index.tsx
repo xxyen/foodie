@@ -10,6 +10,7 @@ import {
   ImageBackground,
   Alert,
   GestureResponderEvent,
+  ActivityIndicator
 } from "react-native";
 import { getRandomCocktailRecipe, updateFavoriteDrinks } from "../../../utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -22,7 +23,7 @@ export default function Home() {
   const [isSelected, setIsSelected] = useState<number>(0);
   const [tag, setTag] = useState<string>("Gin");
   const [data, setData] = useState<IApiDrinkIdData | undefined>(undefined);
-
+  const [loading, setLoading] = useState<boolean>(false);
   const { id, favDrinks, onChangeFavDrinks } = useAppContext();
 
   // functions
@@ -74,10 +75,17 @@ export default function Home() {
   // render
   useEffect(() => {
     const fetchData = async () => {
-      const recipes = await getRandomCocktailRecipe(tag);
-      setData(recipes);
-    };
-    fetchData();
+      setLoading(true); // Start loading
+            try {
+              const recipes = await getRandomCocktailRecipe(tag);
+              setData(recipes);
+            } catch (error) {
+              console.error("Error fetching data:", error);
+            } finally {
+              setLoading(false);
+            }
+          };
+          fetchData();
   }, [tag]);
 
   
@@ -85,6 +93,11 @@ export default function Home() {
   return (
     <SafeAreaView style={styles.safearea}>
       <Text style={styles.title}>Today's Pick</Text>
+      {loading ? (
+        <View style={styles.loader}>
+          <ActivityIndicator size="large" color="#67A5A9" />
+        </View>
+      ) : (
       <View style={styles.container}>
         <ScrollView horizontal={true} style={{ width: "90%" }} showsHorizontalScrollIndicator={false}>
           <View style={styles.container_topbar}>
@@ -154,6 +167,7 @@ export default function Home() {
             </Pressable>
           </View>
         </ScrollView>
+
         <ScrollView style={styles.container_recipes}>
           {data?.drinks?.slice(0, 6).map((_, rowIndex) => (
             <View key={rowIndex} style={styles.container_drinkrow}>
@@ -198,6 +212,7 @@ export default function Home() {
         </ScrollView>
 
       </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -309,4 +324,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     margin: 10,
   },
+  loader: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      height: "100%",
+    },
 });

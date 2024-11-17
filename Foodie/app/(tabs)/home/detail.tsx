@@ -9,6 +9,7 @@ import {
   ScrollView,
   Image,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -32,6 +33,7 @@ export default function Tab() {
   const [recipe, setRecipe] = useState<IFoodRecipe | undefined>(undefined);
   const [nutrition, setNutrition] = useState<INutrition | undefined>(undefined);
   const [steps, setSteps] = useState<IFoodStep[] | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (data) {
@@ -39,6 +41,7 @@ export default function Tab() {
       setRecipe(parsedData);
       setNutrition(parsedData.nutrition);
       setSteps(parsedData.analyzedInstructions[0]?.steps);
+      setLoading(false);
     }
   }, [data]);
 
@@ -54,10 +57,13 @@ export default function Tab() {
     fetchData();
   });
 
-  if (!recipe) {
+  if (loading) {
     return (
       <SafeAreaView style={styles.safearea}>
-        <Text>Loading...</Text>
+        <View style={styles.loader}>
+          <ActivityIndicator size="large" color="#E1AEC1" />
+          <Text style={styles.loadingText}>Loading Recipe...</Text>
+        </View>
       </SafeAreaView>
     );
   }
@@ -454,4 +460,9 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 2, height: 3 },
     textShadowRadius: 3,
   },
+      loader: {
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        },
 });

@@ -10,6 +10,7 @@ import {
   ImageBackground,
   GestureResponderEvent,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { getProfile, getRandomFoodRecipe, updateFavoriteFoods } from "../../../utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -26,6 +27,7 @@ export default function Home() {
   const [isSelected, setIsSelected] = useState<number>(0);
   const [tag, setTag] = useState<string>("breakfast");
   const [data, setData] = useState<IApiFoodRecipeData | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(false);
   // const [userId, setUserId] = useState<string | null>(null);
 
   // navigation
@@ -68,12 +70,19 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const recipes = await getRandomFoodRecipe(tag);
-      if (recipes) {
-        setData(recipes);
-      }
-    };
-    fetchData();
+     setLoading(true);
+      try {
+              const recipes = await getRandomFoodRecipe(tag);
+              if (recipes) {
+                setData(recipes);
+              }
+            } catch (error) {
+              console.error("Error fetching data:", error);
+            } finally {
+              setLoading(false);
+            }
+          };
+          fetchData();
   }, [tag]);
 
   useEffect(() => {
@@ -151,6 +160,10 @@ export default function Home() {
     <SafeAreaView style={styles.safearea}>
       <Text style={styles.title}>Today's Pick</Text>
       <View style={styles.container}>
+       {loading ? (
+                <ActivityIndicator size="large" color="#E1AEC1" />
+              ) : (
+                <>
         <ScrollView
           horizontal={true}
           style={{ width: "90%" }}
@@ -277,6 +290,8 @@ export default function Home() {
               </Pressable>
             ))}
         </ScrollView>
+         </>
+                )}
       </View>
     </SafeAreaView>
   );
@@ -393,4 +408,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     margin: 10,
   },
+  loader: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
 });
