@@ -20,6 +20,7 @@ export default function newPasswordScreen(){
     const onPressSubmit = async () => {
         if(validPassword(password)){
             if(typeof email==='string' && await setNewPassword(email,password)){
+                Alert.alert("Success", "Update Your Password Successfully!");
                 router.push("/login");
             }
         }

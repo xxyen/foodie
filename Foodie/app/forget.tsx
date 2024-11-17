@@ -1,18 +1,24 @@
 import { Pressable, Text, TextInput, View, Alert, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { existingAccount, sendEmail } from "@/utils";
 import { useRouter } from "expo-router";
 import { send, EmailJSResponseStatus } from '@emailjs/react-native';
+import { useCodeContext } from "@/context/codeContexts";
 
 
 export default function forgetScreen(){
 
+    const {code, disabled, freeze, attempt, time,
+        onChangeCode, onChangeDisabled, onChangeAttempt, onChangeTime} = useCodeContext();
+
     const [email, setEmail] = useState<string>('');
-    const [code, setCode] = useState<string>('');
+    // const [code, setCode] = useState<string>('');
     const [verifyCode, setVerifyCode] = useState<string>('');
-    const [disabled, setDisabled] = useState(false);
+    // const [disabled, setDisabled] = useState(false);
     const router = useRouter();
+
+    useEffect(()=>{},[disabled]);
 
     const onPressLater = ()=>{
         router.dismissAll();
@@ -29,16 +35,33 @@ export default function forgetScreen(){
 
     const onPressSubmit = async () => {
         const code = randomCode();
-        setCode(code);
-        setDisabled(true);
-        setTimeout(() => setDisabled(false), 60000);
+        onChangeCode(code);
+        onChangeDisabled(true);
+        const freezeTime = attempt >= freeze.length ? freeze[freeze.length - 1] : freeze[attempt] ;
+
+        // setTimeout(() => onChangeDisabled(false),freezeTime);
+        setTimeout(() => onChangeCode(''),180000);
         await sendEmail(email,"Foodie: Validation Code",
-            "Your code is : "+code+".\n\nBest Regards,\nFoodie");
+            "Your code is : "+code+". It will expire in 3 minutes.\n\nBest Regards,\nFoodie");
+        
+        onChangeAttempt(attempt+1);
+        let countdown = freezeTime / 1000;
+        const interval = setInterval(() => {
+            countdown -= 1;
+            onChangeTime(countdown);
+            if (countdown <= 0) {
+                clearInterval(interval);
+                onChangeDisabled(false);
+            }
+        }, 1000);
+
     };
 
     const onPressVerify = ()=>{
         console.log(verifyCode,code);
         if(code!=='' && verifyCode===code){
+            onChangeAttempt(0);
+            onChangeCode('');
             router.push({
                 pathname:"/newPassword",
                 params:{
@@ -71,7 +94,7 @@ export default function forgetScreen(){
                 </View>
                 <View style={[styles.btn_login ,{backgroundColor: disabled ? "grey" : "#042628"}]}>
                     <Pressable onPress={onPressSubmit} disabled={disabled}>
-                        <Text style={styles.btn_login_text}>Send Verification Code</Text>
+                        <Text style={styles.btn_login_text}>{time<=0 ? 'Send Verification Code':'Send Again After ('+time+')'}</Text>
                     </Pressable>
                 </View>
                 <View style={[styles.btn_login ,{backgroundColor:  "#042628"}]}>

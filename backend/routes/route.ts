@@ -89,7 +89,10 @@ router.post("/sendEmail", async (req,res) => {
     });
 
     const mailOptions = {
-        from: 'foodievalidation@gmail.com',
+        from: {
+            name: 'Foodie',
+            address: 'foodievalidation@gmail.com'
+        },
         to: data.email,               
         subject: data.subject, 
         text: data.content, 
