@@ -9,6 +9,7 @@ export const CodeContextProvider = ({ children }: { children: any }) => {
     const [freeze, setFreeze] = useState<number[]>([60000,180000,300000]);
     const [attempt, setAttempt] = useState(0);
     const [disable, setDisable] = useState(false);
+    const [time,setTime] = useState(0);
 
 
     const value = {
@@ -16,10 +17,12 @@ export const CodeContextProvider = ({ children }: { children: any }) => {
         freeze:freeze,
         attempt: attempt,
         disabled: disable,
+        time: time,
         onChangeCode: setCode,
         onChangeFreeze: setFreeze,
         onChangeAttempt: setAttempt,
         onChangeDisabled: setDisable,
+        onChangeTime: setTime,
     };
   
     return <CodeContext.Provider value={value}>{children}</CodeContext.Provider>;

@@ -189,10 +189,12 @@ interface ICodeContextType {
   freeze: number[];
   attempt: number;
   disabled: boolean;
+  time: number;
   onChangeCode: (code:string)=>void;
   onChangeFreeze: (freeze:number[])=>void;
   onChangeAttempt: (attempt:number)=>void;
   onChangeDisabled : (disabled: boolean)=>void;
+  onChangeTime: (time: number) => void;
 }
 
 

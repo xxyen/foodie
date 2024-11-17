@@ -9,8 +9,8 @@ import { useCodeContext } from "@/context/codeContexts";
 
 export default function forgetScreen(){
 
-    const {code, disabled, freeze, attempt, 
-        onChangeCode, onChangeDisabled, onChangeAttempt} = useCodeContext();
+    const {code, disabled, freeze, attempt, time,
+        onChangeCode, onChangeDisabled, onChangeAttempt, onChangeTime} = useCodeContext();
 
     const [email, setEmail] = useState<string>('');
     // const [code, setCode] = useState<string>('');
@@ -38,11 +38,23 @@ export default function forgetScreen(){
         onChangeCode(code);
         onChangeDisabled(true);
         const freezeTime = attempt >= freeze.length ? freeze[freeze.length - 1] : freeze[attempt] ;
-        setTimeout(() => onChangeDisabled(false),freezeTime);
+
+        // setTimeout(() => onChangeDisabled(false),freezeTime);
         setTimeout(() => onChangeCode(''),180000);
         await sendEmail(email,"Foodie: Validation Code",
             "Your code is : "+code+". It will expire in 3 minutes.\n\nBest Regards,\nFoodie");
+        
         onChangeAttempt(attempt+1);
+        let countdown = freezeTime / 1000;
+        const interval = setInterval(() => {
+            countdown -= 1;
+            onChangeTime(countdown);
+            if (countdown <= 0) {
+                clearInterval(interval);
+                onChangeDisabled(false);
+            }
+        }, 1000);
+
     };
 
     const onPressVerify = ()=>{
@@ -82,7 +94,7 @@ export default function forgetScreen(){
                 </View>
                 <View style={[styles.btn_login ,{backgroundColor: disabled ? "grey" : "#042628"}]}>
                     <Pressable onPress={onPressSubmit} disabled={disabled}>
-                        <Text style={styles.btn_login_text}>Send Verification Code</Text>
+                        <Text style={styles.btn_login_text}>{time<=0 ? 'Send Verification Code':'Send Again After ('+time+')'}</Text>
                     </Pressable>
                 </View>
                 <View style={[styles.btn_login ,{backgroundColor:  "#042628"}]}>
