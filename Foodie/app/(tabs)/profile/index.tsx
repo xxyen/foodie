@@ -411,8 +411,8 @@ const styles = StyleSheet.create({
   },
   container_tag_row: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
     width: "90%",
     gap: 10,
     flexWrap: "wrap",

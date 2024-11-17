@@ -4,6 +4,7 @@ import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import { useRef, useState } from 'react';
 import OpenAI from "openai";
+import { Linking } from 'react-native';
 
 const baseUrl = Platform.OS === "android"
                 ? "http://10.0.2.2:4000/users"
@@ -13,6 +14,25 @@ const baseUrl = Platform.OS === "android"
 const openai = new OpenAI({
   apiKey: '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',
 });
+
+export const validateEmail = (input:string) => {
+  const regex = /^\w+@(\w+.)+[a-zA-Z]+$/;
+  return regex.test(input);
+}
+
+export const validPassword = (input:string) => {
+  const cap = /[A-Z]+/;
+  const dgt = /[0-9]+/;
+  const low = /[a-z]+/;
+  const spc = /[^A-Za-z0-9]+/;
+  if(input.length>=8 && cap.test(input) && dgt.test(input) && low.test(input) && spc.test(input)){
+    return true;
+  }
+  else{
+    return false;
+  }
+
+}
 
 // Search by Image: Image Recognition
 async function OpenAIRecogByBase64(b64:string|undefined|null) {
@@ -83,6 +103,34 @@ export const updateIconByGallery = async(id:any) => {
   return undefined;
 }
 
+export const existingAccount = async (email:string) => {
+    
+    const config = {
+      method : 'POST',
+      headers : {
+        'Content-Type': 'application/json'
+      },
+      body : JSON.stringify({
+        'email' : email,
+      })
+    };
+    try{
+      const response = await fetch(`${baseUrl}/validate`, config);
+      const body = await response.json();
+      if(response.status!=201){
+        alert(body.message);
+        return false;
+      }
+      else{
+        return true;
+      }
+    } catch(err){
+      alert(err);
+      return false;
+    }
+    
+  }
+
 export const registerHelper = async (username:string,email:string,password:string,
 allergies:string[],diets: string[], onChangeId:(id:string)=>void) => {
   
@@ -93,7 +141,7 @@ allergies:string[],diets: string[], onChangeId:(id:string)=>void) => {
     },
     body : JSON.stringify({
       'username' : username,
-      'email' : email,
+      'email' : email.toLowerCase(),
       'password' : password,
       'allergies': allergies,
       'diets' : diets,
@@ -636,6 +684,64 @@ export async function changeAllergies(id:string|undefined, allergies:string[]){
 export function extractEmoji(inputs:string[]){
   return inputs.map((a)=>a.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2580-\u27BF]|\uD83E[\uDD10-\uDDFF]/g, '').replace(/\u{1FAD8}/u,'').replace(/\u{1FAA8}/u,'')
   .toLowerCase().replace(' ','_'));
+}
+
+export async function sendEmail(to:string, subject:string, content:string) {
+  try {
+    const sendResponse = await fetch(`${baseUrl}/sendEmail`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          'email': to,
+          'subject': subject,
+          'content': content
+        })
+    });
+
+    if (!sendResponse.ok) {
+        const errorData = await sendResponse.json();
+        console.error("send email failed:", errorData.message);
+        alert(errorData.message);
+        return false;
+    } else {
+        const data = await sendResponse.json();
+        console.log(data.message);
+        return true;
+    }
+  } catch (error) {
+      console.error("Request error:", error);
+      alert(error);
+      return false;
+  }
+}
+
+export async function setNewPassword(email:string,password:string){
+  try {
+    const updateResponse = await fetch(`${baseUrl}/${email}/newPassword`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password: password }),
+    });
+
+    if (!updateResponse.ok) {
+        const errorData = await updateResponse.json();
+        console.error("Update failed:", errorData.message);
+        alert(errorData.message);
+        return false;
+    } else {
+        const data = await updateResponse.json();
+        console.log(data.message);
+        return true;
+    }
+  } catch (error) {
+      console.error("Request error:", error);
+      alert(error);
+      return false;
+  }
 }
 
 
