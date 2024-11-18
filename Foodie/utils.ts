@@ -5,15 +5,10 @@ import * as ImagePicker from "expo-image-picker";
 import { useRef, useState } from 'react';
 import OpenAI from "openai";
 import { Linking } from 'react-native';
-
-const baseUrl = Platform.OS === "android"
-                ? "http://10.0.2.2:4000/users"
-                : "http://localhost:4000/users"
+import { API_CONFIG, OPENAI_API_KEY } from "./config";
 
 // Search by Image
-const openai = new OpenAI({
-  apiKey: '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',
-});
+const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 
 export const validateEmail = (input:string) => {
   const regex = /^\w+@(\w+.)+[a-zA-Z]+$/;
@@ -168,14 +163,10 @@ allergies:string[],diets: string[], onChangeId:(id:string)=>void) => {
 export async function getRandomFoodRecipe(
   tag: string
 ): Promise<undefined | IApiFoodRecipeData> {
-  const baseURL = "https://api.spoonacular.com";
-  const apiKEY = "a391c51a20ac4e878b52c3778f616389";
-
-
   // TODO: assume no error here
   try{
     const response = await fetch(
-      `${baseURL}/recipes/random?apiKey=${apiKEY}&limitLicense=true&tags=${tag}&number=3&includeNutrition=true`
+      `${API_CONFIG.spoonacular.baseURL}/recipes/random?apiKey=${API_CONFIG.spoonacular.apiKEY}&limitLicense=true&tags=${tag}&number=3&includeNutrition=true`
     );
     if (!response.ok) {
       throw new Error(`API request failed with status ${response.status}`);
@@ -195,9 +186,7 @@ export async function getFoodRecipeAutoComplete(
 ) {
 
 console.log(searchText);
-  const baseURL = "https://api.spoonacular.com";
-  const apiKEY = "a391c51a20ac4e878b52c3778f616389";
-
+  const { baseURL, apiKEY } = API_CONFIG.spoonacular;
   // TODO: assume no error here
   const response = await fetch(
     `${baseURL}/recipes/autocomplete?query=${searchText}&number=10&apiKey=${apiKEY}`
@@ -210,14 +199,10 @@ console.log(searchText);
 export async function getFoodRecipeByIngredients(
   tag: string
 ) {
-  const baseURL = "https://api.spoonacular.com";
-  //  a391c51a20ac4e878b52c3778f616389
-  const apiKEY = "a391c51a20ac4e878b52c3778f616389";
-
   // TODO: assume no error here
   try{
     const response = await fetch(
-      `${baseURL}/recipes/complexSearch?includeIngredients=${tag}&number=3&instructionsRequired=true&addRecipeInformation=true&addRecipeInstructions=true&addRecipeNutrition=true&fillIngredients=true&apiKey=${apiKEY}`
+       `${API_CONFIG.spoonacular.baseURL}/recipes/complexSearch?includeIngredients=${tag}&number=3&instructionsRequired=true&addRecipeInformation=true&addRecipeInstructions=true&addRecipeNutrition=true&fillIngredients=true&apiKey=${API_CONFIG.spoonacular.apiKEY}`
     );
     if (!response.ok) {
       throw new Error(`API request failed with status ${response.status}`);
@@ -234,11 +219,8 @@ export async function getFoodRecipeByIngredients(
 
 
 export async function getRecipeById(id: number): Promise<undefined | IApiFoodRecipeData> {
-  const baseURL = "https://api.spoonacular.com";
-  const apiKEY = "a391c51a20ac4e878b52c3778f616389";
-
   try {
-    const response = await fetch(`${baseURL}/recipes/${id}/information?apiKey=${apiKEY}`);
+    const response = await fetch(`${API_CONFIG.spoonacular.baseURL}/recipes/${id}/information?apiKey=${API_CONFIG.spoonacular.apiKEY}`);
     if (!response.ok) {
       throw new Error(`API request failed with status ${response.status}`);
     }
@@ -253,12 +235,10 @@ export async function getRecipeById(id: number): Promise<undefined | IApiFoodRec
 export async function getRandomCocktailRecipe(
     tag: string
   ): Promise<undefined | IApiDrinkIdData> {
-    const baseURL = "https://www.thecocktaildb.com";
-    const apiKEY = "1";
   
     // TODO: assume no error here
     const response = await fetch(
-      `${baseURL}/api/json/v1/${apiKEY}/filter.php?i=${tag}`
+      `${API_CONFIG.cocktailDB.baseURL}/api/json/v1/${API_CONFIG.cocktailDB.apiKEY}/filter.php?i=${tag}`
     );
     const data: IApiDrinkIdData = await response.json();
 
@@ -270,8 +250,7 @@ export async function getRandomCocktailRecipe(
   }
 
   export async function searchCocktailById(id: number): Promise<undefined | IApiDrinkIdData> {
-    const baseURL = "https://www.thecocktaildb.com";
-    const apiKEY = "1";
+    const { baseURL, apiKEY } = API_CONFIG.cocktailDB;
 
     // TODO: assume no error here
     const response = await fetch(`${baseURL}/api/json/v1/${apiKEY}/lookup.php?i=${id}`);
@@ -385,8 +364,7 @@ const handleUpload = async (image:any)=>{
 }
 
 export async function classifyImage(url:any){
-  const baseURL = "https://api.spoonacular.com";
-  const apiKEY = "9fc2dee7142a457b9faae9e34afc8087";
+  const { baseURL, apiKEY } = API_CONFIG.spoonacular;
 
   const config = {
     method : 'GET',
@@ -421,7 +399,7 @@ export async function classifyImage(url:any){
 
 
 export const getProfile = async (id:string) => {
-
+ const { localServer } = API_CONFIG;
   const config = {
     method : 'GET',
     headers : {
@@ -429,7 +407,7 @@ export const getProfile = async (id:string) => {
     }
   };
   try{
-    const response = await fetch(`${baseUrl}/${id}`, config);
+    const response = await fetch(`${localServer.baseURL}/${id}`, config);
     const body = await response.json();
     if(response.status!=200){
       alert(body.message);
@@ -462,8 +440,9 @@ export const parseImage = (buffer: Buffer| undefined) => {
 }
 
 const updateHelper = async(id: string|undefined, config:RequestInit, success: string) => {
+  const { localServer } = API_CONFIG;
   try{
-    const response = await fetch(`${baseUrl}/${id}`, config);
+    const response = await fetch(`${localServer.baseURL}/${id}`, config);
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.indexOf("application/json") !== -1){
       const body = await response.json();
@@ -519,7 +498,7 @@ async function handleTakePicture() {
 export async function updateFavoriteFoods(id:any, newFavFoods:number[]
 ) {
     try {
-        const response = await fetch(`${baseUrl}/${id}`, {
+        const response = await fetch(`${API_CONFIG.localServer.baseURL}/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -544,7 +523,7 @@ export async function updateFavoriteFoods(id:any, newFavFoods:number[]
 export async function updateFavoriteDrinks(id:any, newFavDrinks:number[]) {
     try {
         console.log("newFavDrinks: ", newFavDrinks);
-        const response = await fetch(`${baseUrl}/${id}`, {
+        const response = await fetch(`${API_CONFIG.localServer.baseURL}/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -578,8 +557,7 @@ export function getDrinkIngredientImage(name: string){
 }
 
 export async function getRecipeDetails(id: string) {
-  const baseURL = "https://www.thecocktaildb.com";
-    const apiKEY = "1";
+  const { baseURL, apiKEY } = API_CONFIG.cocktailDB;
   
     // TODO: assume no error here
     const response = await fetch(
@@ -594,8 +572,9 @@ export async function getRecipeDetails(id: string) {
 }
 
 export async function updateIngredients(id: any, newIngredients: string[]) {
+  const { localServer } = API_CONFIG;
   try {
-      const updateResponse = await fetch(`${baseUrl}/${id}`, {
+      const updateResponse = await fetch(`${localServer.baseURL}/${id}`, {
           method: 'PUT',
           headers: {
               'Content-Type': 'application/json',
@@ -618,8 +597,9 @@ export async function updateIngredients(id: any, newIngredients: string[]) {
 }
 
 export async function updateCalories(id: string, weeklyCalories: number[]) {
+  const { localServer } = API_CONFIG;
   try {
-    const response = await fetch(`${baseUrl}/${id}`, {
+    const response = await fetch(`${localServer.baseURL}/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ weeklyCalories: weeklyCalories }),
@@ -635,8 +615,7 @@ export async function updateCalories(id: string, weeklyCalories: number[]) {
 
 
 export async function getIngredientImage(name: string): Promise<string> {
-  const apiKEY = "fde5ad6eae294cb38530ad2350f0969c";
-  const url = `https://api.spoonacular.com/food/ingredients/search?query=${name}&number=1&apiKey=${apiKEY}`;
+  const url = `https://api.spoonacular.com/food/ingredients/search?query=${name}&number=1&apiKey=${API_CONFIG.spoonacular.apiKEY}`;
 
   try {
     const response = await fetch(url);
@@ -655,8 +634,9 @@ export async function getIngredientImage(name: string): Promise<string> {
 }
 
 export async function changeAllergies(id:string|undefined, allergies:string[]){
+  const { localServer } = API_CONFIG;
   try {
-    const updateResponse = await fetch(`${baseUrl}/${id}`, {
+    const updateResponse = await fetch(`${localServer.baseURL}/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -687,8 +667,9 @@ export function extractEmoji(inputs:string[]){
 }
 
 export async function sendEmail(to:string, subject:string, content:string) {
+  const { localServer } = API_CONFIG;
   try {
-    const sendResponse = await fetch(`${baseUrl}/sendEmail`, {
+    const sendResponse = await fetch(`${localServer.baseURL}/sendEmail`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -718,8 +699,9 @@ export async function sendEmail(to:string, subject:string, content:string) {
 }
 
 export async function setNewPassword(email:string,password:string){
+  const { localServer } = API_CONFIG;
   try {
-    const updateResponse = await fetch(`${baseUrl}/${email}/newPassword`, {
+    const updateResponse = await fetch(`${localServer.baseURL}/${email}/newPassword`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
