@@ -56,7 +56,7 @@ export default function Tab() {
         <SafeAreaView style={styles.safearea}>
          <Text style={styles.title}>My Favorites</Text>
           <View style={styles.loader}>
-            <ActivityIndicator size="large" color="#67A5A9" />
+            <ActivityIndicator size="large" color="#E1AEC1" />
           </View>
         </SafeAreaView>
       );
@@ -67,7 +67,9 @@ export default function Tab() {
       <Text style={styles.title}>My Favorites</Text>
 
       {/* Category Selector */}
-      <CategorySelector selectedIndex={isSelected} onSelect={setIsSelected} />
+      <View style={{justifyContent: "center", alignItems: "center",marginVertical: 10,marginLeft: "20%"}}>
+      <CategorySelector selectedIndex={isSelected} onSelect={setIsSelected} categories={["food", "drink"]}/>
+      </View>
 
       <ScrollView style={styles.container}>
         {isSelected === 0 ? (

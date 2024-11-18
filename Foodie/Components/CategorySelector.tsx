@@ -1,48 +1,69 @@
 import React from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Pressable, Text, StyleSheet, ScrollView } from "react-native";
 
-export default function CategorySelector({ selectedIndex, onSelect }) {
+export default function CategorySelector({ selectedIndex, onSelect, categories }) {
   return (
+  <ScrollView
+      horizontal={true}
+      style={{ width: "90%" }}
+      showsHorizontalScrollIndicator={false}>
     <View style={styles.container}>
-      <Pressable onPress={() => onSelect(0)} style={selectedIndex === 0 ? styles.selected : styles.unselected}>
-        <Text style={selectedIndex === 0 ? styles.text_selected : styles.text_unselected}>Food</Text>
-      </Pressable>
-      <Pressable onPress={() => onSelect(1)} style={selectedIndex === 1 ? styles.selected : styles.unselected}>
-        <Text style={selectedIndex === 1 ? styles.text_selected : styles.text_unselected}>Drinks</Text>
-      </Pressable>
+
+      {categories.map((category, index) => (
+        <Pressable
+          key={category}
+          style={selectedIndex === index ? styles.selected : styles.unselected}
+          onPress={() => onSelect(index, category)}
+        >
+          <Text
+            style={
+              selectedIndex === index
+                ? styles.textSelected
+                : styles.textUnselected
+            }
+          >
+            {category}
+          </Text>
+        </Pressable>
+      ))}
+
     </View>
+    </ScrollView>
+
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    justifyContent: "center",
-    marginVertical: 10,
-    gap: 30,
+    alignItems: "center",
+    width: "90%",
+    justifyContent: "flex-start",
+    gap: 10,
   },
   selected: {
     backgroundColor: "#E1AEC1",
-    opacity: 0.8,
     borderRadius: 20,
+    opacity: 0.8,
+    paddingVertical: 10,
     width: 100,
   },
   unselected: {
     backgroundColor: "#F1F5F5",
-    opacity: 0.8,
     borderRadius: 20,
+     opacity: 0.8,
+    paddingVertical: 10,
     width: 100,
   },
-  text_selected: {
+  textSelected: {
+    textAlign: "center",
     fontSize: 16,
     color: "#FFFFFF",
-    padding: 10,
-    textAlign: "center",
+    fontWeight: "bold",
   },
-  text_unselected: {
+  textUnselected: {
     fontSize: 16,
     color: "#0A2533",
-    padding: 10,
     textAlign: "center",
   },
 });

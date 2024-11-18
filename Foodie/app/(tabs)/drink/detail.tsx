@@ -79,7 +79,7 @@ export default function Tab() {
     return (
       <SafeAreaView style={styles.safearea}>
         <View style={styles.loader}>
-          <ActivityIndicator size="large" color="#67A5A9" />
+          <ActivityIndicator size="large" color="#E1AEC1" />
           <Text style={styles.loadingText}>Loading Recipe...</Text>
         </View>
       </SafeAreaView>
