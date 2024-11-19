@@ -35,7 +35,7 @@ export default function SearchByText() {
 
     const onChangeSearchText = async (text) => {
       setSearchText(text);
-      if (!text.trim()) {
+      if (!text || typeof text !== 'string' || !text.trim()) {
             setSuggestions([]);
             return;
           }

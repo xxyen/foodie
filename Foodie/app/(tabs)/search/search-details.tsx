@@ -121,21 +121,25 @@ export default function Home() {
                                          ? `Recipes of ${originalTag} type`
                                          : "Search Results"}</Text>
       <View style={styles.container}>
-      {loading ? (
+       {loading ? (
               <ActivityIndicator size="large" color="#E1AEC1" style={styles.loader} />
+            ) : data && data.length > 0 ? (
+              <ScrollView style={styles.container_recipes}>
+                {data.map((recipe) => (
+                  <FoodItem
+                    key={recipe.id}
+                    food={recipe}
+                    favFoods={favFoods}
+                    onToggleFavorite={() => handleToggleFavorite(recipe.id)}
+                    onPressDetail={() => handlePressDetail(recipe)}
+                  />
+                ))}
+              </ScrollView>
             ) : (
-        <ScrollView style={styles.container_recipes}>
-          {data?.map((recipe) => (
-            <FoodItem
-              key={recipe.id}
-              food={recipe}
-              favFoods={favFoods}
-              onToggleFavorite={() => handleToggleFavorite(recipe.id)}
-              onPressDetail={() => handlePressDetail(recipe)}
-            />
-          ))}
-        </ScrollView>
-        )}
+              <Text style={styles.noResults}>
+                No results found. You might want to check other recipes.
+              </Text>
+            )}
       </View>
     </SafeAreaView>
   );
@@ -165,5 +169,13 @@ const styles = StyleSheet.create({
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
+        },
+        noResults: {
+          fontSize: 18,
+          fontWeight: "400",
+          textAlign: "center",
+          color: "gray",
+          marginTop: 20,
+          paddingHorizontal: 20,
         },
 });
