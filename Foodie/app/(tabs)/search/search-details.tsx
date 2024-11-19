@@ -25,6 +25,7 @@ export default function Home() {
   const { pressedTag, type } = useLocalSearchParams();
 
   const [tag, setTag] = useState<string>("");
+  const [originalTag, setOriginalTag] = useState<string>("");
   const [data, setData] = useState<IApiFoodRecipeData | undefined | any>(
     undefined
   );
@@ -35,13 +36,14 @@ export default function Home() {
   useEffect(() => {
     if (pressedTag) {
       const tag = pressedTag as string;
+      setOriginalTag(tag);
       setTag(tag.toLowerCase());
     }
   }, [pressedTag]);
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true); // Show loading spinner
+      setLoading(true);
       try {
         if (type === "byTag") {
           const recipes = await getRandomFoodRecipe(tag);
@@ -57,7 +59,7 @@ export default function Home() {
         }
 
         if (type === "text") {
-          const recipes = await getFoodRecipeAutoComplete(pressedTag);
+          const recipes = await getFoodRecipeAutoComplete(tag);
           if (recipes && recipes.length > 0) {
             const topFiveRecipes = recipes.slice(0, 5);
             const recipeDetails = await Promise.all(
@@ -73,7 +75,7 @@ export default function Home() {
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
-        setLoading(false); // Hide loading spinner
+        setLoading(false);
       }
     };
     fetchData();
@@ -111,8 +113,17 @@ export default function Home() {
 
   return (
     <SafeAreaView style={styles.safearea}>
-      <Text style={styles.title}>Search Results</Text>
+      <Text style={styles.title}>{type === "text"
+                                         ? `Search Results for ${originalTag}`
+                                         : type === "byIngredient"
+                                         ? `Recipes containing ${originalTag} ingredient`
+                                         : type === "byTag"
+                                         ? `Recipes of ${originalTag} type`
+                                         : "Search Results"}</Text>
       <View style={styles.container}>
+      {loading ? (
+              <ActivityIndicator size="large" color="#E1AEC1" style={styles.loader} />
+            ) : (
         <ScrollView style={styles.container_recipes}>
           {data?.map((recipe) => (
             <FoodItem
@@ -124,6 +135,7 @@ export default function Home() {
             />
           ))}
         </ScrollView>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -143,10 +155,15 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   title: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "bold",
     marginLeft: "5%",
     marginTop: Platform.OS === "android" ? 50 : 20,
     marginBottom: 10,
   },
+     loader: {
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        },
 });

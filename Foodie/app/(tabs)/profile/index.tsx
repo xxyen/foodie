@@ -245,13 +245,6 @@ export default function Tab() {
             {allergyModal && (
               <ExtraAllergies visible={allergyModal} onChangeVisible={setAllergyModal}/>
             )}
-            {/* <View style={styles.container_row}>
-              <Image
-                source={require(img_path)}
-                style={styles.img}
-                resizeMode="contain"
-              />
-            </View> */}
           </View>
           <Pressable style={styles.btn_logout} onPress={onPressLoginOut}>
             <Text style={styles.btn_text}>Log Out</Text>

@@ -26,6 +26,7 @@ export default function SearchByText() {
   const { searchText: initialSearchText } = useLocalSearchParams();
   const [searchText, setSearchText] = useState(initialSearchText || "");
   const [suggestions, setSuggestions] = useState([]);
+  const [loading, setLoading] = useState(false);
 
 
   const closeModal = () => {
@@ -34,6 +35,11 @@ export default function SearchByText() {
 
     const onChangeSearchText = async (text) => {
       setSearchText(text);
+      if (!text.trim()) {
+            setSuggestions([]);
+            return;
+          }
+           setLoading(true);
        try {
             const data = await getFoodRecipeAutoComplete(text);
             console.log(data);
@@ -41,6 +47,8 @@ export default function SearchByText() {
             setSuggestions(titles);
           } catch (error) {
             console.error("Error fetching suggestions:", error);
+          }finally {
+                 setLoading(false);
           }
     };
 
@@ -69,6 +77,13 @@ export default function SearchByText() {
              />
              <Icon name="search" size={24} color="gray" style={styles.icon}  onPress={() => navigateToSearchDetails(searchText)}/>
              </View>
+             {loading && (
+                       <ActivityIndicator
+                         size="large"
+                         color="#E1AEC1"
+                         style={styles.loader}
+                       />
+                     )}
              {suggestions.length > 0 && (
                <FlatList
                  data={suggestions}
@@ -116,8 +131,6 @@ safearea: {
   },
   container: {
     flex: 1,
-
-
     gap: 10,
   },
     search_input: {
@@ -131,4 +144,9 @@ safearea: {
       fontSize: 18,
       fontWeight: "bold",
     },
+         loader: {
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            },
 });
