@@ -27,6 +27,7 @@ export default function Tab() {
     id,
     icon,
     allergies,
+    ingredients,
     onChangeUsername,
     onChangeEmail,
     onChangeAllergies,
@@ -61,43 +62,33 @@ export default function Tab() {
         const userData = await getProfile(id);
         if (userData) {
           setUserInfo(userData);
+          // console.log("userDataIngredients: ", userData.ingredients);
 
-          if (userInfo?.ingredients && userInfo.ingredients.length > 0) {
-              const imagePromises = userInfo.ingredients.slice(0, 3).map(async (ingredient) => {
-                const imageUrl = await getIngredientImage(ingredient);
-                return imageUrl;
-              });
-              const images = await Promise.all(imagePromises);
-              console.log(images);
-              setIngredientImages(images);
+          setTimeout(() => {
+            if (userData.ingredients && userData.ingredients.length > 0) {
+              const fetchIngredientImages = async () => {
+                const imagePromises = userData.ingredients.slice(0, 3).map(async (ingredient) => {
+                  const imageUrl = await getIngredientImage(ingredient);
+                  return imageUrl;
+                });
+                const images = await Promise.all(imagePromises); 
+                // console.log("images: ", images); 
+                setIngredientImages(images); 
+              };
+              fetchIngredientImages();
             } else {
               setIngredientImages([]); 
             }
+          }, 1000); 
         }
       }
     };
     fetchUserData();
-  }, [id]); 
+  }, [id, ingredients]); 
 
   useEffect(()=>{
     setStatues(Array(allergies.length).fill(false));
   },[allergies])
-
-  // useEffect(() => {
-  //   const fetchIngredientImages = async () => {
-  //     if (userInfo?.ingredients && userInfo.ingredients.length > 0) {
-  //       const imagePromises = userInfo.ingredients.slice(0, 3).map(async (ingredient) => {
-  //         const imageUrl = await getIngredientImage(ingredient);
-  //         return imageUrl;
-  //       });
-  //       const images = await Promise.all(imagePromises);
-  //       setIngredientImages(images);
-  //     } else {
-  //       setIngredientImages([]); 
-  //     }
-  //   };
-  //   fetchIngredientImages();
-  // }, [id]);
   
   const barData = userInfo?.weeklyCalories.map((calories, index) => ({
     value: calories,
