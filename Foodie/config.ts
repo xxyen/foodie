@@ -1,5 +1,6 @@
 import { Platform } from "react-native";
 
+//Android original server addr: http://10.0.2.2:4000/users
 export const API_CONFIG = {
   spoonacular: {
     baseURL: "https://api.spoonacular.com",
@@ -10,7 +11,7 @@ export const API_CONFIG = {
     apiKEY: "1",
   },
   localServer: {
-    baseURL: Platform.OS === "android" ? "http://10.0.2.2:4000/users" : "http://localhost:4000/users",
+    baseURL: Platform.OS === "android" ? "http://67.159.75.53:4123/users" : "http://67.159.75.53:4123/users",
   },
 };
 

@@ -143,7 +143,7 @@ allergies:string[],diets: string[], onChangeId:(id:string)=>void) => {
     })
   };
   try{
-    const response = await fetch(`${baseUrl}/register`, config);
+    const response = await fetch(`${API_CONFIG.localServer.baseURL}/register`, config);
     const body = await response.json();
     if(response.status!=201){
       alert(body.message);
