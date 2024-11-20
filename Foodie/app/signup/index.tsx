@@ -25,9 +25,6 @@ export default function SignUpScreen() {
   // variables
   const img_path = "../../assets/chickenleg.png";
   const google_icon_path = "../../assets/google_icon.png";
-  const baseUrl = Platform.OS === "android"
-  ? "http://10.0.2.2:4000"
-  : "http://localhost:4000"
 
 
   // navigation

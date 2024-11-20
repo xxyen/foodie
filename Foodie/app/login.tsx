@@ -25,7 +25,7 @@ export default function LoginScreen() {
   const img_path = "../assets/rasberry.png";
   const google_icon_path = "../assets/google_icon.png";
   const baseUrl = Platform.OS === "android"
-                ? "http://10.0.2.2:4000"
+                ? "http://67.159.75.53:4123"
                 : "http://67.159.75.53:4123"
 
   // navigation
