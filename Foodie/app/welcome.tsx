@@ -42,7 +42,7 @@ export default function WelcomeScreen() {
     event: GestureResponderEvent
   ): Promise<void> {
     console.log("user: press continue with google");
-    await Linking.openURL("http://vcm-44530.vm.duke.edu:4000/auth/google");
+    await Linking.openURL("http://vcm-44530.vm.duke.edu:4123/auth/google");
   }
 
   return (
