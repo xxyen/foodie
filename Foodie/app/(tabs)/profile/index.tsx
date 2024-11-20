@@ -93,6 +93,9 @@ export default function Tab() {
   const barData = userInfo?.weeklyCalories.map((calories, index) => ({
     value: calories,
     label: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][index],
+    topLabelComponent: () => (
+      <Text style={styles.barLabel}>{calories}</Text>
+    ),
   })) || [];
 
   // functions
@@ -171,17 +174,6 @@ export default function Tab() {
           >
             <Text style={styles.title}>My Shopping List</Text>
             <View style={styles.container_row}>
-            {/* {ingredientImages.length > 0 ? (
-              ingredientImages.map((img, index) => (
-                img ? (
-                  <Image key={index} source={{ uri: img }} style={styles.img} resizeMode="contain" />
-                ) : (
-                  <Text key={index}>Image not available</Text>
-                )
-              ))
-            ) : (
-              <Text>No ingredients in shopping list</Text>
-            )} */}
             {
               ingredientImages.map((img, index) => (
                 img ? (
@@ -211,7 +203,7 @@ export default function Tab() {
                 data={barData}
                 yAxisThickness={0}
                 xAxisThickness={0}
-                height={window_height * 0.05}
+                height={window_height * 0.03}
                 width={window_width * 0.8}
                 spacing={window_width * 0.08}
                 initialSpacing={10}
@@ -401,5 +393,10 @@ const styles = StyleSheet.create({
     gap: 10,
     flexWrap: "wrap",
   },
-
+  barLabel: {
+    // fontSize: 6,
+    color: "black",
+    // textAlign: "center",
+    // marginBottom: 5, 
+  },
 });
