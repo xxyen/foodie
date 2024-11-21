@@ -14,6 +14,7 @@ import { useAppContext } from "@/context/contexts";
 import { useRouter } from "expo-router";
 import CategorySelector from "../../../Components/CategorySelector"; // Abstracted Category Selector
 import FoodItem from "../../../Components/FoodItem"; // Abstracted Food Item
+import * as Linking from "expo-linking";
 
 export default function Home() {
   const {
@@ -63,6 +64,40 @@ export default function Home() {
     };
     userDataInitialization();
   }, [id]);
+
+  useEffect(() => {
+    const getUserIdFromUrl = async () => {
+      const url = await Linking.getInitialURL();
+      console.log("url: ", url);
+      if (url) {
+        const { queryParams } = Linking.parse(url);
+        // console.log("userId: ", queryParams?.userId);
+        if (queryParams?.userId) {
+          if (typeof queryParams.userId === "string") {
+            onChangeId(queryParams.userId);
+          }
+        }
+      }
+    };
+
+    // Initial check for the deep link URL when the component mounts
+    getUserIdFromUrl();
+
+    // Listener for any incoming links while the app is open
+    const urlListener = Linking.addEventListener("url", (event) => {
+      const { queryParams } = Linking.parse(event.url);
+      if (queryParams?.userId) {
+        if (typeof queryParams.userId === "string") {
+          onChangeId(queryParams.userId);
+        }
+      }
+    });
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      urlListener.remove();
+    };
+  }, []);
 
   const fetchUserInfo = (user: IUserInfo) => {
     onChangeAllergies(user?.allergies);
