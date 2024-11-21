@@ -74,27 +74,11 @@ export default function Tab() {
       }
     };
     fetchUserData();
-  }, [id]); 
+  }, [JSON.stringify(userInfo?.ingredients)]); 
 
   useEffect(()=>{
     setStatues(Array(allergies.length).fill(false));
   },[allergies])
-
-  // useEffect(() => {
-  //   const fetchIngredientImages = async () => {
-  //     if (userInfo?.ingredients && userInfo.ingredients.length > 0) {
-  //       const imagePromises = userInfo.ingredients.slice(0, 3).map(async (ingredient) => {
-  //         const imageUrl = await getIngredientImage(ingredient);
-  //         return imageUrl;
-  //       });
-  //       const images = await Promise.all(imagePromises);
-  //       setIngredientImages(images);
-  //     } else {
-  //       setIngredientImages([]); 
-  //     }
-  //   };
-  //   fetchIngredientImages();
-  // }, [id]);
   
   const barData = userInfo?.weeklyCalories.map((calories, index) => ({
     value: calories,
@@ -199,9 +183,9 @@ export default function Tab() {
 }
           </View>
 
-            <View style={styles.more}>
+            {/* <View style={styles.more}>
               <Text>➕</Text>
-            </View>
+            </View> */}
           </Pressable>
           <View style={styles.intake}>
             <View style={{ justifyContent: "flex-start" }}>
