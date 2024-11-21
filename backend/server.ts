@@ -55,7 +55,7 @@ app.get(
   (req, res) => {
     if (req.user) {
       const userId = (req.user as any)._id;
-      res.redirect(`${APP_SCHEMA}home?userId=${userId}`);
+      res.redirect(`${APP_SCHEMA}welcome?userId=${userId}`);
     }
   }
   
