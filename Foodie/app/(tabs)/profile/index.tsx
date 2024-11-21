@@ -106,7 +106,7 @@ export default function Tab() {
     if (userInfo?.googleId) {
       try {
         const response = await Linking.openURL(
-          `http://vcm-44530.vm.duke.edu:4123/api/logout`
+          `https://foodie.zeus.wang/api/logout`
         );
       } catch (err) {
         console.log(err);

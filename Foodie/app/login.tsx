@@ -24,9 +24,10 @@ export default function LoginScreen() {
   // variables
   const img_path = "../assets/rasberry.png";
   const google_icon_path = "../assets/google_icon.png";
-  const baseUrl = Platform.OS === "android"
-                ? "http://67.159.75.53:4123"
-                : "http://67.159.75.53:4123"
+  // const baseUrl = Platform.OS === "android"
+  //               ? "http://67.159.75.53:4123"
+  //               : "http://67.159.75.53:4123"
+  const baseUrl = "https://foodie.zeus.wang";
 
   // navigation
   const router = useRouter();
@@ -49,7 +50,7 @@ export default function LoginScreen() {
     event: GestureResponderEvent
   ): Promise<void> {
     console.log("user: press continue with google");
-    await Linking.openURL("http://vcm-44530.vm.duke.edu:4123/auth/google");
+    await Linking.openURL("https://foodie.zeus.wang/auth/google");
   }
 
   // function onChangeUserName(text: string): void {

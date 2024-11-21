@@ -4,14 +4,14 @@ import { Platform } from "react-native";
 export const API_CONFIG = {
   spoonacular: {
     baseURL: "https://api.spoonacular.com",
-    apiKEY: "369bec8fd4ac4cb48d6871f67f635722",
+    apiKEY: "5764fe09cc624a12adee3886b3226a29",
   },
   cocktailDB: {
     baseURL: "https://www.thecocktaildb.com",
     apiKEY: "1",
   },
   localServer: {
-    baseURL: Platform.OS === "android" ? "http://67.159.75.53:4123/users" : "http://67.159.75.53:4123/users",
+    baseURL:  "https://foodie.zeus.wang/users",
   },
 };
 
