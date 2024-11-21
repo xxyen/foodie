@@ -25,8 +25,8 @@ export default function LoginScreen() {
   const img_path = "../assets/rasberry.png";
   const google_icon_path = "../assets/google_icon.png";
   const baseUrl = Platform.OS === "android"
-                ? "http://10.0.2.2:4000"
-                : "http://localhost:4000"
+                ? "http://67.159.75.53:4123"
+                : "http://67.159.75.53:4123"
 
   // navigation
   const router = useRouter();
@@ -49,7 +49,7 @@ export default function LoginScreen() {
     event: GestureResponderEvent
   ): Promise<void> {
     console.log("user: press continue with google");
-    await Linking.openURL("http://localhost:4000/auth/google");
+    await Linking.openURL("http://vcm-44530.vm.duke.edu:4123/auth/google");
   }
 
   // function onChangeUserName(text: string): void {

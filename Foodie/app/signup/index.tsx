@@ -25,9 +25,6 @@ export default function SignUpScreen() {
   // variables
   const img_path = "../../assets/chickenleg.png";
   const google_icon_path = "../../assets/google_icon.png";
-  const baseUrl = Platform.OS === "android"
-  ? "http://10.0.2.2:4000"
-  : "http://localhost:4000"
 
 
   // navigation
@@ -131,38 +128,9 @@ export default function SignUpScreen() {
     event: GestureResponderEvent
   ): Promise<void> {
     console.log("user: press continue with google");
-    await Linking.openURL("http://localhost:4000/auth/google");
+    await Linking.openURL("http://vcm-44530.vm.duke.edu:4123/auth/google");
   }
 
-  const registerHelper = async () => {
-    const config = {
-      method : 'POST',
-      headers : {
-        'Content-Type': 'application/json'
-      },
-      body : JSON.stringify({
-        'username' : username,
-        'email' : email,
-        'password' : password
-      })
-    };
-    try{
-      const response = await fetch(`${baseUrl}/register`, config);
-      const body = await response.json();
-      if(response.status!=201){
-        alert(body.message);
-        return false;
-      }
-      else{
-        onChangeId(body.userId);
-        return true;
-      }
-    } catch(err){
-      alert(err);
-      return false;
-    }
-    
-  }
 
 
   return (
