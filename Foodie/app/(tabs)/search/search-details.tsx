@@ -39,7 +39,7 @@ export default function Home() {
       setOriginalTag(tag);
       setTag(tag.toLowerCase());
     }
-  }, [pressedTag]);
+  }, [JSON.stringify(pressedTag)]);
 
   useEffect(() => {
     const fetchData = async () => {

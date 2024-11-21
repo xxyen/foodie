@@ -37,7 +37,7 @@ export default function WelcomeScreen() {
           if (typeof queryParams.userId === "string") {
             onChangeId(queryParams.userId);
             router.dismissAll();
-            router.push("/home");
+            router.replace("/home");
             Alert.alert("Congratulate!", "you have logged in successfully with Google."); 
           }
         }
@@ -66,7 +66,7 @@ export default function WelcomeScreen() {
   // functions
   function onPressLater(event: GestureResponderEvent): void {
     console.log("user: press later");
-    router.push("/home");
+    router.replace("/home");
   }
 
   function onPressLogin(event: GestureResponderEvent): void {

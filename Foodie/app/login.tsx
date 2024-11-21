@@ -43,7 +43,7 @@ export default function LoginScreen() {
   function onPressLater(event: GestureResponderEvent): void {
     console.log("user: press later");
     router.dismissAll();
-    router.push("/home");
+    router.replace("/home");
   }
   // function onChangeUserName(text: string): void {
   //   // throw new Error("Function not implemented.");
@@ -71,7 +71,7 @@ export default function LoginScreen() {
     if (res) {
       const user = await getProfile(res);
       router.dismissAll();
-      router.push("/home");
+      router.replace("/home");
       Alert.alert("Congratulate!", user?.username+", you have logged in successfully."); 
     }
   }

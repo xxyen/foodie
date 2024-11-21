@@ -54,7 +54,7 @@ export default function AllergyScreen() {
         const res = await registerHelper(username,email,password,allergiesArray,diet,onChangeId);
         if (res) {
           router.dismissAll();
-          router.push("/home");
+          router.replace("/home");
           Alert.alert("Congratulate!",username+", you have resgistered successfully."); 
         }
       }

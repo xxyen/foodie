@@ -43,6 +43,7 @@ export default function Home() {
     const fetchData = async () => {
       setLoading(true);
       try {
+        console.log("tag", tag)
         const recipes = await getRandomFoodRecipe(tag);
         setData(recipes);
       } catch (error) {

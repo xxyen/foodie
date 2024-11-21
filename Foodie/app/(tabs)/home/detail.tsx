@@ -43,7 +43,7 @@ export default function Tab() {
       setSteps(parsedData.analyzedInstructions[0]?.steps);
       setLoading(false);
     }
-  }, [data]);
+  }, [JSON.stringify(data)]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,7 +55,7 @@ export default function Tab() {
       }
     };
     fetchData();
-  });
+  }, []);
 
   if (loading) {
     return (

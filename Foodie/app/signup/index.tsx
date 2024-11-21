@@ -41,7 +41,7 @@ export default function SignUpScreen() {
     console.log("user: press later");
     router.dismissAll();
     // router.back();
-    router.push("/home");
+    router.replace("/home");
     // router.push("signup/allergy");
   }
 

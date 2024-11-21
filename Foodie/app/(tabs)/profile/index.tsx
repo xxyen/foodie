@@ -78,7 +78,7 @@ export default function Tab() {
 
   useEffect(()=>{
     setStatues(Array(allergies.length).fill(false));
-  },[allergies])
+  }, [JSON.stringify(allergies)])
   
   const barData = userInfo?.weeklyCalories.map((calories, index) => ({
     value: calories,
@@ -197,7 +197,7 @@ export default function Tab() {
                 barWidth={10}
                 noOfSections={1}
                 barBorderRadius={4}
-                frontColor="lightgray"
+                frontColor="lightblue"
                 data={barData}
                 yAxisThickness={0}
                 xAxisThickness={0}
@@ -207,6 +207,17 @@ export default function Tab() {
                 initialSpacing={10}
                 hideAxesAndRules
                 isAnimated
+                showValuesAsTopLabel
+                barMarginBottom={10}
+                topLabelTextStyle={{
+                  fontSize: 12,
+                  width: 20,
+                  height: 20,
+                  lineHeight: 20,
+                  position: "relative",
+                  top: 10,
+                  textAlign: 'center'
+                }}
               />
             </View>
           </View>
