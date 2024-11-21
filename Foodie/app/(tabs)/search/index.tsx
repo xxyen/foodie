@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TextInput,
   Pressable,
   Image,
@@ -11,8 +10,9 @@ import {
   Modal,
   Button,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { pickImage, openCamera } from "@/utils";
 import { useCameraPermissions } from "expo-camera";
 import { useRouter } from "expo-router";
@@ -244,6 +244,12 @@ export default function Tab() {
             </View>
           </View>
         </View>
+        <Pressable
+          style={styles.start_chat_button}
+          onPress={() => (router.push("/search/chat-with-chatbot"))}
+        >
+          <Text style={styles.start_chat_text}>Start Chat with Bot</Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -255,16 +261,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
   container: {
-    flex: 1,
-    justifyContent: "center",
     alignItems: "center",
-    gap: 10,
+    width: "100%",
+    paddingBottom: 40,
   },
   container_header: {
     width: "90%",
     justifyContent: "center",
     alignItems: "flex-start",
     padding: 10,
+    marginTop:10,
   },
   container_tag: {
     justifyContent: "flex-start",
@@ -363,4 +369,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+
+  start_chat_button:{
+      backgroundColor: "#E1AEC1",
+      borderRadius: 20,
+      paddingVertical: 10,
+      width: 300,
+      marginTop:20,
+  },
+
+  start_chat_text:{
+      textAlign: "center",
+      fontSize: 18,
+      color: "white",
+      fontWeight: "bold",
+  },
+      scrollViewContent: {
+      flex: 1,
+       width: "100%",
+       flexGrow: 1,
+       justifyContent: "flex-start",
+
+      },
 });

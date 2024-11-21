@@ -3,12 +3,12 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
   ActivityIndicator,
   Alert,
   Platform,
 } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getRandomCocktailRecipe, updateFavoriteDrinks } from "../../../utils";
 import { useAppContext } from "@/context/contexts";
 import { router } from "expo-router";

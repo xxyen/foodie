@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Alert, Platform, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Alert, Platform, ActivityIndicator } from "react-native";
 import { useEffect, useState, useCallback } from "react";
 import { useAppContext } from "@/context/contexts";
 import { useRouter } from "expo-router";
@@ -6,6 +6,7 @@ import { updateFavoriteFoods, updateFavoriteDrinks, getRecipeById, searchCocktai
 import CategorySelector from "../../Components/CategorySelector";
 import FoodItem from "../../Components/FoodItem";
 import DrinkItem from "../../Components/DrinkItem";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Tab() {
   const [favFoodObjects, setFavFoodObjects] = useState([]);

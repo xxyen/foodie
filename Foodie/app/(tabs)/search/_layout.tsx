@@ -26,6 +26,16 @@ export default function ProfileLayout() {
               }}
             />
 
+     <Stack.Screen
+         name="chat-with-chatbot"
+         options={{
+           title: "Start Chat with Bot",
+           presentation: "modal",
+           tabBarStyle: { display: "none" },
+         }}
+         />
+
     </Stack>
+
   );
 }
