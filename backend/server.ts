@@ -52,7 +52,7 @@ app.get(
   (req, res) => {
     if (req.user) {
       const userId = (req.user as any)._id;
-      res.redirect(`exp://127.0.0.1:8081/--/home?userId=${userId}`);
+      res.redirect(`Foodie://home?userId=${userId}`);
     }
   }
   
@@ -69,7 +69,7 @@ app.get("/api/logout", (req, res) => {
         console.error("Session destruction error:", err);
         return res.status(500).json({ error: 'Internal server error' });
       }
-    res.redirect(`exp://127.0.0.1:8081/--/(tabs)/profile`);
+    res.redirect(`Foodie://(tabs)/profile`);
     });
   });
 });
