@@ -124,15 +124,6 @@ export default function SignUpScreen() {
     }
   }
 
-  async function onPressGoogleLogin(
-    event: GestureResponderEvent
-  ): Promise<void> {
-    console.log("user: press continue with google");
-    await Linking.openURL("https://foodie.zeus.wang/auth/google");
-  }
-
-
-
   return (
     <>
       <SafeAreaView style={styles.safearea}>
@@ -186,10 +177,6 @@ export default function SignUpScreen() {
           </View>
           <Pressable style={styles.btn_signup} onPress={onPressRegister}>
             <Text style={styles.btn_signup_text}>Register</Text>
-          </Pressable>
-          <Pressable style={styles.btn_google} onPress={onPressGoogleLogin}>
-            <Image source={require(google_icon_path)} style={styles.icon_google} resizeMode="contain"/>
-            <Text style={styles.btn_google_text}>Continue with Google</Text>
           </Pressable>
           <View style={styles.container_login}>
             <Text style={styles.text}>Already have an Account? </Text>

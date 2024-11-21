@@ -1,5 +1,5 @@
 import { useRouter, useNavigation } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   Pressable,
 } from "react-native";
 import * as Linking from "expo-linking";
+import { useAppContext } from "@/context/contexts";
 
 export default function WelcomeScreen() {
   // navigation
@@ -21,6 +22,42 @@ export default function WelcomeScreen() {
   const img_path_2 = "../assets/burger.png";
   const img_path_3 = "../assets/orange.png";
   const google_icon_path = "../assets/google_icon.png";
+
+  const { onChangeId } = useAppContext();
+
+  useEffect(() => {
+    const getUserIdFromUrl = async () => {
+      const url = await Linking.getInitialURL();
+      console.log("url: ", url);
+      if (url) {
+        const { queryParams } = Linking.parse(url);
+        // console.log("userId: ", queryParams?.userId);
+        if (queryParams?.userId) {
+          if (typeof queryParams.userId === "string") {
+            onChangeId(queryParams.userId);
+          }
+        }
+      }
+    };
+
+    // Initial check for the deep link URL when the component mounts
+    getUserIdFromUrl();
+
+    // Listener for any incoming links while the app is open
+    const urlListener = Linking.addEventListener("url", (event) => {
+      const { queryParams } = Linking.parse(event.url);
+      if (queryParams?.userId) {
+        if (typeof queryParams.userId === "string") {
+          onChangeId(queryParams.userId);
+        }
+      }
+    });
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      urlListener.remove();
+    };
+  }, []);
 
   // functions
   function onPressLater(event: GestureResponderEvent): void {
@@ -63,10 +100,10 @@ export default function WelcomeScreen() {
             <Text style={styles.text}>Start your foodie journey</Text>
             <View style={styles.container_btn}>
               <Pressable style={styles.btn_login} onPress={onPressLogin}>
-                <Text style={styles.btn_login_text}>Login</Text>
+                <Text style={styles.btn_login_text}>Login with Email</Text>
               </Pressable>
               <Pressable style={styles.btn_signup} onPress={onPressSignUp}>
-                <Text style={styles.btn_signup_text}>Sign Up</Text>
+                <Text style={styles.btn_signup_text}>Sign Up with Email</Text>
               </Pressable>
               <Pressable style={styles.btn_google} onPress={onPressGoogleLogin}>
                 <Image

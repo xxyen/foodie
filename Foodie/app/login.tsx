@@ -45,14 +45,6 @@ export default function LoginScreen() {
     router.dismissAll();
     router.push("/home");
   }
-
-  async function onPressGoogleLogin(
-    event: GestureResponderEvent
-  ): Promise<void> {
-    console.log("user: press continue with google");
-    await Linking.openURL("https://foodie.zeus.wang/auth/google");
-  }
-
   // function onChangeUserName(text: string): void {
   //   // throw new Error("Function not implemented.");
   //   setUsername(text);
@@ -181,10 +173,6 @@ export default function LoginScreen() {
           </View>
           <Pressable style={styles.btn_login} onPress={onPressLogin}>
             <Text style={styles.btn_login_text}>Login</Text>
-          </Pressable>
-          <Pressable style={styles.btn_google} onPress={onPressGoogleLogin}>
-            <Image source={require(google_icon_path)} style={styles.icon_google} resizeMode="contain"/>
-            <Text style={styles.btn_google_text}>Continue with Google</Text>
           </Pressable>
           <View style={styles.container_register}>
             <Text style={styles.text}>Don’t have an Account? </Text>
