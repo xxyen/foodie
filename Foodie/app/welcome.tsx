@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import * as Linking from "expo-linking";
 import { useAppContext } from "@/context/contexts";
+import { Alert } from 'react-native';
 
 export default function WelcomeScreen() {
   // navigation
@@ -35,6 +36,9 @@ export default function WelcomeScreen() {
         if (queryParams?.userId) {
           if (typeof queryParams.userId === "string") {
             onChangeId(queryParams.userId);
+            router.dismissAll();
+            router.push("/home");
+            Alert.alert("Congratulate!", "you have logged in successfully with Google."); 
           }
         }
       }
