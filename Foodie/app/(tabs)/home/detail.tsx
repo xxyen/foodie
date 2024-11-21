@@ -45,17 +45,17 @@ export default function Tab() {
     }
   }, [data]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (id) {
-        const userData = await getProfile(id);
-        if (userData) {
-          onChangeWeeklyCalories(userData.weeklyCalories);
-        }
-      }
-    };
-    fetchData();
-  });
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (id) {
+  //       const userData = await getProfile(id);
+  //       if (userData) {
+  //         onChangeWeeklyCalories(userData.weeklyCalories);
+  //       }
+  //     }
+  //   };
+  //   fetchData();
+  // });
 
   if (loading) {
     return (

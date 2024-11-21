@@ -28,6 +28,7 @@ export default function Tab() {
     icon,
     allergies,
     ingredients,
+    weeklyCalories,
     onChangeUsername,
     onChangeEmail,
     onChangeAllergies,
@@ -52,8 +53,30 @@ export default function Tab() {
   const [modal, setModal] = useState(false);
   const [statues, setStatues] = useState<boolean[]>(Array(allergies.length).fill(false));
   const [allergyModal, setAllergyModal] = useState(false);
+  const [barData, setBarData] = useState<{ value: number; label: string; topLabelComponent: () => JSX.Element }[]>([]);
 
   useEffect(() => {
+    const generateBarData = () => {
+      const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const today = new Date();
+      const currentDayIndex = today.getDay();
+      
+      const last7DaysLabels = Array(7)
+        .fill(0)
+        .map((_, index) => daysOfWeek[(currentDayIndex - (6 - index) + 7) % 7]);
+  
+      const data = last7DaysLabels.map((label, index) => ({
+        value: weeklyCalories[(currentDayIndex - (6 - index) + 7) % 7] ?? 0,
+        label,
+        topLabelComponent: () => (
+          <Text style={styles.barLabel}>
+            {weeklyCalories[(currentDayIndex - (6 - index) + 7) % 7]}
+          </Text>
+        ),
+      }));
+      return data;
+    };
+
     const fetchUserData = async () => {
       if (id) {
         const userData = await getProfile(id);
@@ -77,24 +100,29 @@ export default function Tab() {
               setIngredientImages([]); 
             }
           }, 1000); 
+
+          setTimeout(() => {
+            setBarData(generateBarData());
+          }, 50);
         }
       }
     };
+
     fetchUserData();
-  }, [id, ingredients]); 
+  }, [id, ingredients, weeklyCalories]); 
 
   useEffect(()=>{
     setStatues(Array(allergies.length).fill(false));
   },[allergies])
   
-  const barData = userInfo?.weeklyCalories.map((calories, index) => ({
-    value: calories,
-    label: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][index],
-    topLabelComponent: () => (
-      <Text style={styles.barLabel}>{calories}</Text>
-    ),
-  })) || [];
-
+  // const barData = userInfo?.weeklyCalories.map((calories, index) => ({
+  //   value: calories,
+  //   label: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][index],
+  //   topLabelComponent: () => (
+  //     <Text style={styles.barLabel}>{calories}</Text>
+  //   ),
+  // })) || [];
+  
   // functions
   async function onPressLoginOut(event: GestureResponderEvent): Promise<void> {
     if (userInfo?.googleId) {
