@@ -38,41 +38,6 @@ export default function Home() {
   // Navigation
   const router = useRouter();
 
-     useEffect(() => {
-        const getUserIdFromUrl = async () => {
-          const url = await Linking.getInitialURL();
-          console.log("url: ", url);
-          if (url) {
-            const { queryParams } = Linking.parse(url);
-            // console.log("userId: ", queryParams?.userId);
-            if (queryParams?.userId) {
-              if (typeof queryParams.userId === "string") {
-                onChangeId(queryParams.userId);
-              }
-            }
-          }
-        };
-
-        // Initial check for the deep link URL when the component mounts
-        getUserIdFromUrl();
-
-        // Listener for any incoming links while the app is open
-        const urlListener = Linking.addEventListener("url", (event) => {
-          const { queryParams } = Linking.parse(event.url);
-          if (queryParams?.userId) {
-            if (typeof queryParams.userId === "string") {
-              onChangeId(queryParams.userId);
-            }
-          }
-        });
-
-        // Clean up the event listener when the component unmounts
-        return () => {
-          urlListener.remove();
-        };
-      }, []);
-
-
   // Fetch data based on category
   useEffect(() => {
     const fetchData = async () => {
