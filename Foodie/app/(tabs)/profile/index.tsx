@@ -9,14 +9,24 @@ import {
   Dimensions,
   Linking,
   Platform,
-  ScrollView
+  ScrollView,
 } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import {
+  FontAwesome,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { useAppContext } from "@/context/contexts";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { BarChart } from "react-native-gifted-charts";
-import { getProfile, parseImage, getFoodIngredientImage, getIngredientImage, changeAllergies } from "@/utils";
+import {
+  getProfile,
+  parseImage,
+  getFoodIngredientImage,
+  getIngredientImage,
+  changeAllergies,
+} from "@/utils";
 import PickerModal from "@/Components/PickerModal";
 import FoodTag from "@/app/signup/FoodTag";
 import ExtraAllergies from "./ExtraAllergies";
@@ -51,27 +61,29 @@ export default function Tab() {
   const [userInfo, setUserInfo] = useState<IUserInfo | undefined>(undefined);
   const [ingredientImages, setIngredientImages] = useState<string[]>([]);
   const [modal, setModal] = useState(false);
-  const [statues, setStatues] = useState<boolean[]>(Array(allergies.length).fill(false));
+  const [statues, setStatues] = useState<boolean[]>(
+    Array(allergies.length).fill(false)
+  );
   const [allergyModal, setAllergyModal] = useState(false);
-  const [barData, setBarData] = useState<{ value: number; label: string; topLabelComponent: () => JSX.Element }[]>([]);
+  const [barData, setBarData] = useState<
+    { value: number; label: string; topLabelComponent: () => JSX.Element }[]
+  >([]);
 
   useEffect(() => {
     const generateBarData = () => {
       const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       const today = new Date();
       const currentDayIndex = today.getDay();
-      
+
       const last7DaysLabels = Array(7)
         .fill(0)
         .map((_, index) => daysOfWeek[(currentDayIndex - (6 - index) + 7) % 7]);
-  
+
       const data = last7DaysLabels.map((label, index) => ({
         value: weeklyCalories[(currentDayIndex - (6 - index) + 7) % 7] ?? 0,
         label,
         topLabelComponent: () => (
-          <Text>
-            {weeklyCalories[(currentDayIndex - (6 - index) + 7) % 7]}
-          </Text>
+          <Text>{weeklyCalories[(currentDayIndex - (6 - index) + 7) % 7]}</Text>
         ),
       }));
       return data;
@@ -87,19 +99,21 @@ export default function Tab() {
           setTimeout(() => {
             if (userData.ingredients && userData.ingredients.length > 0) {
               const fetchIngredientImages = async () => {
-                const imagePromises = userData.ingredients.slice(0, 3).map(async (ingredient) => {
-                  const imageUrl = await getIngredientImage(ingredient);
-                  return imageUrl;
-                });
-                const images = await Promise.all(imagePromises); 
-                // console.log("images: ", images); 
-                setIngredientImages(images); 
+                const imagePromises = userData.ingredients
+                  .slice(0, 3)
+                  .map(async (ingredient) => {
+                    const imageUrl = await getIngredientImage(ingredient);
+                    return imageUrl;
+                  });
+                const images = await Promise.all(imagePromises);
+                // console.log("images: ", images);
+                setIngredientImages(images);
               };
               fetchIngredientImages();
             } else {
-              setIngredientImages([]); 
+              setIngredientImages([]);
             }
-          }, 1000); 
+          }, 1000);
 
           setTimeout(() => {
             setBarData(generateBarData());
@@ -109,12 +123,12 @@ export default function Tab() {
     };
 
     fetchUserData();
-  }, [id, ingredients, weeklyCalories]); 
+  }, [id, ingredients, weeklyCalories]);
 
-  useEffect(()=>{
+  useEffect(() => {
     setStatues(Array(allergies.length).fill(false));
-  },[allergies])
-  
+  }, [allergies]);
+
   // const barData = userInfo?.weeklyCalories.map((calories, index) => ({
   //   value: calories,
   //   label: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][index],
@@ -122,7 +136,7 @@ export default function Tab() {
   //     <Text style={styles.barLabel}>{calories}</Text>
   //   ),
   // })) || [];
-  
+
   // functions
   async function onPressLoginOut(event: GestureResponderEvent): Promise<void> {
     if (userInfo?.googleId) {
@@ -138,20 +152,24 @@ export default function Tab() {
     logout();
     setUserInfo(undefined);
   }
-  
-  function onPressUpdateIcon(event: GestureResponderEvent): void{
+
+  function onPressUpdateIcon(event: GestureResponderEvent): void {
     setModal(true);
   }
 
-  async function onPressRemoveAllergy(event: GestureResponderEvent): Promise<void>{
-    const chosen = allergies.filter((a,index)=>statues[index]===false);
-    await changeAllergies(id,chosen);
+  async function onPressRemoveAllergy(
+    event: GestureResponderEvent
+  ): Promise<void> {
+    const chosen = allergies.filter((a, index) => statues[index] === false);
+    await changeAllergies(id, chosen);
     onChangeAllergies(chosen);
     setStatues(Array(chosen.length).fill(false));
   }
 
-  async function onPressAddAllergy(event: GestureResponderEvent): Promise<void>{
-    setAllergyModal((visible)=>!visible);
+  async function onPressAddAllergy(
+    event: GestureResponderEvent
+  ): Promise<void> {
+    setAllergyModal((visible) => !visible);
   }
 
   function onPressLogin(event: GestureResponderEvent): void {
@@ -180,35 +198,43 @@ export default function Tab() {
     <SafeAreaView style={styles.safearea}>
       {id ? (
         <View style={styles.container}>
-          <Pressable onPress={onPressUpdateIcon} >
+          <Pressable onPress={onPressUpdateIcon}>
             <Image
               source={{ uri: parseImage(icon) }}
               style={styles.avatar}
               resizeMode="contain"
             />
-            <FontAwesome name={"plus-square"} size={15} color={"black"} 
-            style={{gap:0, margin:0, paddingHorizontal:35}}/>
+            <FontAwesome
+              name={"plus-square"}
+              size={15}
+              color={"black"}
+              style={{ gap: 0, margin: 0, paddingHorizontal: 35 }}
+            />
           </Pressable>
           <Text style={styles.title}>{userInfo?.username}</Text>
           {modal && (
-            <PickerModal visible={modal} onChangeVisible={setModal} action={2}/>
+            <PickerModal
+              visible={modal}
+              onChangeVisible={setModal}
+              action={2}
+            />
           )}
           <Pressable
             style={styles.shopping_list}
             onPress={() => router.push("profile/shopping-list")}
           >
             <Text style={styles.title}>My Shopping List</Text>
-            <View style={styles.container_row}>
-            {
-              ingredientImages.map((img, index) => (
-                img ? (
-                  <Image key={index} source={{ uri: img }} style={styles.img} resizeMode="contain" />
-                ) : (
-                  <Text key={index}>Image not available</Text>
-                )
-              ))
-}
-          </View>
+            <ScrollView contentContainerStyle={styles.container_tag_row}>
+              {userInfo?.ingredients.map((a: string, index: number) => (
+                <FoodTag
+                  key={index}
+                  food={a.split(" ") .map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
+                  index={index}
+                  statues={statues}
+                  onChangeStatus={setStatues}
+                />
+              ))}
+            </ScrollView>
 
             {/* <View style={styles.more}>
               <Text>➕</Text>
@@ -243,28 +269,36 @@ export default function Tab() {
                   lineHeight: 20,
                   position: "relative",
                   top: 10,
-                  textAlign: 'center'
+                  textAlign: "center",
                 }}
               />
             </View>
           </View>
-          <View style={styles.shopping_list}>
-            <View style={styles.container_row}>
-              <Pressable onPress={onPressRemoveAllergy}>
-                <FontAwesome name="minus" size={15} color={"blue"}/>
-              </Pressable>
-              <Text style={styles.title}>My Food Allergies</Text>
-              <Pressable onPress={onPressAddAllergy}>
-                <FontAwesome name="plus" size={15} color={"red"}/>
-              </Pressable>
-            </View>
+          <Pressable
+            style={styles.shopping_list}
+            onPress={() => {
+              router.push("profile/allergy-list");
+            }}
+          >
+            <Text style={styles.title}>My Food Allergies</Text>
             <ScrollView contentContainerStyle={styles.container_tag_row}>
-              {allergies.map((a:string, index:number)=> <FoodTag key={index} food={a} index={index} statues={statues} onChangeStatus={setStatues}/>)}
+              {allergies.map((a: string, index: number) => (
+                <FoodTag
+                  key={index}
+                  food={a}
+                  index={index}
+                  statues={statues}
+                  onChangeStatus={setStatues}
+                />
+              ))}
             </ScrollView>
             {allergyModal && (
-              <ExtraAllergies visible={allergyModal} onChangeVisible={setAllergyModal}/>
+              <ExtraAllergies
+                visible={allergyModal}
+                onChangeVisible={setAllergyModal}
+              />
             )}
-          </View>
+          </Pressable>
           <Pressable style={styles.btn_logout} onPress={onPressLoginOut}>
             <Text style={styles.btn_text}>Log Out</Text>
           </Pressable>
@@ -305,7 +339,7 @@ const styles = StyleSheet.create({
   container_row: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     flexWrap: "wrap",
     width: "90%",
   },

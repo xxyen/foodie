@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { getProfile } from "@/utils";
 import { updateIngredients } from "@/utils";
 
-export default function ShoppingList() {
+export default function AllergiesList() {
     const { id, onChangeIngredients } = useAppContext();
     const [userInfo, setUserInfo] = useState<IUserInfo | undefined>(undefined);
     const [ingredients, setIngredients] = useState<string[]>([]);

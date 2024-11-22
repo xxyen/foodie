@@ -10,7 +10,7 @@ export default function ProfileLayout() {
           title: "Profile",
         }}
       />
-      
+
       <Stack.Screen
         name="shopping-list"
         options={{
@@ -18,6 +18,12 @@ export default function ProfileLayout() {
         }}
       />
 
+      <Stack.Screen
+        name="allergy-list"
+        options={{
+          title: "Allergy List",
+        }}
+      />
     </Stack>
   );
 }
