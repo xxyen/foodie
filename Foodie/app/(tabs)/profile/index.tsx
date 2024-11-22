@@ -27,6 +27,8 @@ export default function Tab() {
     id,
     icon,
     allergies,
+    ingredients,
+    weeklyCalories,
     onChangeUsername,
     onChangeEmail,
     onChangeAllergies,
@@ -51,40 +53,76 @@ export default function Tab() {
   const [modal, setModal] = useState(false);
   const [statues, setStatues] = useState<boolean[]>(Array(allergies.length).fill(false));
   const [allergyModal, setAllergyModal] = useState(false);
+  const [barData, setBarData] = useState<{ value: number; label: string; topLabelComponent: () => JSX.Element }[]>([]);
 
   useEffect(() => {
+    const generateBarData = () => {
+      const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const today = new Date();
+      const currentDayIndex = today.getDay();
+      
+      const last7DaysLabels = Array(7)
+        .fill(0)
+        .map((_, index) => daysOfWeek[(currentDayIndex - (6 - index) + 7) % 7]);
+  
+      const data = last7DaysLabels.map((label, index) => ({
+        value: weeklyCalories[(currentDayIndex - (6 - index) + 7) % 7] ?? 0,
+        label,
+        topLabelComponent: () => (
+          <Text>
+            {weeklyCalories[(currentDayIndex - (6 - index) + 7) % 7]}
+          </Text>
+        ),
+      }));
+      return data;
+    };
+
     const fetchUserData = async () => {
       if (id) {
         const userData = await getProfile(id);
         if (userData) {
           setUserInfo(userData);
+          // console.log("userDataIngredients: ", userData.ingredients);
 
-          if (userInfo?.ingredients && userInfo.ingredients.length > 0) {
-              const imagePromises = userInfo.ingredients.slice(0, 3).map(async (ingredient) => {
-                const imageUrl = await getIngredientImage(ingredient);
-                return imageUrl;
-              });
-              const images = await Promise.all(imagePromises);
-              console.log(images);
-              setIngredientImages(images);
+          setTimeout(() => {
+            if (userData.ingredients && userData.ingredients.length > 0) {
+              const fetchIngredientImages = async () => {
+                const imagePromises = userData.ingredients.slice(0, 3).map(async (ingredient) => {
+                  const imageUrl = await getIngredientImage(ingredient);
+                  return imageUrl;
+                });
+                const images = await Promise.all(imagePromises); 
+                // console.log("images: ", images); 
+                setIngredientImages(images); 
+              };
+              fetchIngredientImages();
             } else {
               setIngredientImages([]); 
             }
+          }, 1000); 
+
+          setTimeout(() => {
+            setBarData(generateBarData());
+          }, 50);
         }
       }
     };
+
     fetchUserData();
-  }, [JSON.stringify(userInfo?.ingredients)]); 
+  }, [id, ingredients, weeklyCalories]); 
 
   useEffect(()=>{
     setStatues(Array(allergies.length).fill(false));
-  }, [JSON.stringify(allergies)])
+  },[allergies])
   
-  const barData = userInfo?.weeklyCalories.map((calories, index) => ({
-    value: calories,
-    label: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][index],
-  })) || [];
-
+  // const barData = userInfo?.weeklyCalories.map((calories, index) => ({
+  //   value: calories,
+  //   label: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][index],
+  //   topLabelComponent: () => (
+  //     <Text style={styles.barLabel}>{calories}</Text>
+  //   ),
+  // })) || [];
+  
   // functions
   async function onPressLoginOut(event: GestureResponderEvent): Promise<void> {
     if (userInfo?.googleId) {
@@ -161,17 +199,6 @@ export default function Tab() {
           >
             <Text style={styles.title}>My Shopping List</Text>
             <View style={styles.container_row}>
-            {/* {ingredientImages.length > 0 ? (
-              ingredientImages.map((img, index) => (
-                img ? (
-                  <Image key={index} source={{ uri: img }} style={styles.img} resizeMode="contain" />
-                ) : (
-                  <Text key={index}>Image not available</Text>
-                )
-              ))
-            ) : (
-              <Text>No ingredients in shopping list</Text>
-            )} */}
             {
               ingredientImages.map((img, index) => (
                 img ? (
@@ -402,5 +429,4 @@ const styles = StyleSheet.create({
     gap: 10,
     flexWrap: "wrap",
   },
-
 });
