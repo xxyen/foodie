@@ -23,6 +23,10 @@ import {
 } from "@/utils";
 import { useAppContext } from "@/context/contexts";
 import { LinearGradient } from "expo-linear-gradient";
+import { RecipeHeader } from "../../../Components/RecipeHeader";
+import { IngredientList } from "../../../Components/IngredientList";
+import { DirectionList } from "../../../Components/DirectionList";
+
 
 export default function Tab() {
   const { id } = useLocalSearchParams();
@@ -151,66 +155,15 @@ export default function Tab() {
   return (
     <SafeAreaView style={styles.safearea}>
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.container_img}>
-          {/* <Text style={styles.title_h1}>Recipe Detail</Text> */}
-          <ImageBackground
-            source={{ uri: recipe?.strDrinkThumb }}
-            style={styles.img_wrapper}
-            resizeMode="cover"
-          >
-            <LinearGradient
-              colors={[
-                "rgba(0, 0, 0, 0.4)",
-                "rgba(0, 0, 0, 0)",
-                "rgba(0, 0, 0, 0)",
-                "rgba(0, 0, 0, 0.4)",
-              ]}
-              style={styles.gradient}
-              start={{ x: 0.5, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-            />
-            <View style={styles.container_text_and_btn}>
-              <Text style={styles.text}>{recipe.strDrink}</Text>
-              <Pressable onPress={onPressAddFav}>
-                <View style={styles.circle}>
-                  <MaterialCommunityIcons
-                    name={
-                      favDrinks.includes(Number(recipe.idDrink))
-                        ? "heart"
-                        : "heart-plus"
-                    }
-                    size={20}
-                    style={
-                      favDrinks.includes(Number(recipe.idDrink))
-                        ? styles.fav_icon_selected
-                        : styles.fav_icon_unselected
-                    }
-                  />
-                </View>
-              </Pressable>
-            </View>
-          </ImageBackground>
-        </View>
+        <RecipeHeader
+                        title={recipe?.strDrink}
+                        image={recipe?.strDrinkThumb}
+                        isFavorite={favDrinks.includes(Number(recipe?.idDrink))}
+                        onToggleFavorite={(event) => onPressAddFav}
+                        recipeType="drink"
+                      />
+        <IngredientList ingredients={drinkIngredients || []} recipeType="drink" />
 
-        <View style={styles.container_title}>
-          <Text style={styles.title_h2}>Ingredients</Text>
-          <Text style={styles.subtitle}>{`${
-            drinkIngredients?.length || 0
-          } Items`}</Text>
-        </View>
-        <View style={styles.container_ingredient}>
-          {drinkIngredients &&
-            drinkIngredients.map((ingredient, i) => (
-              <View key={i} style={styles.container_ingredient_item}>
-                <Text style={styles.text_paragraph}>{ingredient}</Text>
-                <Image
-                style={styles.ingredient_image}
-                resizeMode="contain"
-                source={{ uri: getDrinkIngredientImage(ingredient) }}
-              />
-              </View>
-            ))}
-        </View>
         <Pressable style={styles.btn} onPress={onPressAddToShoplist}>
           <Text style={styles.btn_text}>Add To Shoplist</Text>
         </Pressable>
