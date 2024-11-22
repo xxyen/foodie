@@ -38,7 +38,7 @@ export default function Tab() {
   const [steps, setSteps] = useState<IFoodStep[] | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
+ useEffect(() => {
     if (data) {
       const parsedData: IFoodRecipe = JSON.parse(data as string);
       setRecipe(parsedData);
@@ -46,19 +46,20 @@ export default function Tab() {
       setSteps(parsedData.analyzedInstructions[0]?.steps);
       setLoading(false);
     }
-  }, [data]);
+  }, [JSON.stringify(data)]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (id) {
-        const userData = await getProfile(id);
-        if (userData) {
-          onChangeWeeklyCalories(userData.weeklyCalories);
-        }
-      }
-    };
-    fetchData();
-  });
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       if (id) {
+//         const userData = await getProfile(id);
+//         if (userData) {
+//           onChangeWeeklyCalories(userData.weeklyCalories);
+//         }
+//       }
+//     };
+//     fetchData();
+//   });
 
   if (loading) {
     return (
