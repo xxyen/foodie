@@ -16,13 +16,16 @@ import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import {
-  getDrinkIngredientImage,
   getRecipeDetails,
   updateFavoriteDrinks,
   updateIngredients,
 } from "@/utils";
 import { useAppContext } from "@/context/contexts";
 import { LinearGradient } from "expo-linear-gradient";
+import { RecipeHeader } from "../../../Components/RecipeHeader";
+import { IngredientList } from "../../../Components/IngredientList";
+
+
 
 export default function Tab() {
   const { id } = useLocalSearchParams();
@@ -151,66 +154,15 @@ export default function Tab() {
   return (
     <SafeAreaView style={styles.safearea}>
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.container_img}>
-          {/* <Text style={styles.title_h1}>Recipe Detail</Text> */}
-          <ImageBackground
-            source={{ uri: recipe?.strDrinkThumb }}
-            style={styles.img_wrapper}
-            resizeMode="cover"
-          >
-            <LinearGradient
-              colors={[
-                "rgba(0, 0, 0, 0.4)",
-                "rgba(0, 0, 0, 0)",
-                "rgba(0, 0, 0, 0)",
-                "rgba(0, 0, 0, 0.4)",
-              ]}
-              style={styles.gradient}
-              start={{ x: 0.5, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-            />
-            <View style={styles.container_text_and_btn}>
-              <Text style={styles.text}>{recipe.strDrink}</Text>
-              <Pressable onPress={onPressAddFav}>
-                <View style={styles.circle}>
-                  <MaterialCommunityIcons
-                    name={
-                      favDrinks.includes(Number(recipe.idDrink))
-                        ? "heart"
-                        : "heart-plus"
-                    }
-                    size={20}
-                    style={
-                      favDrinks.includes(Number(recipe.idDrink))
-                        ? styles.fav_icon_selected
-                        : styles.fav_icon_unselected
-                    }
-                  />
-                </View>
-              </Pressable>
-            </View>
-          </ImageBackground>
-        </View>
+        <RecipeHeader
+             title={recipe?.strDrink}
+             image={recipe?.strDrinkThumb}
+             isFavorite={favDrinks.includes(Number(recipe?.idDrink))}
+             onToggleFavorite={(event) => onPressAddFav(event)}
+             recipeType="drink"
+        />
+        <IngredientList ingredients={drinkIngredients || []} recipeType="drink" />
 
-        <View style={styles.container_title}>
-          <Text style={styles.title_h2}>Ingredients</Text>
-          <Text style={styles.subtitle}>{`${
-            drinkIngredients?.length || 0
-          } Items`}</Text>
-        </View>
-        <View style={styles.container_ingredient}>
-          {drinkIngredients &&
-            drinkIngredients.map((ingredient, i) => (
-              <View key={i} style={styles.container_ingredient_item}>
-                <Text style={styles.text_paragraph}>{ingredient}</Text>
-                <Image
-                style={styles.ingredient_image}
-                resizeMode="contain"
-                source={{ uri: getDrinkIngredientImage(ingredient) }}
-              />
-              </View>
-            ))}
-        </View>
         <Pressable style={styles.btn} onPress={onPressAddToShoplist}>
           <Text style={styles.btn_text}>Add To Shoplist</Text>
         </Pressable>
@@ -241,13 +193,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexGrow: 1,
   },
-  container_img: {
-    width: "90%",
-    height: 400,
-    justifyContent: "center",
-    alignItems: "flex-start",
-    gap: 10,
-  },
+
   container_title: {
     width: "90%",
     justifyContent: "flex-start",
@@ -255,13 +201,7 @@ const styles = StyleSheet.create({
     gap: 5,
     marginTop: 20,
   },
-  container_ingredient: {
-    width: "90%",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(217, 217, 217, 0.2)",
-    borderRadius: 20,
-  },
+
   container_direction: {
     width: "90%",
     justifyContent: "flex-start",
@@ -302,32 +242,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 20,
   },
-  container_ingredient_item: {
-    width: "90%",
-    height: 55,
-    backgroundColor: "white",
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "space-between",
-    margin: 10,
-    flexDirection: "row",
-  },
-  title_h1: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
+
   title_h2: {
     fontSize: 20,
-    fontWeight: "bold",
-  },
-  title_h3: {
-    fontSize: 18,
-    fontWeight: "bold",
-    margin: 10,
-    paddingLeft: 20,
-  },
-  title_h4: {
-    fontSize: 14,
     fontWeight: "bold",
   },
   subtitle: {
@@ -338,14 +255,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingHorizontal: 20,
     paddingVertical: 10,
-  },
-  img_wrapper: {
-    width: "100%",
-    flex: 1,
-    borderRadius: 20,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "flex-end"
   },
   btn: {
     height: 55,
@@ -361,33 +270,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  ingredient_image: {
-    width: 50,
-    height: 50,
-  },
-  favorite_icon: {
-    position: "absolute",
-    bottom: 10,
-    right: 10,
-  },
-  fav_icon_selected: {
-    color: "red",
-  },
-  fav_icon_unselected: {
-    color: "grey",
-  },
   gradient: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 10,
-  },
-  circle: {
-    height: 25,
-    width: 25,
-    backgroundColor: "white",
-    borderRadius: 25 / 2,
-    alignItems: "center",
-    justifyContent: "center",
-    margin: 10,
   },
   text: {
     flex: 8,
@@ -399,13 +284,7 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 2, height: 3 },
     textShadowRadius: 3,
   },
-  container_text_and_btn: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "95%",
-    padding: 10
-  },
+
     loader: {
       flex: 1,
       justifyContent: "center",
