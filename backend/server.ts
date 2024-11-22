@@ -11,6 +11,9 @@ import "dotenv/config";
 const app = express();
 const port = 4000;
 
+export const APP_SCHEMA = "Foodie://" // For Production
+// export const APP_SCHEMA = "exp://127.0.0.1:8081/--/"
+
 app.use(cors());
 
 app.use(express.json({ limit: '5mb' }));
@@ -52,7 +55,7 @@ app.get(
   (req, res) => {
     if (req.user) {
       const userId = (req.user as any)._id;
-      res.redirect(`exp://127.0.0.1:8081/--/home?userId=${userId}`);
+      res.redirect(`${APP_SCHEMA}welcome?userId=${userId}`);
     }
   }
   
@@ -69,7 +72,7 @@ app.get("/api/logout", (req, res) => {
         console.error("Session destruction error:", err);
         return res.status(500).json({ error: 'Internal server error' });
       }
-    res.redirect(`exp://127.0.0.1:8081/--/(tabs)/profile`);
+    res.redirect(`${APP_SCHEMA}(tabs)/profile`);
     });
   });
 });

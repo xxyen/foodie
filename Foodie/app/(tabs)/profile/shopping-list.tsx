@@ -27,7 +27,7 @@ export default function ShoppingList() {
         if (userInfo?.ingredients) {
             setIngredients(userInfo.ingredients);
         }
-    }, [userInfo]);
+    }, [JSON.stringify(userInfo)]);
 
     const toggleSelection = (item: string) => {
         const updatedSelection = new Set(selectedItems);

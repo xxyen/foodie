@@ -13,7 +13,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jojogo9.Foodie"
     },
     "android": {
       "adaptiveIcon": {
@@ -27,7 +28,14 @@
     "plugins": [
       "expo-router"
     ],
-    "scheme": "Foodie"
-    
+    "scheme": "Foodie",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "f259517e-3897-43ab-9b10-7830e9f7098c"
+      }
+    }
   }
 }

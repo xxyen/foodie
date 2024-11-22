@@ -24,9 +24,10 @@ export default function LoginScreen() {
   // variables
   const img_path = "../assets/rasberry.png";
   const google_icon_path = "../assets/google_icon.png";
-  const baseUrl = Platform.OS === "android"
-                ? "http://67.159.75.53:4123"
-                : "http://67.159.75.53:4123"
+  // const baseUrl = Platform.OS === "android"
+  //               ? "http://67.159.75.53:4123"
+  //               : "http://67.159.75.53:4123"
+  const baseUrl = "https://foodie.zeus.wang";
 
   // navigation
   const router = useRouter();
@@ -42,16 +43,8 @@ export default function LoginScreen() {
   function onPressLater(event: GestureResponderEvent): void {
     console.log("user: press later");
     router.dismissAll();
-    router.push("/home");
+    router.replace("/home");
   }
-
-  async function onPressGoogleLogin(
-    event: GestureResponderEvent
-  ): Promise<void> {
-    console.log("user: press continue with google");
-    await Linking.openURL("http://vcm-44530.vm.duke.edu:4123/auth/google");
-  }
-
   // function onChangeUserName(text: string): void {
   //   // throw new Error("Function not implemented.");
   //   setUsername(text);
@@ -78,7 +71,7 @@ export default function LoginScreen() {
     if (res) {
       const user = await getProfile(res);
       router.dismissAll();
-      router.push("/home");
+      router.replace("/home");
       Alert.alert("Congratulate!", user?.username+", you have logged in successfully."); 
     }
   }
@@ -180,10 +173,6 @@ export default function LoginScreen() {
           </View>
           <Pressable style={styles.btn_login} onPress={onPressLogin}>
             <Text style={styles.btn_login_text}>Login</Text>
-          </Pressable>
-          <Pressable style={styles.btn_google} onPress={onPressGoogleLogin}>
-            <Image source={require(google_icon_path)} style={styles.icon_google} resizeMode="contain"/>
-            <Text style={styles.btn_google_text}>Continue with Google</Text>
           </Pressable>
           <View style={styles.container_register}>
             <Text style={styles.text}>Don’t have an Account? </Text>

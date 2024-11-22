@@ -128,7 +128,7 @@ export default function Tab() {
     if (userInfo?.googleId) {
       try {
         const response = await Linking.openURL(
-          `http://vcm-44530.vm.duke.edu:4123/api/logout`
+          `https://foodie.zeus.wang/api/logout`
         );
       } catch (err) {
         console.log(err);
@@ -210,9 +210,9 @@ export default function Tab() {
 }
           </View>
 
-            <View style={styles.more}>
+            {/* <View style={styles.more}>
               <Text>➕</Text>
-            </View>
+            </View> */}
           </Pressable>
           <View style={styles.intake}>
             <View style={{ justifyContent: "flex-start" }}>
@@ -224,7 +224,7 @@ export default function Tab() {
                 barWidth={10}
                 noOfSections={1}
                 barBorderRadius={4}
-                frontColor="lightgray"
+                frontColor="lightblue"
                 data={barData}
                 yAxisThickness={0}
                 xAxisThickness={0}
@@ -234,6 +234,17 @@ export default function Tab() {
                 initialSpacing={10}
                 hideAxesAndRules
                 isAnimated
+                showValuesAsTopLabel
+                barMarginBottom={10}
+                topLabelTextStyle={{
+                  fontSize: 12,
+                  width: 20,
+                  height: 20,
+                  lineHeight: 20,
+                  position: "relative",
+                  top: 10,
+                  textAlign: 'center'
+                }}
               />
             </View>
           </View>
