@@ -149,7 +149,6 @@ export default function Tab() {
     });
   }
 
-
   // const nutrition = recipe.recipes[0].nutrition?.nutrients;
   const getNutritionValue = (name: string) =>
     nutrition?.nutrients?.find((nutrient: Nutrient) => nutrient.name === name)
