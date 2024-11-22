@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, ImageBackground, Pressable, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { food_place_holder } from "../config";
 
 export function RecipeHeader({ title, image, isFavorite, onToggleFavorite, recipeType }) {
 
@@ -9,7 +10,7 @@ export function RecipeHeader({ title, image, isFavorite, onToggleFavorite, recip
 
   return (
     <View style={[styles.headerContainer, { height: headerHeight }]}>
-      <ImageBackground source={{ uri: image }} style={styles.imageBackground}>
+      <ImageBackground source={{ uri: image || food_place_holder }} style={styles.imageBackground}>
         <LinearGradient
           colors={["rgba(0, 0, 0, 0.4)", "transparent", "rgba(0, 0, 0, 0.4)"]}
           style={styles.gradient}

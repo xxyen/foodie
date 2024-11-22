@@ -2,12 +2,13 @@ import React from "react";
 import { View, Text, Pressable, ImageBackground, StyleSheet } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { LinearGradient } from "expo-linear-gradient";
+import { food_place_holder } from "../config";
 
 export default function FoodItem({ food, favFoods, onToggleFavorite, onPressDetail }) {
   return (
     <Pressable style={styles.container} onPress={onPressDetail}>
       <View style={styles.img_wrapper}>
-        <ImageBackground source={{ uri: food.image }} style={styles.img} resizeMode="cover">
+        <ImageBackground source={{ uri: food.image || food_place_holder}} style={styles.img} resizeMode="cover">
           <LinearGradient
             colors={["rgba(0, 0, 0, 0.4)", "rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0.4)"]}
             style={styles.gradient}

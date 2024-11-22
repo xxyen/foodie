@@ -2,13 +2,14 @@ import React from "react";
 import { View, Text, Pressable, ImageBackground, StyleSheet } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { LinearGradient } from "expo-linear-gradient";
+import { food_place_holder } from "../config";
 
 export default function DrinkItem({ drink, favDrinks, onToggleFavorite, onPressDetail }) {
   return (
     <Pressable style={styles.container} onPress={onPressDetail}>
       <View style={styles.img_wrapper}>
         <ImageBackground
-          source={{ uri: drink.strDrinkThumb }}
+          source={{ uri: drink.strDrinkThumb || food_place_holder}}
           style={styles.img}
           resizeMode="cover"
         >
