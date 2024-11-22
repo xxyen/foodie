@@ -69,7 +69,7 @@ export default function Tab() {
         value: weeklyCalories[(currentDayIndex - (6 - index) + 7) % 7] ?? 0,
         label,
         topLabelComponent: () => (
-          <Text style={styles.barLabel}>
+          <Text>
             {weeklyCalories[(currentDayIndex - (6 - index) + 7) % 7]}
           </Text>
         ),
@@ -228,7 +228,7 @@ export default function Tab() {
                 data={barData}
                 yAxisThickness={0}
                 xAxisThickness={0}
-                height={window_height * 0.03}
+                height={window_height * 0.05}
                 width={window_width * 0.8}
                 spacing={window_width * 0.08}
                 initialSpacing={10}
@@ -428,11 +428,5 @@ const styles = StyleSheet.create({
     width: "90%",
     gap: 10,
     flexWrap: "wrap",
-  },
-  barLabel: {
-    // fontSize: 6,
-    color: "black",
-    // textAlign: "center",
-    // marginBottom: 5, 
   },
 });
