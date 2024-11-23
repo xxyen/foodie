@@ -17,6 +17,7 @@ import { useRouter } from "expo-router";
 import { useAppContext } from "@/context/contexts";
 import { getProfile } from "@/utils";
 import * as Linking from "expo-linking";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen() {
   const { username, onChangeUsername, onChangeId } = useAppContext();
@@ -64,8 +65,18 @@ export default function LoginScreen() {
     throw new Error("Function not implemented.");
   }
 
+  async function clearMessages() {
+    try {
+      await AsyncStorage.removeItem("CHAT_MESSAGES");
+      console.log("Messages cleared.");
+    } catch (error) {
+      console.error("Failed to clear messages:", error);
+    }
+  }
+
   async function onPressLogin(event: GestureResponderEvent): Promise<void> {
     console.log("user: press login btn");
+    await clearMessages();
     // throw new Error("Function not implemented.");
     const res = await loginHelper();
     if (res) {

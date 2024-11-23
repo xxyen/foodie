@@ -11,6 +11,7 @@ import {
   Modal,
   Button,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 
 import { pickImage, openCamera } from "@/utils";
@@ -107,10 +108,12 @@ export default function Tab() {
 
   return (
     <SafeAreaView style={styles.safearea}>
+
       <View style={styles.container}>
         <View style={styles.container_header}>
           <Text style={styles.title}>Search</Text>
         </View>
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
          <Pressable onPress={openModal} style={styles.search_text_pressable}>
         <TextInput
           style={styles.search_input}
@@ -178,7 +181,7 @@ export default function Tab() {
         <View style={styles.container_header}>
           <Text style={styles.title2}>Search By Type</Text>
         </View>
-        <View style={styles.img_search_wrapper}>
+        <View style={styles.img_search_wrapper_tags}>
           <View style={styles.container_tag}>
             <View style={styles.container_tag_row}>
               <Pressable
@@ -244,7 +247,16 @@ export default function Tab() {
             </View>
           </View>
         </View>
+
+        <Pressable
+                  style={styles.start_chat_button}
+                  onPress={() => (router.push("/search/chat-with-chatbot"))}
+                >
+                  <Text style={styles.start_chat_text}>Start Chat with Bot</Text>
+                </Pressable>
+        </ScrollView>
       </View>
+
     </SafeAreaView>
   );
 }
@@ -256,8 +268,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     gap: 10,
   },
   container_header: {
@@ -272,6 +282,8 @@ const styles = StyleSheet.create({
     width: "90%",
     height: "90%",
     gap: 10,
+
+
   },
   container_tag_row: {
     flexDirection: "row",
@@ -283,10 +295,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
+    marginLeft: 10,
   },
   title2: {
     fontSize: 20,
     fontWeight: "bold",
+    marginVertical: 10,
   },
   search_input: {
     height: 60,
@@ -298,13 +312,21 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   img_search_wrapper: {
-    height: "30%",
+    height: "28%",
     width: "90%",
     backgroundColor: "rgba(217, 217, 217, 0.2)",
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
   },
+    img_search_wrapper_tags: {
+      height: "33%",
+      width: "90%",
+      backgroundColor: "rgba(217, 217, 217, 0.2)",
+      borderRadius: 20,
+      alignItems: "center",
+      justifyContent: "center",
+    },
   img_search_icon_bkg: {
     height: "85%",
     width: "90%",
@@ -363,4 +385,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+    start_chat_button:{
+        backgroundColor: "#E1AEC1",
+        borderRadius: 20,
+        paddingVertical: 10,
+        width: 300,
+        marginTop:20,
+    },
+
+    start_chat_text:{
+        textAlign: "center",
+        fontSize: 18,
+        color: "white",
+        fontWeight: "bold",
+    },
+  scrollViewContent: {
+       width: "100%",
+       flexGrow: 1,
+       justifyContent: "flex-start",
+       alignItems:"center",
+      },
+
+
 });
