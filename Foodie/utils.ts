@@ -180,12 +180,38 @@ export async function getRandomFoodRecipe(
   }
 }
 
+export const fetchBotResponse = async (userMessage: string, contextId: string) => {
+  const { baseURL, apiKEY } = API_CONFIG.spoonacular;
+  try {
+    const response = await fetch(
+      `${baseURL}/food/converse?text=${encodeURIComponent(userMessage)}&contextId=${contextId}&apiKey=${apiKEY}`
+    );
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+
+    return {
+      success: true,
+      answerText: data.answerText || "I'm sorry, I couldn't find an answer to that.",
+      media: data.media || [],
+    };
+  } catch (error) {
+    console.error("Error fetching bot response:", error);
+    return {
+      success: false,
+      answerText: "Sorry, I encountered an error while fetching the data. Please try again.",
+      media: [],
+    };
+  }
+};
+
 
 export async function getFoodRecipeAutoComplete(
   searchText: string
 ) {
-
-console.log(searchText);
   const { baseURL, apiKEY } = API_CONFIG.spoonacular;
   // TODO: assume no error here
   const response = await fetch(

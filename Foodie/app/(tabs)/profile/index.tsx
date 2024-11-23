@@ -30,6 +30,8 @@ import {
 import PickerModal from "@/Components/PickerModal";
 import FoodTag from "@/app/signup/FoodTag";
 import ExtraAllergies from "./ExtraAllergies";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function Tab() {
   const {
@@ -138,6 +140,15 @@ export default function Tab() {
   // })) || [];
 
   // functions
+  async function clearMessages() {
+    try {
+      await AsyncStorage.removeItem("CHAT_MESSAGES");
+      console.log("Messages cleared.");
+    } catch (error) {
+      console.error("Failed to clear messages:", error);
+    }
+  }
+
   async function onPressLoginOut(event: GestureResponderEvent): Promise<void> {
     if (userInfo?.googleId) {
       try {
@@ -149,6 +160,7 @@ export default function Tab() {
       }
     }
 
+    await clearMessages();
     logout();
     setUserInfo(undefined);
   }
