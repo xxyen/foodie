@@ -1,15 +1,17 @@
-import { View, Text, StyleSheet, SafeAreaView, Pressable, FlatList, Alert } from "react-native";
+import { View, Text, StyleSheet, SafeAreaView, Pressable, FlatList, Alert, Image } from "react-native";
 import Checkbox from "expo-checkbox"; 
 import { useAppContext } from "@/context/contexts";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from "react";
 import { getProfile } from "@/utils";
-import { updateIngredients } from "@/utils";
+import { updateIngredients, getIngredientImage } from "@/utils";
 
 export default function ShoppingList() {
-    const { id, onChangeIngredients } = useAppContext();
+    const { id, ingredients, onChangeIngredients } = useAppContext();
     const [userInfo, setUserInfo] = useState<IUserInfo | undefined>(undefined);
-    const [ingredients, setIngredients] = useState<string[]>([]);
+    // const [ingredients, setIngredients] = useState<string[]>([]);
     const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+    const [ingredientImages, setIngredientImages] = useState<Record<string, string>>({});
 
     useEffect(() => {
         const fetchData = async () => {
@@ -17,17 +19,38 @@ export default function ShoppingList() {
                 const userData = await getProfile(id);
                 if (userData) {
                     setUserInfo(userData);
+
+                    setTimeout(async () => { 
+                        if(userData.ingredients && userData.ingredients.length > 0){
+                            await fetchAndCacheIngredientImages(userData.ingredients);                
+                        }
+                    },1000);
                 }
             }
         };
         fetchData();
     }, [id]);
 
-    useEffect(() => {
-        if (userInfo?.ingredients) {
-            setIngredients(userInfo.ingredients);
+    const fetchAndCacheIngredientImages = async (ingredients: string[]) => {
+        const imageMap: Record<string, string> = { ...ingredientImages };
+    
+        for (const ingredient of ingredients) {
+          if (imageMap[ingredient]) continue;
+    
+          const cachedImage = await AsyncStorage.getItem(`${ingredient}`);
+          if (cachedImage) {
+            imageMap[ingredient] = cachedImage;
+          } else {
+            const imageUrl = await getIngredientImage(ingredient);
+            if (imageUrl) {
+              imageMap[ingredient] = imageUrl;
+              await AsyncStorage.setItem(`${ingredient}`, imageUrl);
+            }
+          }
         }
-    }, [JSON.stringify(userInfo)]);
+    
+        setIngredientImages(imageMap);
+      };
 
     const toggleSelection = (item: string) => {
         const updatedSelection = new Set(selectedItems);
@@ -64,7 +87,6 @@ export default function ShoppingList() {
     const removeSelectedItems = () => {
         const updatedList = ingredients.filter((ingredient) => !selectedItems.has(ingredient));
         updateIngredients(id, updatedList).then(() => {
-            setIngredients(updatedList);
             onChangeIngredients(updatedList);
             setSelectedItems(new Set());
             Alert.alert("Items Removed", "Selected items have been successfully removed.");
@@ -100,6 +122,13 @@ export default function ShoppingList() {
                     >
                     {item}
                     </Text>
+                    <Image
+                    style={styles.image}
+                    resizeMode="contain"
+                    source={{
+                        uri: ingredientImages[item],
+                    }}
+                    />
                 </Pressable>
                 )}
             />
@@ -148,7 +177,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     marginVertical: 5,
     paddingHorizontal: 15,
   },
@@ -171,6 +200,10 @@ const styles = StyleSheet.create({
     width: "90%",
     marginHorizontal: 20,
     marginBottom: 20,
+  },
+  image: {
+    width: 50,
+    height: 50,
   },
   deleteButtonText: {
     color: "#FFFFFF",
