@@ -3,13 +3,15 @@ import Checkbox from "expo-checkbox";
 import { useAppContext } from "@/context/contexts";
 import { useState, useEffect } from "react";
 import { getProfile } from "@/utils";
-import { updateIngredients, changeAllergies } from "@/utils";
+import { changeAllergies } from "@/utils";
+import ExtraAllergies from "./ExtraAllergies";
 
 export default function AllergiesList() {
     const { id, onChangeAllergies } = useAppContext();
     const [userInfo, setUserInfo] = useState<IUserInfo | undefined>(undefined);
     const [allergies, setAllergies] = useState<string[]>([]);
     const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+    const [isModalVisible, setIsModalVisible] = useState<boolean>(false); 
 
     useEffect(() => {
         const fetchData = async () => {
@@ -80,23 +82,49 @@ export default function AllergiesList() {
 
     return (
         <SafeAreaView style={styles.safearea}>
+            <View style={styles.containerTitle}>
+                <Text style={styles.title}>Allergies</Text>
+                <Text style={styles.subtitle}>{`${allergies.length} Items`}</Text>
+            </View>
             <FlatList
-                contentContainerStyle={styles.listContainer}
+                contentContainerStyle={styles.container}
                 data={allergies}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
-                    <View style={styles.listItem}>
-                        <Checkbox
-                            value={selectedItems.has(item)}
-                            onValueChange={() => toggleSelection(item)}
-                        />
-                        <Text style={styles.itemText}>{item}</Text>
-                    </View>
+                    <Pressable
+                        style={[
+                            styles.item,
+                            selectedItems.has(item) && styles.itemSelected,
+                        ]}
+                        onPress={() => toggleSelection(item)}
+                    >
+                        <Text
+                            style={[
+                                styles.text,
+                                selectedItems.has(item) && styles.textSelected,
+                            ]}
+                        >
+                            {item}
+                        </Text>
+                    </Pressable>
                 )}
             />
-            <Pressable style={styles.deleteButton} onPress={confirmAndRemoveSelectedItems}>
-                <Text style={styles.deleteButtonText}>Remove Selected</Text>
+            <Pressable
+                style={styles.deleteButton}
+                onPress={confirmAndRemoveSelectedItems}
+            >
+                <Text style={styles.deleteButtonText}>Remove Allergy</Text>
             </Pressable>
+            <Pressable
+                style={styles.addButton}
+                onPress={() => setIsModalVisible(true)}
+            >
+                <Text style={styles.addButtonText}>Add Allergy</Text>
+            </Pressable>
+            <ExtraAllergies
+                visible={isModalVisible}
+                onChangeVisible={setIsModalVisible}
+            />
         </SafeAreaView>
     );
 }
@@ -107,21 +135,52 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     padding: 20, 
   },
-  listContainer: {
-    paddingHorizontal: 10, 
+  containerTitle: {
+    width: "100%",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    gap: 5,
+    marginVertical: 10,
   },
-  listItem: {
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginLeft: 10, 
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#999",
+    marginTop: 5,
+    marginLeft: 10,
+  },
+  container: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(217, 217, 217, 0.2)",
+    borderRadius: 20,
+    padding: 10,
+  },
+  item: {
+    width: "100%",
+    height: 55,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 15,
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 10,
-    borderBottomWidth: 0.5,
-    borderBottomColor: "#D3D3D3", 
-    marginHorizontal: 10,
+    justifyContent: "flex-start", 
+    marginVertical: 5,
+    paddingHorizontal: 15, 
   },
-  itemText: {
-    fontSize: 18,
-    flex: 1,
-    marginLeft: 15,
+  itemSelected: {
+    backgroundColor: "#000000",
+  },
+  text: {
+    fontSize: 16,
+    color: "#000",
+  },
+  textSelected: {
+    color: "#FFFFFF",
   },
   deleteButton: {
     backgroundColor: "#E84234",
@@ -132,10 +191,25 @@ const styles = StyleSheet.create({
     width: "90%",
     marginHorizontal: 20,
     marginBottom: 20,
-  },
+},
   deleteButtonText: {
     color: "#FFFFFF",
     fontWeight: "bold",
     fontSize: 16,
   },
+  addButton: {
+    backgroundColor: "#4CAF50",
+    borderRadius: 16,
+    padding: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "90%",
+    marginHorizontal: 20,
+    marginBottom: 20,
+},
+    addButtonText: {
+        color: "#FFFFFF",
+        fontWeight: "bold",
+        fontSize: 16,
+    },
 });
