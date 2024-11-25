@@ -76,18 +76,31 @@ export default function ShoppingList() {
 
     return (
         <SafeAreaView style={styles.safearea}>
+            <View style={styles.containerTitle}>
+                <Text style={styles.title}>Shopping List</Text>
+                <Text style={styles.subtitle}>{`${ingredients.length} Items`}</Text>
+            </View>
             <FlatList
-                contentContainerStyle={styles.listContainer}
+                contentContainerStyle={styles.container}
                 data={ingredients}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
-                    <View style={styles.listItem}>
-                        <Checkbox
-                            value={selectedItems.has(item)}
-                            onValueChange={() => toggleSelection(item)}
-                        />
-                        <Text style={styles.itemText}>{item}</Text>
-                    </View>
+                <Pressable
+                    style={[
+                    styles.item,
+                    selectedItems.has(item) && styles.itemSelected,
+                    ]}
+                    onPress={() => toggleSelection(item)}
+                >
+                    <Text
+                    style={[
+                        styles.text,
+                        selectedItems.has(item) && styles.textSelected,
+                    ]}
+                    >
+                    {item}
+                    </Text>
+                </Pressable>
                 )}
             />
             <Pressable style={styles.deleteButton} onPress={confirmAndRemoveSelectedItems}>
@@ -103,21 +116,51 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     padding: 20, 
   },
-  listContainer: {
-    paddingHorizontal: 10, 
+  containerTitle: {
+    width: "90%",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    gap: 5,
+    marginVertical: 10,
   },
-  listItem: {
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginLeft: 10, 
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#999",
+    marginLeft: 10, 
+  },
+  container: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(217, 217, 217, 0.2)",
+    borderRadius: 20,
+    padding: 10,
+  },
+  item: {
+    width: "90%",
+    height: 55,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 15,
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 10,
-    borderBottomWidth: 0.5,
-    borderBottomColor: "#D3D3D3", 
-    marginHorizontal: 10,
+    justifyContent: "flex-start",
+    marginVertical: 5,
+    paddingHorizontal: 15,
   },
-  itemText: {
-    fontSize: 18,
-    flex: 1,
-    marginLeft: 15,
+  itemSelected: {
+    backgroundColor: "#000000",
+  },
+  text: {
+    fontSize: 16,
+    color: "#000",
+  },
+  textSelected: {
+    color: "#FFFFFF",
   },
   deleteButton: {
     backgroundColor: "#E84234",
