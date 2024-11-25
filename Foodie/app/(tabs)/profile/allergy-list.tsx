@@ -3,12 +3,12 @@ import Checkbox from "expo-checkbox";
 import { useAppContext } from "@/context/contexts";
 import { useState, useEffect } from "react";
 import { getProfile } from "@/utils";
-import { updateIngredients } from "@/utils";
+import { updateIngredients, changeAllergies } from "@/utils";
 
 export default function AllergiesList() {
-    const { id, onChangeIngredients } = useAppContext();
+    const { id, onChangeAllergies } = useAppContext();
     const [userInfo, setUserInfo] = useState<IUserInfo | undefined>(undefined);
-    const [ingredients, setIngredients] = useState<string[]>([]);
+    const [allergies, setAllergies] = useState<string[]>([]);
     const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
 
     useEffect(() => {
@@ -24,10 +24,10 @@ export default function AllergiesList() {
     }, [id]);
 
     useEffect(() => {
-        if (userInfo?.ingredients) {
-            setIngredients(userInfo.ingredients);
+        if (userInfo?.allergies) {
+          setAllergies(userInfo.allergies);
         }
-    }, [JSON.stringify(userInfo)]);
+      }, [JSON.stringify(userInfo)]);
 
     const toggleSelection = (item: string) => {
         const updatedSelection = new Set(selectedItems);
@@ -62,15 +62,19 @@ export default function AllergiesList() {
     };
 
     const removeSelectedItems = () => {
-        const updatedList = ingredients.filter((ingredient) => !selectedItems.has(ingredient));
-        updateIngredients(id, updatedList).then(() => {
-            setIngredients(updatedList);
-            onChangeIngredients(updatedList);
+        const updatedList = allergies.filter(
+          (allergy) => !selectedItems.has(allergy)
+        );
+        changeAllergies(id, updatedList)
+          .then(() => {
+            setAllergies(updatedList);
+            onChangeAllergies(updatedList);
             setSelectedItems(new Set());
-            Alert.alert("Items Removed", "Selected items have been successfully removed.");
-        }).catch((error) => {
-            console.error("Failed to update ingredients:", error);
-            Alert.alert("Error", "Failed to update the shopping list.");
+            Alert.alert("Items Removed", "Selected allergies have been successfully removed.");
+        })
+        .catch((error) => {
+            console.error("Failed to update allergies:", error);
+            Alert.alert("Error", "Failed to update the allergy list.");
         });
     };
 
@@ -78,7 +82,7 @@ export default function AllergiesList() {
         <SafeAreaView style={styles.safearea}>
             <FlatList
                 contentContainerStyle={styles.listContainer}
-                data={ingredients}
+                data={allergies}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
                     <View style={styles.listItem}>
