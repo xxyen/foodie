@@ -1,5 +1,4 @@
 import { View, Text, StyleSheet, SafeAreaView, Pressable, FlatList, Alert } from "react-native";
-import Checkbox from "expo-checkbox"; 
 import { useAppContext } from "@/context/contexts";
 import { useState, useEffect } from "react";
 import { getProfile } from "@/utils";
@@ -7,9 +6,8 @@ import { changeAllergies } from "@/utils";
 import ExtraAllergies from "./ExtraAllergies";
 
 export default function AllergiesList() {
-    const { id, onChangeAllergies } = useAppContext();
+    const { id, allergies, onChangeAllergies } = useAppContext();
     const [userInfo, setUserInfo] = useState<IUserInfo | undefined>(undefined);
-    const [allergies, setAllergies] = useState<string[]>([]);
     const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false); 
 
@@ -24,12 +22,6 @@ export default function AllergiesList() {
         };
         fetchData();
     }, [id]);
-
-    useEffect(() => {
-        if (userInfo?.allergies) {
-          setAllergies(userInfo.allergies);
-        }
-      }, [JSON.stringify(userInfo)]);
 
     const toggleSelection = (item: string) => {
         const updatedSelection = new Set(selectedItems);
@@ -69,7 +61,6 @@ export default function AllergiesList() {
         );
         changeAllergies(id, updatedList)
           .then(() => {
-            setAllergies(updatedList);
             onChangeAllergies(updatedList);
             setSelectedItems(new Set());
             Alert.alert("Items Removed", "Selected allergies have been successfully removed.");
