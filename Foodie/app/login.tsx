@@ -83,7 +83,7 @@ export default function LoginScreen() {
     const res = await loginHelper();
     if (res) {
       const user = await getProfile(res);
-      router.dismissAll();
+      router.back();
       router.replace("/home");
       Alert.alert("Congratulate!", user?.username+", you have logged in successfully."); 
     }

@@ -9,7 +9,7 @@ export default function DrawerLayout() {
         <Stack screenOptions={{headerShown: false}}>
           <Stack.Screen 
             name="welcome" 
-            options={{ headerShown: false, presentation: "modal"}} />
+            options={{ headerShown: false}} />
           <Stack.Screen
             name="login"
             options={{ headerShown: false, presentation: "modal" }}
