@@ -118,6 +118,11 @@ export default function Tab() {
   }
 
   function onPressAddToShoplist(event: GestureResponderEvent): void {
+     if (!userId) {
+         console.log("User not logged in. Redirecting to Profile.");
+         router.push("profile");
+         return;
+     }
     if (drinkIngredients) {
       const existingIngredients = drinkIngredients.filter((ingredient) =>
         ingredients.includes(ingredient)

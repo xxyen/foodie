@@ -96,6 +96,11 @@ export default function Tab() {
   }
 
   function onPressAddToShoplist(event: GestureResponderEvent): void {
+     if (!id) {
+            console.log("User not logged in. Redirecting to Profile.");
+            router.push("profile");
+            return;
+     }
     if (recipe) {
       const newIngredients = recipe.extendedIngredients.map(
         (ingredient) => ingredient.name
@@ -127,6 +132,11 @@ export default function Tab() {
   }
 
   function onPressAddToDailyIntake(event: GestureResponderEvent): void {
+    if (!id) {
+          console.log("User not logged in. Redirecting to Profile.");
+          router.push("profile");
+          return;
+    }
     if (!id || !recipe) {
       Alert.alert("Error", "Unable to add to daily intake. Please log in.");
       return;
