@@ -3,7 +3,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
 import { existingAccount, sendEmail } from "@/utils";
 import { useRouter } from "expo-router";
-import { send, EmailJSResponseStatus } from '@emailjs/react-native';
 import { useCodeContext } from "@/context/codeContexts";
 
 
@@ -21,8 +20,10 @@ export default function forgetScreen(){
     useEffect(()=>{},[disabled]);
 
     const onPressLater = ()=>{
-        router.dismissAll();
-        router.push("/login");
+        // router.dismissAll();
+        // router.push("/login");
+        router.back();
+        router.replace("/login");
     }
     const randomCode = ()=>{
         let code = '';
@@ -62,7 +63,7 @@ export default function forgetScreen(){
         if(code!=='' && verifyCode===code){
             onChangeAttempt(0);
             onChangeCode('');
-            router.push({
+            router.replace({
                 pathname:"/newPassword",
                 params:{
                   email:email,
