@@ -66,6 +66,9 @@ export default function Tab() {
   const [statues, setStatues] = useState<boolean[]>(
     Array(allergies.length).fill(false)
   );
+  const [shoppingStatues, setShoppingStatues] = useState<boolean[]>(
+    Array(ingredients.length).fill(false)
+  );
   const [allergyModal, setAllergyModal] = useState(false);
   const [barData, setBarData] = useState<
     { value: number; label: string; topLabelComponent: () => JSX.Element }[]
@@ -98,24 +101,24 @@ export default function Tab() {
           setUserInfo(userData);
           // console.log("userDataIngredients: ", userData.ingredients);
 
-          setTimeout(() => {
-            if (userData.ingredients && userData.ingredients.length > 0) {
-              const fetchIngredientImages = async () => {
-                const imagePromises = userData.ingredients
-                  .slice(0, 3)
-                  .map(async (ingredient) => {
-                    const imageUrl = await getIngredientImage(ingredient);
-                    return imageUrl;
-                  });
-                const images = await Promise.all(imagePromises);
-                // console.log("images: ", images);
-                setIngredientImages(images);
-              };
-              fetchIngredientImages();
-            } else {
-              setIngredientImages([]);
-            }
-          }, 1000);
+          // setTimeout(() => {
+          //   if (userData.ingredients && userData.ingredients.length > 0) {
+          //     const fetchIngredientImages = async () => {
+          //       const imagePromises = userData.ingredients
+          //         .slice(0, 3)
+          //         .map(async (ingredient) => {
+          //           const imageUrl = await getIngredientImage(ingredient);
+          //           return imageUrl;
+          //         });
+          //       const images = await Promise.all(imagePromises);
+          //       // console.log("images: ", images);
+          //       setIngredientImages(images);
+          //     };
+          //     fetchIngredientImages();
+          //   } else {
+          //     setIngredientImages([]);
+          //   }
+          // }, 1000);
 
           setTimeout(() => {
             setBarData(generateBarData());
@@ -131,13 +134,9 @@ export default function Tab() {
     setStatues(Array(allergies.length).fill(false));
   }, [allergies]);
 
-  // const barData = userInfo?.weeklyCalories.map((calories, index) => ({
-  //   value: calories,
-  //   label: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][index],
-  //   topLabelComponent: () => (
-  //     <Text style={styles.barLabel}>{calories}</Text>
-  //   ),
-  // })) || [];
+  useEffect(() => {
+    setShoppingStatues(Array(ingredients.length).fill(false));
+  }, [ingredients]);
 
   // functions
   async function clearMessages() {
@@ -242,15 +241,12 @@ export default function Tab() {
                   key={index}
                   food={a.split(" ") .map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
                   index={index}
-                  statues={statues}
-                  onChangeStatus={setStatues}
+                  statues={shoppingStatues}
+                  onChangeStatus={setShoppingStatues}
                 />
               ))}
             </ScrollView>
 
-            {/* <View style={styles.more}>
-              <Text>➕</Text>
-            </View> */}
           </Pressable>
           <View style={styles.intake}>
             <View style={{ justifyContent: "flex-start" }}>
