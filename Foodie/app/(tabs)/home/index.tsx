@@ -42,11 +42,11 @@ export default function Home() {
   // Fetch data based on category
   useEffect(() => {
     const fetchData = async () => {
-      if (id && allergies !== undefined) {
+      if (allergies !== undefined) {
         setLoading(true);
         try {
-            console.log("tag", tag)
-            console.log("allergies", allergies)
+            // console.log("tag", tag)
+            // console.log("allergies", allergies)
             const recipes = await getRandomFoodRecipe(tag, allergies);
             setData(recipes);
         } catch (error) {
