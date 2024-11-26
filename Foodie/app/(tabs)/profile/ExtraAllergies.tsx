@@ -15,7 +15,6 @@ export default function ExtraAllergies({visible,onChangeVisible}:
 
     const {id, allergies, onChangeAllergies} = useAppContext();
     const newAllergies = allergyFoods.filter((a:string,index:number)=>!allergies.includes(a));
-    console.log(newAllergies);
     const [statues, setStatues] = useState<boolean[]>(Array(newAllergies.length).fill(false));
 
 
