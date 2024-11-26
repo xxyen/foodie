@@ -161,12 +161,19 @@ allergies:string[],diets: string[], onChangeId:(id:string)=>void) => {
 }
 
 export async function getRandomFoodRecipe(
-  tag: string
+  tag: string,
+  excludeIngredients: string[]
 ): Promise<undefined | IApiFoodRecipeData> {
-  // TODO: assume no error here
+  const processedIngredients = excludeIngredients.map((ingredient) =>
+    ingredient.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE0F}]/gu, "")
+      .toLowerCase()
+  );
+  const excludeIngredientsParam = processedIngredients.join(',');
+  console.log("excludeIngredientsParam", excludeIngredientsParam);
+
   try{
     const response = await fetch(
-      `${API_CONFIG.spoonacular.baseURL}/recipes/random?apiKey=${API_CONFIG.spoonacular.apiKEY}&limitLicense=true&tags=${tag}&number=3&includeNutrition=true`
+      `${API_CONFIG.spoonacular.baseURL}/recipes/random?apiKey=${API_CONFIG.spoonacular.apiKEY}&excludeIngredients=${encodeURIComponent(excludeIngredientsParam)}&limitLicense=true&tags=${tag}&number=3&includeNutrition=true`
     );
     if (!response.ok) {
       throw new Error(`API request failed with status ${response.status}`);
@@ -246,7 +253,7 @@ export async function getFoodRecipeByIngredients(
 
 export async function getRecipeById(id: number): Promise<undefined | IApiFoodRecipeData> {
   try {
-    const response = await fetch(`${API_CONFIG.spoonacular.baseURL}/recipes/${id}/information?apiKey=${API_CONFIG.spoonacular.apiKEY}`);
+    const response = await fetch(`${API_CONFIG.spoonacular.baseURL}/recipes/${id}/information?apiKey=${API_CONFIG.spoonacular.apiKEY}&includeNutrition=true`);
     if (!response.ok) {
       throw new Error(`API request failed with status ${response.status}`);
     }

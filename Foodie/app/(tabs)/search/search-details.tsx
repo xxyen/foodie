@@ -21,7 +21,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import FoodItem from "../../../Components/FoodItem";
 
 export default function Home() {
-  const { id, favFoods, onChangeFavFoods } = useAppContext();
+  const { id, favFoods, allergies, onChangeFavFoods } = useAppContext();
   const { pressedTag, type } = useLocalSearchParams();
 
   const [tag, setTag] = useState<string>("");
@@ -46,7 +46,7 @@ export default function Home() {
       setLoading(true);
       try {
         if (type === "byTag") {
-          const recipes = await getRandomFoodRecipe(tag);
+          const recipes = await getRandomFoodRecipe(tag, allergies);
           if (recipes) {
             setData(recipes.recipes);
           }
