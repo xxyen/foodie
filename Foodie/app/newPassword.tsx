@@ -13,15 +13,18 @@ export default function newPasswordScreen(){
     const router = useRouter();
 
     const onPressLater = ()=>{
-        router.dismissAll();
-        router.push("/login");
+        // router.dismissAll();
+        // router.back();
+        router.back();
+        router.replace("/login");
     }
 
     const onPressSubmit = async () => {
         if(validPassword(password)){
             if(typeof email==='string' && await setNewPassword(email,password)){
                 Alert.alert("Success", "Update Your Password Successfully!");
-                router.push("/login");
+                // router.back();
+                router.replace("/login");
             }
         }
         else{

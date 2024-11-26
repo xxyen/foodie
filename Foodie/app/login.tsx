@@ -43,7 +43,7 @@ export default function LoginScreen() {
   // functions
   function onPressLater(event: GestureResponderEvent): void {
     console.log("user: press later");
-    router.dismissAll();
+    router.back();
     router.replace("/home");
   }
   // function onChangeUserName(text: string): void {
@@ -62,7 +62,9 @@ export default function LoginScreen() {
   }
 
   function onPressForgotPassword(event: GestureResponderEvent): void {
-    throw new Error("Function not implemented.");
+    // throw new Error("Function not implemented.");
+    router.back();
+    router.replace("/forget");
   }
 
   async function clearMessages() {
@@ -178,7 +180,7 @@ export default function LoginScreen() {
                 <Text style={styles.rememberme}>Remember me</Text>
               </Pressable>
             </View>
-            <Pressable onPress={()=>router.push("/forget")}>
+            <Pressable onPress={onPressForgotPassword}>
               <Text>Forgot Password?</Text>
             </Pressable>
           </View>

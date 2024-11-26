@@ -186,12 +186,12 @@ export default function Tab() {
 
   function onPressLogin(event: GestureResponderEvent): void {
     console.log("user: press login btn");
-    router.push("/login");
+    router.replace("/login");
   }
 
   function onPressSignUp(event: GestureResponderEvent): void {
     console.log("user: press sign up btn");
-    router.push("/signup");
+    router.replace("/signup");
   }
 
   const logout = () => {
