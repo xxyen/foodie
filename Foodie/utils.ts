@@ -246,7 +246,7 @@ export async function getFoodRecipeByIngredients(
 
 export async function getRecipeById(id: number): Promise<undefined | IApiFoodRecipeData> {
   try {
-    const response = await fetch(`${API_CONFIG.spoonacular.baseURL}/recipes/${id}/information?apiKey=${API_CONFIG.spoonacular.apiKEY}`);
+    const response = await fetch(`${API_CONFIG.spoonacular.baseURL}/recipes/${id}/information?apiKey=${API_CONFIG.spoonacular.apiKEY}&includeNutrition=true`);
     if (!response.ok) {
       throw new Error(`API request failed with status ${response.status}`);
     }
