@@ -20,6 +20,7 @@ export default function Home() {
   const {
     id,
     favFoods,
+    allergies,
     onChangeFavFoods,
     onChangeId,
     onChangeAllergies,
@@ -41,19 +42,22 @@ export default function Home() {
   // Fetch data based on category
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      try {
-        console.log("tag", tag)
-        const recipes = await getRandomFoodRecipe(tag);
-        setData(recipes);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
+      if (id && allergies !== undefined) {
+        setLoading(true);
+        try {
+            console.log("tag", tag)
+            console.log("allergies", allergies)
+            const recipes = await getRandomFoodRecipe(tag, allergies);
+            setData(recipes);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          setLoading(false);
+        }
       }
     };
     fetchData();
-  }, [tag]);
+  }, [allergies, tag]);
 
   // Fetch user profile on mount
   useEffect(() => {
@@ -67,7 +71,7 @@ export default function Home() {
   }, [id]);
 
   const fetchUserInfo = (user: IUserInfo) => {
-    onChangeAllergies(user?.allergies);
+    onChangeAllergies(user.allergies);
     onChangeBuffer(user.icon);
     onChangeFavDrinks(user.favDrinks);
     onChangeFavFoods(user.favFoods);
