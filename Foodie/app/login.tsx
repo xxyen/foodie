@@ -43,7 +43,7 @@ export default function LoginScreen() {
   // functions
   function onPressLater(event: GestureResponderEvent): void {
     console.log("user: press later");
-    router.back();
+    router.dismissAll();
     router.replace("/home");
   }
   // function onChangeUserName(text: string): void {

@@ -35,7 +35,19 @@ export default function forgetScreen(){
     }
 
     const onPressSubmit = async () => {
-        const code = randomCode();
+        const exitstAccount = await existingAccount(email);
+        if(!exitstAccount){
+          return;
+        }
+        else{
+          await sendVerfiyCode();
+        }
+        
+
+    };
+
+    const sendVerfiyCode = async() => {
+      const code = randomCode();
         onChangeCode(code);
         onChangeDisabled(true);
         const freezeTime = attempt >= freeze.length ? freeze[freeze.length - 1] : freeze[attempt] ;
@@ -55,8 +67,7 @@ export default function forgetScreen(){
                 onChangeDisabled(false);
             }
         }, 1000);
-
-    };
+    }
 
     const onPressVerify = ()=>{
         console.log(verifyCode,code);

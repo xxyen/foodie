@@ -110,7 +110,7 @@ export const existingAccount = async (email:string) => {
       })
     };
     try{
-      const response = await fetch(`${baseUrl}/validate`, config);
+      const response = await fetch(`${API_CONFIG.localServer.baseURL}/validate`, config);
       const body = await response.json();
       if(response.status!=201){
         alert(body.message);
