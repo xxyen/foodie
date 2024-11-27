@@ -11,8 +11,8 @@ import "dotenv/config";
 const app = express();
 const port = 4000;
 
-export const APP_SCHEMA = "Foodie://" // For Production
-// export const APP_SCHEMA = "exp://127.0.0.1:8081/--/"
+// export const APP_SCHEMA = "Foodie://" // For Production
+export const APP_SCHEMA = "exp://127.0.0.1:8081/--/"
 
 app.use(cors());
 
