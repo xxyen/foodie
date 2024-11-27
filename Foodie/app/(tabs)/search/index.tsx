@@ -45,7 +45,12 @@ export default function Tab() {
         pathname: "/search/search-by-text",
         params: { searchText },
       });
-    };
+  };
+
+  const closeModal = () => {
+    router.back();
+  };
+
 
   function onPressSearchByImage(event: GestureResponderEvent): void {
     // throw new Error("Function not implemented.");
@@ -114,15 +119,15 @@ export default function Tab() {
           <Text style={styles.title}>Search</Text>
         </View>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-         <Pressable onPress={openModal} style={styles.search_text_pressable}>
-        <TextInput
-          style={styles.search_input}
-          onChangeText={onChangeSearchText}
-          placeholder="What would you like to eat today?"
-          placeholderTextColor="rgba(128,128,128, 0.9)"
-          onFocus={openModal}
-        />
-        </Pressable>
+          <Pressable onPress={openModal} style={styles.search_text_pressable}>
+            <TextInput
+              style={styles.search_input}
+              onChangeText={onChangeSearchText}
+              placeholder="What would you like to eat today?"
+              placeholderTextColor="rgba(128,128,128, 0.9)"
+              pointerEvents="none"
+            />
+          </Pressable>
         <View style={styles.container_header}>
           <Text style={styles.title2}>Search By Image</Text>
         </View>

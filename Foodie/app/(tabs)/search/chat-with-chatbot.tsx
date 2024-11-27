@@ -121,7 +121,7 @@ export default function ChatWithChatBot() {
 
 const renderBubble = (props) => {
   const isMarkdown = props.currentMessage.user._id === 2; // Only bot messages use Markdown
-  console.log(props.currentMessage.media);
+  // console.log(props.currentMessage.media);
   return (
    <Bubble
      {...props}
