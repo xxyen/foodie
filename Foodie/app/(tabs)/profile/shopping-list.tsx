@@ -1,5 +1,4 @@
 import { View, Text, StyleSheet, SafeAreaView, Pressable, FlatList, Alert, Image } from "react-native";
-import Checkbox from "expo-checkbox"; 
 import { useAppContext } from "@/context/contexts";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from "react";

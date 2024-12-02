@@ -3,11 +3,9 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
-  ImageBackground,
   Pressable,
   GestureResponderEvent,
   ScrollView,
-  Image,
   Alert,
   ActivityIndicator,
 } from "react-native";

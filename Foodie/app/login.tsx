@@ -16,7 +16,6 @@ import {
 import { useRouter } from "expo-router";
 import { useAppContext } from "@/context/contexts";
 import { getProfile } from "@/utils";
-import * as Linking from "expo-linking";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen() {
@@ -165,7 +164,7 @@ export default function LoginScreen() {
             </View>
           </View>
           <View style={styles.container_footer}>
-            <View style={styles.container_remember}>
+            {/* <View style={styles.container_remember}>
               <Pressable
                 onPress={() => {
                   setChecked(!isChecked);
@@ -179,7 +178,7 @@ export default function LoginScreen() {
                 />
                 <Text style={styles.rememberme}>Remember me</Text>
               </Pressable>
-            </View>
+            </View> */}
             <Pressable onPress={onPressForgotPassword}>
               <Text>Forgot Password?</Text>
             </Pressable>
@@ -236,7 +235,7 @@ const styles = StyleSheet.create({
   },
   container_footer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
     width: "100%",
   },

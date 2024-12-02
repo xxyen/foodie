@@ -3,15 +3,12 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
-  ImageBackground,
   Pressable,
   GestureResponderEvent,
   ScrollView,
-  Image,
   Alert,
   ActivityIndicator,
 } from "react-native";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
@@ -21,7 +18,6 @@ import {
   updateIngredients,
 } from "@/utils";
 import { useAppContext } from "@/context/contexts";
-import { LinearGradient } from "expo-linear-gradient";
 import { RecipeHeader } from "../../../Components/RecipeHeader";
 import { IngredientList } from "../../../Components/IngredientList";
 
@@ -55,7 +51,6 @@ export default function Tab() {
         }
       };
       fetchRecipeDetails();
-      // console.log(recipe);
     }
   }, [id]);
 
