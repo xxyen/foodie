@@ -9,6 +9,22 @@ import { API_CONFIG, OPENAI_API_KEY } from "./config";
 
 // Search by Image
 const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+const { baseURL } = API_CONFIG.spoonacular;
+
+
+const rotateAPIKey = () => {
+  console.log(API_CONFIG.spoonacular.apiTerm,API_CONFIG.spoonacular.apiKEY.length-1);
+  if(API_CONFIG.spoonacular.apiTerm===API_CONFIG.spoonacular.apiKEY.length-1){
+    API_CONFIG.spoonacular.apiTerm = 0;
+  }
+  else{
+    API_CONFIG.spoonacular.apiTerm += 1;
+  }
+}
+
+const currentAPIKey = () => {
+  return API_CONFIG.spoonacular.apiKEY[API_CONFIG.spoonacular.apiTerm];
+}
 
 export const validateEmail = (input:string) => {
   const regex = /^\w+@(\w+.)+[a-zA-Z]+$/;
@@ -37,7 +53,7 @@ async function OpenAIRecogByBase64(b64:string|undefined|null) {
       {
         role: "user",
         content: [
-          { type: "text", text: "What’s in this image? Give one ingredient name, without punctuations." },
+          { type: "text", text: "What's in this image? Give one ingredient name, without punctuations." },
           {
             type: "image_url",
             image_url: {
@@ -172,14 +188,24 @@ export async function getRandomFoodRecipe(
   console.log("excludeIngredientsParam", excludeIngredientsParam);
 
   try{
-    const response = await fetch(
-      `${API_CONFIG.spoonacular.baseURL}/recipes/random?apiKey=${API_CONFIG.spoonacular.apiKEY}&excludeIngredients=${encodeURIComponent(excludeIngredientsParam)}&limitLicense=true&tags=${tag}&number=3&includeNutrition=true`
+    let response = await fetch(
+      `${baseURL}/recipes/random?apiKey=${currentAPIKey()}&excludeIngredients=${encodeURIComponent(excludeIngredientsParam)}&limitLicense=true&tags=${tag}&number=3&includeNutrition=true`
     );
+
+
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      if (response.status==402){
+        rotateAPIKey();
+        return await getRandomFoodRecipe(tag,excludeIngredients);
+      }
+      else{
+        throw new Error(`API request failed with status ${response.status}`);
+      }
     }
-    const data: IApiFoodRecipeData = await response.json();
-    return data;
+    
+    const recipes: IApiFoodRecipeData = await response.json();
+    
+    return recipes;
   }
   catch(err){
     console.error("Error fetching recipe information:", err);
@@ -188,14 +214,19 @@ export async function getRandomFoodRecipe(
 }
 
 export const fetchBotResponse = async (userMessage: string, contextId: string) => {
-  const { baseURL, apiKEY } = API_CONFIG.spoonacular;
   try {
     const response = await fetch(
-      `${baseURL}/food/converse?text=${encodeURIComponent(userMessage)}&contextId=${contextId}&apiKey=${apiKEY}`
+      `${baseURL}/food/converse?text=${encodeURIComponent(userMessage)}&contextId=${contextId}&apiKey=${currentAPIKey()}`
     );
 
     if (!response.ok) {
-      throw new Error("Network response was not ok");
+      if (response.status==402){
+        rotateAPIKey();
+        return await fetchBotResponse(userMessage , contextId);
+      }
+      else{
+        throw new Error("Network response was not ok");
+      }
     }
 
     const data = await response.json();
@@ -219,13 +250,17 @@ export const fetchBotResponse = async (userMessage: string, contextId: string) =
 export async function getFoodRecipeAutoComplete(
   searchText: string
 ) {
-  const { baseURL, apiKEY } = API_CONFIG.spoonacular;
-  // TODO: assume no error here
+  const { baseURL } = API_CONFIG.spoonacular;
   const response = await fetch(
-    `${baseURL}/recipes/autocomplete?query=${searchText}&number=10&apiKey=${apiKEY}`
+    `${baseURL}/recipes/autocomplete?query=${searchText}&number=10&apiKey=${currentAPIKey()}`
   );
+
   const data = await response.json();
-  // console.log(data);
+  if (data.code==402){
+    rotateAPIKey();
+    return await getFoodRecipeAutoComplete(searchText);
+  }
+  console.log(data);
   return data;
 }
 
@@ -235,10 +270,16 @@ export async function getFoodRecipeByIngredients(
   // TODO: assume no error here
   try{
     const response = await fetch(
-       `${API_CONFIG.spoonacular.baseURL}/recipes/complexSearch?includeIngredients=${tag}&number=3&instructionsRequired=true&addRecipeInformation=true&addRecipeInstructions=true&addRecipeNutrition=true&fillIngredients=true&apiKey=${API_CONFIG.spoonacular.apiKEY}`
+       `${baseURL}/recipes/complexSearch?includeIngredients=${tag}&number=3&instructionsRequired=true&addRecipeInformation=true&addRecipeInstructions=true&addRecipeNutrition=true&fillIngredients=true&apiKey=${currentAPIKey()}`
     );
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      if (response.status==402){
+        rotateAPIKey();
+        return await getFoodRecipeByIngredients(tag);
+      }
+      else{
+        throw new Error(`API request failed with status ${response.status}`);
+      }
     }
     const data = await response.json();
     // console.log(data);
@@ -253,9 +294,15 @@ export async function getFoodRecipeByIngredients(
 
 export async function getRecipeById(id: number): Promise<undefined | IApiFoodRecipeData> {
   try {
-    const response = await fetch(`${API_CONFIG.spoonacular.baseURL}/recipes/${id}/information?apiKey=${API_CONFIG.spoonacular.apiKEY}&includeNutrition=true`);
+    const response = await fetch(`${baseURL}/recipes/${id}/information?apiKey=${currentAPIKey()}&includeNutrition=true`);
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      if (response.status==402){
+        rotateAPIKey();
+        return await getRecipeById(id);
+      }
+      else{
+        throw new Error(`API request failed with status ${response.status}`);
+      }
     }
     const data: IApiFoodRecipeData = await response.json();
     return data;
@@ -283,10 +330,9 @@ export async function getRandomCocktailRecipe(
   }
 
   export async function searchCocktailById(id: number): Promise<undefined | IApiDrinkIdData> {
-    const { baseURL, apiKEY } = API_CONFIG.cocktailDB;
 
     // TODO: assume no error here
-    const response = await fetch(`${baseURL}/api/json/v1/${apiKEY}/lookup.php?i=${id}`);
+    const response = await fetch(`${API_CONFIG.cocktailDB.baseURL}/api/json/v1/${API_CONFIG.cocktailDB.apiKEY}/lookup.php?i=${id}`);
     const data: IApiDrinkIdData = await response.json();
 
     // Check if data.drinks exists and has at least one element
@@ -397,7 +443,6 @@ const handleUpload = async (image:any)=>{
 }
 
 export async function classifyImage(url:any){
-  const { baseURL, apiKEY } = API_CONFIG.spoonacular;
 
   const config = {
     method : 'GET',
@@ -408,8 +453,12 @@ export async function classifyImage(url:any){
   };
 
   try{
-    const response = await fetch(`${baseURL}/food/images/classify?imageUrl=${url}&apiKey=${apiKEY}`,config);
+    const response = await fetch(`${baseURL}/food/images/classify?imageUrl=${url}&apiKey=${currentAPIKey()}`,config);
     if (!response.ok) {
+      if (response.status==402){
+        rotateAPIKey();
+        return await classifyImage(url);
+      }
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
         const errorData = await response.json();
@@ -590,11 +639,10 @@ export function getDrinkIngredientImage(name: string){
 }
 
 export async function getRecipeDetails(id: string) {
-  const { baseURL, apiKEY } = API_CONFIG.cocktailDB;
   
     // TODO: assume no error here
     const response = await fetch(
-      `${baseURL}/api/json/v1/${apiKEY}/lookup.php?i=${id}`
+      `${API_CONFIG.cocktailDB.baseURL}/api/json/v1/${API_CONFIG.cocktailDB.apiKEY}/lookup.php?i=${id}`
     );
     const data = await response.json();
     // console.log(data);
@@ -648,10 +696,14 @@ export async function updateCalories(id: string, weeklyCalories: number[]) {
 
 
 export async function getIngredientImage(name: string): Promise<string> {
-  const url = `https://api.spoonacular.com/food/ingredients/search?query=${name}&number=1&apiKey=${API_CONFIG.spoonacular.apiKEY}`;
+  const url = `https://api.spoonacular.com/food/ingredients/search?query=${name}&number=1&apiKey=${currentAPIKey()}`;
 
   try {
     const response = await fetch(url);
+    if (response.status==402){
+      rotateAPIKey();
+      return await getIngredientImage(name);
+    }
     const data = await response.json();
     console.log(data);
     if (data.results && data.results.length > 0) {

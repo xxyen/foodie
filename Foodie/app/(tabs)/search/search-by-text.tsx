@@ -13,7 +13,6 @@ import {
   Modal,
   Button,
   ActivityIndicator,
-  TouchableOpacity
 } from "react-native";
 import { useState } from "react";
 import {
@@ -54,7 +53,7 @@ export default function SearchByText() {
 
     const navigateToSearchDetails = (searchText) => {
         if (searchText) {
-          router.push({
+          router.replace({
             pathname: "/search/search-details",
             params: { pressedTag: searchText, type: "text" },
           });
@@ -89,9 +88,9 @@ export default function SearchByText() {
                  data={suggestions}
                  keyExtractor={(item, index) => index.toString()}
                  renderItem={({ item }) => (
-                   <TouchableOpacity onPress={() => navigateToSearchDetails(item)}>
+                   <Pressable onPress={() => navigateToSearchDetails(item)}>
                      <Text style={styles.suggestionItem}>{item}</Text>
-                   </TouchableOpacity>
+                   </Pressable>
                  )}
                  style={styles.suggestionsList}
                  contentContainerStyle={styles.flatListContainer }
