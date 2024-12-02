@@ -185,7 +185,6 @@ export async function getRandomFoodRecipe(
       .toLowerCase()
   );
   const excludeIngredientsParam = processedIngredients.join(',');
-  console.log("excludeIngredientsParam", excludeIngredientsParam);
 
   try{
     let response = await fetch(
@@ -705,7 +704,6 @@ export async function getIngredientImage(name: string): Promise<string> {
       return await getIngredientImage(name);
     }
     const data = await response.json();
-    console.log(data);
     if (data.results && data.results.length > 0) {
       const imagePath = `https://spoonacular.com/cdn/ingredients_100x100/${data.results[0].image}`;
       return imagePath;
