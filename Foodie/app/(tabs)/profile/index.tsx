@@ -31,6 +31,7 @@ import PickerModal from "@/Components/PickerModal";
 import FoodTag from "@/app/signup/FoodTag";
 import ExtraAllergies from "./ExtraAllergies";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import StaticFoodTag from "@/Components/StaticFoodTag";
 
 
 export default function Tab() {
@@ -217,13 +218,10 @@ export default function Tab() {
             <Text style={styles.title}>My Shopping List</Text>
             <ScrollView contentContainerStyle={styles.container_tag_row}>
               {userInfo?.ingredients.map((a: string, index: number) => (
-                <FoodTag
-                  key={index}
-                  food={a.split(" ") .map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
-                  index={index}
-                  statues={shoppingStatues}
-                  onChangeStatus={setShoppingStatues}
-                />
+                 <StaticFoodTag
+                 key={index}
+                 food={a.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
+               />
               ))}
             </ScrollView>
 
@@ -271,13 +269,7 @@ export default function Tab() {
             <Text style={styles.title}>My Food Allergies</Text>
             <ScrollView contentContainerStyle={styles.container_tag_row}>
               {allergies.map((a: string, index: number) => (
-                <FoodTag
-                  key={index}
-                  food={a}
-                  index={index}
-                  statues={statues}
-                  onChangeStatus={setStatues}
-                />
+                <StaticFoodTag key={index} food={a} />
               ))}
             </ScrollView>
             {allergyModal && (
