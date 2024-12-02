@@ -120,13 +120,14 @@ export default function Tab() {
         </View>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <Pressable onPress={openModal} style={styles.search_text_pressable}>
-            <TextInput
+            <Text style={[styles.search_input,{color:"#808080"}]}>What would you like to eat today?</Text>
+            {/* <TextInput
               style={styles.search_input}
               onChangeText={onChangeSearchText}
               placeholder="What would you like to eat today?"
               placeholderTextColor="rgba(128,128,128, 0.9)"
               pointerEvents="none"
-            />
+            /> */}
           </Pressable>
         <View style={styles.container_header}>
           <Text style={styles.title2}>Search By Image</Text>
@@ -315,6 +316,10 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     fontSize: 18,
     fontWeight: "bold",
+    // alignItems: "center",
+    // justifyContent:"center",
+    // textAlign: "center",
+    lineHeight: 60,
   },
   img_search_wrapper: {
     height: "28%",

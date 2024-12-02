@@ -165,7 +165,7 @@ export default function LoginScreen() {
             </View>
           </View>
           <View style={styles.container_footer}>
-            <View style={styles.container_remember}>
+            {/* <View style={styles.container_remember}>
               <Pressable
                 onPress={() => {
                   setChecked(!isChecked);
@@ -179,7 +179,7 @@ export default function LoginScreen() {
                 />
                 <Text style={styles.rememberme}>Remember me</Text>
               </Pressable>
-            </View>
+            </View> */}
             <Pressable onPress={onPressForgotPassword}>
               <Text>Forgot Password?</Text>
             </Pressable>
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
   },
   container_footer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
     width: "100%",
   },
