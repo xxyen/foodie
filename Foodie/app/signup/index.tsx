@@ -14,7 +14,6 @@ import {
   Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
-import * as Linking from "expo-linking";
 import { useAppContext } from "@/context/contexts";
 import { validateEmail, validPassword } from "@/utils";
 

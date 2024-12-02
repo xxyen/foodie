@@ -16,7 +16,6 @@ import {
 import { useRouter } from "expo-router";
 import { useAppContext } from "@/context/contexts";
 import { getProfile } from "@/utils";
-import * as Linking from "expo-linking";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen() {

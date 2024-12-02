@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
-  TextInput,
   Pressable,
   Image,
   GestureResponderEvent,
@@ -17,7 +16,6 @@ import {
 import { pickImage, openCamera } from "@/utils";
 import { useCameraPermissions } from "expo-camera";
 import { useRouter } from "expo-router";
-import PickerModal from "@/Components/PickerModal";
 
 export default function Tab() {
   // variables

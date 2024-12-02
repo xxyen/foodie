@@ -14,7 +14,6 @@ import { useAppContext } from "@/context/contexts";
 import { useRouter } from "expo-router";
 import CategorySelector from "../../../Components/CategorySelector"; // Abstracted Category Selector
 import FoodItem from "../../../Components/FoodItem"; // Abstracted Food Item
-import * as Linking from "expo-linking";
 
 export default function Home() {
   const {
@@ -45,8 +44,6 @@ export default function Home() {
       if (allergies !== undefined) {
         setLoading(true);
         try {
-            // console.log("tag", tag)
-            // console.log("allergies", allergies)
             const recipes = await getRandomFoodRecipe(tag, allergies);
             setData(recipes);
         } catch (error) {

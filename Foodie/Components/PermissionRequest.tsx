@@ -1,6 +1,6 @@
 
 import { View , Text, Button, StyleSheet, Modal} from "react-native";
-import { CameraView, CameraType, useCameraPermissions, PermissionResponse } from "expo-camera";
+import { PermissionResponse } from "expo-camera";
 
 export  default function PermissionRequest({permission,requestPermission}:
     {permission:PermissionResponse|null, requestPermission :(() => Promise<PermissionResponse>)}

@@ -8,10 +8,6 @@ import {
   TextInput,
   Pressable,
   FlatList,
-  ScrollView,
-  GestureResponderEvent,
-  Modal,
-  Button,
   ActivityIndicator,
 } from "react-native";
 import { useState } from "react";
@@ -41,7 +37,6 @@ export default function SearchByText() {
            setLoading(true);
        try {
             const data = await getFoodRecipeAutoComplete(text);
-            console.log(data);
             const titles = data.map((item) => item.title);
             setSuggestions(titles);
           } catch (error) {

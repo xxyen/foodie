@@ -11,7 +11,6 @@ import {
 import { useLocalSearchParams } from "expo-router";
 import { useState, useEffect } from "react";
 import AllergyFood from "./FoodTag";
-import emojiStrip from "emoji-strip";
 
 export default function AllergyScreen({ }) {
 

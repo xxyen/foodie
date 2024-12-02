@@ -1,8 +1,7 @@
 import { openCamera, pickImage, updateImage, updateIconByGallery, updateIconByCamera } from "@/utils";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Button, Modal, Pressable, StyleSheet, Text, View, Alert } from "react-native";
-import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import Camera from "./Camera";
+import { useCameraPermissions } from "expo-camera";
 import PermissionRequest from "./PermissionRequest";
 import { useAppContext } from "@/context/contexts";
 

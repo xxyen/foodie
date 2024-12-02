@@ -8,7 +8,6 @@ import {
   GestureResponderEvent,
   Dimensions,
   Linking,
-  Platform,
   ScrollView,
 } from "react-native";
 import {
@@ -23,8 +22,6 @@ import { BarChart } from "react-native-gifted-charts";
 import {
   getProfile,
   parseImage,
-  getFoodIngredientImage,
-  getIngredientImage,
   changeAllergies,
 } from "@/utils";
 import PickerModal from "@/Components/PickerModal";
@@ -35,7 +32,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Tab() {
   const {
-    username,
     id,
     icon,
     allergies,
@@ -54,14 +50,12 @@ export default function Tab() {
   const router = useRouter();
 
   // variables
-  const img_path = "../../../assets/peanut.png";
   const img_path1 = "../../../assets/smile.png";
   const window_width = Dimensions.get("window").width;
   const window_height = Dimensions.get("window").height;
 
   // state
   const [userInfo, setUserInfo] = useState<IUserInfo | undefined>(undefined);
-  const [ingredientImages, setIngredientImages] = useState<string[]>([]);
   const [modal, setModal] = useState(false);
   const [statues, setStatues] = useState<boolean[]>(
     Array(allergies.length).fill(false)
