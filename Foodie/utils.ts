@@ -642,12 +642,8 @@ export async function getRecipeDetails(id: string) {
   
     // TODO: assume no error here
     const response = await fetch(
-      `${baseURL}/api/json/v1/${currentAPIKey()}/lookup.php?i=${id}`
+      `${API_CONFIG.cocktailDB.baseURL}/api/json/v1/${API_CONFIG.cocktailDB.apiKEY}/lookup.php?i=${id}`
     );
-    if (response.status==402){
-      rotateAPIKey();
-      return await getRecipeDetails(id);
-    }
     const data = await response.json();
     // console.log(data);
 
