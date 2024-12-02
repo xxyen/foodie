@@ -58,12 +58,12 @@ export default function Tab() {
   // state
   const [userInfo, setUserInfo] = useState<IUserInfo | undefined>(undefined);
   const [modal, setModal] = useState(false);
-  const [statues, setStatues] = useState<boolean[]>(
-    Array(allergies.length).fill(false)
-  );
-  const [shoppingStatues, setShoppingStatues] = useState<boolean[]>(
-    Array(ingredients.length).fill(false)
-  );
+  // const [statues, setStatues] = useState<boolean[]>(
+  //   Array(allergies.length).fill(false)
+  // );
+  // const [shoppingStatues, setShoppingStatues] = useState<boolean[]>(
+  //   Array(ingredients.length).fill(false)
+  // );
   const [allergyModal, setAllergyModal] = useState(false);
   const [barData, setBarData] = useState<
     { value: number; label: string; topLabelComponent: () => JSX.Element }[]
@@ -105,13 +105,13 @@ export default function Tab() {
     fetchUserData();
   }, [id, ingredients, weeklyCalories]);
 
-  useEffect(() => {
-    setStatues(Array(allergies.length).fill(false));
-  }, [allergies]);
+  // useEffect(() => {
+  //   setStatues(Array(allergies.length).fill(false));
+  // }, [allergies]);
 
-  useEffect(() => {
-    setShoppingStatues(Array(ingredients.length).fill(false));
-  }, [ingredients]);
+  // useEffect(() => {
+  //   setShoppingStatues(Array(ingredients.length).fill(false));
+  // }, [ingredients]);
 
   // functions
   async function clearMessages() {
@@ -143,14 +143,14 @@ export default function Tab() {
     setModal(true);
   }
 
-  async function onPressRemoveAllergy(
-    event: GestureResponderEvent
-  ): Promise<void> {
-    const chosen = allergies.filter((a, index) => statues[index] === false);
-    await changeAllergies(id, chosen);
-    onChangeAllergies(chosen);
-    setStatues(Array(chosen.length).fill(false));
-  }
+  // async function onPressRemoveAllergy(
+  //   event: GestureResponderEvent
+  // ): Promise<void> {
+  //   const chosen = allergies.filter((a, index) => statues[index] === false);
+  //   await changeAllergies(id, chosen);
+  //   onChangeAllergies(chosen);
+  //   setStatues(Array(chosen.length).fill(false));
+  // }
 
   async function onPressAddAllergy(
     event: GestureResponderEvent
@@ -212,10 +212,18 @@ export default function Tab() {
             <Text style={styles.title}>My Shopping List</Text>
             <ScrollView contentContainerStyle={styles.container_tag_row}>
               {userInfo?.ingredients.map((a: string, index: number) => (
-                 <StaticFoodTag
-                 key={index}
-                 food={a.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
-               />
+              //    <StaticFoodTag
+              //    key={index}
+              //    food={a.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
+              //  />
+              <FoodTag
+                  key={index}
+                  food={a.split(" ") .map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
+                  index={index}
+                  statues={[]}
+                  onChangeStatus={() => {}}
+                />
+
               ))}
             </ScrollView>
 
@@ -263,7 +271,15 @@ export default function Tab() {
             <Text style={styles.title}>My Food Allergies</Text>
             <ScrollView contentContainerStyle={styles.container_tag_row}>
               {allergies.map((a: string, index: number) => (
-                <StaticFoodTag key={index} food={a} />
+                // <StaticFoodTag key={index} food={a} />
+                <FoodTag
+                key={index}
+                food={a}
+                index={index}
+                statues={[]}
+                onChangeStatus={() => {}}
+              />
+
               ))}
             </ScrollView>
             {allergyModal && (

@@ -16,13 +16,11 @@ export default function StaticFoodTag({ food }: { food: string }) {
         backgroundColor: "#FFFFFF",
         borderRadius: 20,
         height: 40,
-        justifyContent: "center",
-        alignItems: "center",
-        paddingHorizontal: 10,
     },
     tag_text: {
         fontSize: 14,
         color: "#0A2533",
         textAlign: "center",
+        padding: 10,
     },
   });
