@@ -1,11 +1,46 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import {
   getFoodIngredientImage,
   getDrinkIngredientImage,
 } from "@/utils";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function IngredientList({ ingredients,recipeType  }) {
+
+  const [ingredientImages, setIngredientImages] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const cacheIngredientImages = async () => {
+      const imageMap: Record<string, string> = { ...ingredientImages };
+
+      for (const ingredient of ingredients) {
+        const name = recipeType === "drink" ? ingredient : ingredient.name;
+        const imageKey = `${name}`;
+
+        if (imageMap[name]) continue;
+
+        const cachedImage = await AsyncStorage.getItem(imageKey);
+        if (cachedImage) {
+          imageMap[name] = cachedImage;
+        } else {
+          const imageUrl =
+            recipeType === "drink"
+              ? getDrinkIngredientImage(ingredient)
+              : getFoodIngredientImage(ingredient.image);
+
+          if (imageUrl) {
+            imageMap[name] = imageUrl;
+            await AsyncStorage.setItem(imageKey, imageUrl);
+          }
+        }
+      }
+
+      setIngredientImages(imageMap);
+    };
+
+    cacheIngredientImages();
+  }, [ingredients]);
 
   return (
     <View>

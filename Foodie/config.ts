@@ -4,7 +4,7 @@ import { Platform } from "react-native";
 export const API_CONFIG = {
   spoonacular: {
     baseURL: "https://api.spoonacular.com",
-    apiKEY: "af648e0c5ba441cdbb8dcdec0e2b3a1d",
+    apiKEY: "a391c51a20ac4e878b52c3778f616389",
   },
   cocktailDB: {
     baseURL: "https://www.thecocktaildb.com",
