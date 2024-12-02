@@ -28,6 +28,7 @@ import PickerModal from "@/Components/PickerModal";
 import FoodTag from "@/app/signup/FoodTag";
 import ExtraAllergies from "./ExtraAllergies";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import StaticFoodTag from "@/Components/StaticFoodTag";
 
 
 export default function Tab() {
@@ -93,26 +94,6 @@ export default function Tab() {
         const userData = await getProfile(id);
         if (userData) {
           setUserInfo(userData);
-          // console.log("userDataIngredients: ", userData.ingredients);
-
-          // setTimeout(() => {
-          //   if (userData.ingredients && userData.ingredients.length > 0) {
-          //     const fetchIngredientImages = async () => {
-          //       const imagePromises = userData.ingredients
-          //         .slice(0, 3)
-          //         .map(async (ingredient) => {
-          //           const imageUrl = await getIngredientImage(ingredient);
-          //           return imageUrl;
-          //         });
-          //       const images = await Promise.all(imagePromises);
-          //       // console.log("images: ", images);
-          //       setIngredientImages(images);
-          //     };
-          //     fetchIngredientImages();
-          //   } else {
-          //     setIngredientImages([]);
-          //   }
-          // }, 1000);
 
           setTimeout(() => {
             setBarData(generateBarData());
@@ -231,13 +212,10 @@ export default function Tab() {
             <Text style={styles.title}>My Shopping List</Text>
             <ScrollView contentContainerStyle={styles.container_tag_row}>
               {userInfo?.ingredients.map((a: string, index: number) => (
-                <FoodTag
-                  key={index}
-                  food={a.split(" ") .map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
-                  index={index}
-                  statues={shoppingStatues}
-                  onChangeStatus={setShoppingStatues}
-                />
+                 <StaticFoodTag
+                 key={index}
+                 food={a.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
+               />
               ))}
             </ScrollView>
 
@@ -265,8 +243,8 @@ export default function Tab() {
                 showValuesAsTopLabel
                 barMarginBottom={10}
                 topLabelTextStyle={{
-                  fontSize: 12,
-                  width: 20,
+                  fontSize: 10,
+                  width: 25,
                   height: 20,
                   lineHeight: 20,
                   position: "relative",
@@ -285,13 +263,7 @@ export default function Tab() {
             <Text style={styles.title}>My Food Allergies</Text>
             <ScrollView contentContainerStyle={styles.container_tag_row}>
               {allergies.map((a: string, index: number) => (
-                <FoodTag
-                  key={index}
-                  food={a}
-                  index={index}
-                  statues={statues}
-                  onChangeStatus={setStatues}
-                />
+                <StaticFoodTag key={index} food={a} />
               ))}
             </ScrollView>
             {allergyModal && (
