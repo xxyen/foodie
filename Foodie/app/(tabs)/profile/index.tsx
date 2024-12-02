@@ -99,26 +99,6 @@ export default function Tab() {
         const userData = await getProfile(id);
         if (userData) {
           setUserInfo(userData);
-          // console.log("userDataIngredients: ", userData.ingredients);
-
-          // setTimeout(() => {
-          //   if (userData.ingredients && userData.ingredients.length > 0) {
-          //     const fetchIngredientImages = async () => {
-          //       const imagePromises = userData.ingredients
-          //         .slice(0, 3)
-          //         .map(async (ingredient) => {
-          //           const imageUrl = await getIngredientImage(ingredient);
-          //           return imageUrl;
-          //         });
-          //       const images = await Promise.all(imagePromises);
-          //       // console.log("images: ", images);
-          //       setIngredientImages(images);
-          //     };
-          //     fetchIngredientImages();
-          //   } else {
-          //     setIngredientImages([]);
-          //   }
-          // }, 1000);
 
           setTimeout(() => {
             setBarData(generateBarData());

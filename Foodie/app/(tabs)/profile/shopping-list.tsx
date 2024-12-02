@@ -163,15 +163,16 @@ const styles = StyleSheet.create({
     marginLeft: 10, 
   },
   container: {
-    width: "100%",
+    width: "90%",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(217, 217, 217, 0.2)",
     borderRadius: 20,
     padding: 10,
+    marginHorizontal: "5%",
   },
   item: {
-    width: "90%",
+    width: "95%",
     height: 55,
     backgroundColor: "#FFFFFF",
     borderRadius: 15,
