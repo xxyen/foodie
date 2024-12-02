@@ -26,7 +26,7 @@ import { DirectionList } from "../../../Components/DirectionList";
 
 
 export default function Tab() {
-  const { data } = useLocalSearchParams();
+  const { data,fromSearch  } = useLocalSearchParams();
   const router = useRouter();
   const { id, favFoods, onChangeFavFoods, ingredients, onChangeIngredients, weeklyCalories, onChangeWeeklyCalories } =
     useAppContext();
@@ -34,6 +34,7 @@ export default function Tab() {
   const [recipe, setRecipe] = useState<IFoodRecipe | undefined>(undefined);
   const [nutrition, setNutrition] = useState<INutrition | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
+
 
   useEffect(() => {
     if (data) {

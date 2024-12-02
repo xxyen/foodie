@@ -12,6 +12,10 @@ import {
   TextInput,
   Alert,
   Platform,
+  KeyboardAvoidingView,
+  ScrollView,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAppContext } from "@/context/contexts";
@@ -126,6 +130,15 @@ export default function SignUpScreen() {
   return (
     <>
       <SafeAreaView style={styles.safearea}>
+       <KeyboardAvoidingView
+           style={styles.safearea}
+           behavior={Platform.OS === "ios" ? "padding" : "height"}
+       >
+       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            keyboardShouldPersistTaps="handled"
+          >
         <Pressable onPress={onPressLater}>
           <Text style={styles.later}>Later</Text>
         </Pressable>
@@ -184,6 +197,9 @@ export default function SignUpScreen() {
             </Pressable>
           </View>
         </View>
+        </ScrollView>
+        </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </>
   );

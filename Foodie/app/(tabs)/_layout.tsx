@@ -1,9 +1,10 @@
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter  } from 'expo-router';
 
 export default function TabLayout() {
+  const router = useRouter();
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: "#E1AEC1", headerShown: false,}}>
+    <Tabs screenOptions={{ tabBarActiveTintColor: "#E1AEC1", headerShown: false, animationEnabled: false,}}>
       <Tabs.Screen
         name="home"
         options={{
@@ -11,6 +12,12 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <MaterialCommunityIcons size={30} name="home" color={color} />,
           headerShown: false,
         }}
+       listeners={{
+              tabPress: (e) => {
+                e.preventDefault();
+                router.replace("/home", {}, { animation: "none" });
+              },
+            }}
       />
       <Tabs.Screen
         name="drink"

@@ -107,7 +107,7 @@ export default function Home() {
   const handlePressDetail = (recipe: IFoodRecipe) => {
     router.push({
       pathname: "home/detail",
-      params: { data: JSON.stringify(recipe) },
+      params: { data: JSON.stringify(recipe),fromSearch: true },
     });
   };
 

@@ -13,6 +13,7 @@ const { baseURL } = API_CONFIG.spoonacular;
 
 
 const rotateAPIKey = () => {
+    console.log("1111111111111");
   console.log(API_CONFIG.spoonacular.apiTerm,API_CONFIG.spoonacular.apiKEY.length-1);
   if(API_CONFIG.spoonacular.apiTerm===API_CONFIG.spoonacular.apiKEY.length-1){
     API_CONFIG.spoonacular.apiTerm = 0;
@@ -193,7 +194,7 @@ export async function getRandomFoodRecipe(
 
 
     if (!response.ok) {
-      if (response.status==402){
+      if (response.status==402 || response.status==401){
         rotateAPIKey();
         return await getRandomFoodRecipe(tag,excludeIngredients);
       }
@@ -219,7 +220,7 @@ export const fetchBotResponse = async (userMessage: string, contextId: string) =
     );
 
     if (!response.ok) {
-      if (response.status==402){
+      if (response.status==402 || response.status==401){
         rotateAPIKey();
         return await fetchBotResponse(userMessage , contextId);
       }
@@ -255,7 +256,7 @@ export async function getFoodRecipeAutoComplete(
   );
 
   const data = await response.json();
-  if (data.code==402){
+  if (data.code==402 || response.status==401){
     rotateAPIKey();
     return await getFoodRecipeAutoComplete(searchText);
   }
@@ -272,7 +273,7 @@ export async function getFoodRecipeByIngredients(
        `${baseURL}/recipes/complexSearch?includeIngredients=${tag}&number=3&instructionsRequired=true&addRecipeInformation=true&addRecipeInstructions=true&addRecipeNutrition=true&fillIngredients=true&apiKey=${currentAPIKey()}`
     );
     if (!response.ok) {
-      if (response.status==402){
+      if (response.status==402 || response.status==401){
         rotateAPIKey();
         return await getFoodRecipeByIngredients(tag);
       }
@@ -295,7 +296,7 @@ export async function getRecipeById(id: number): Promise<undefined | IApiFoodRec
   try {
     const response = await fetch(`${baseURL}/recipes/${id}/information?apiKey=${currentAPIKey()}&includeNutrition=true`);
     if (!response.ok) {
-      if (response.status==402){
+      if (response.status==402 || response.status==401){
         rotateAPIKey();
         return await getRecipeById(id);
       }
@@ -454,7 +455,7 @@ export async function classifyImage(url:any){
   try{
     const response = await fetch(`${baseURL}/food/images/classify?imageUrl=${url}&apiKey=${currentAPIKey()}`,config);
     if (!response.ok) {
-      if (response.status==402){
+      if (response.status==402 || response.status==401){
         rotateAPIKey();
         return await classifyImage(url);
       }
@@ -699,7 +700,7 @@ export async function getIngredientImage(name: string): Promise<string> {
 
   try {
     const response = await fetch(url);
-    if (response.status==402){
+    if (response.status==402 || response.status==401){
       rotateAPIKey();
       return await getIngredientImage(name);
     }
