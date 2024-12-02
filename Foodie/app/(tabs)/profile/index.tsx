@@ -249,8 +249,8 @@ export default function Tab() {
                 showValuesAsTopLabel
                 barMarginBottom={10}
                 topLabelTextStyle={{
-                  fontSize: 12,
-                  width: 20,
+                  fontSize: 10,
+                  width: 25,
                   height: 20,
                   lineHeight: 20,
                   position: "relative",
