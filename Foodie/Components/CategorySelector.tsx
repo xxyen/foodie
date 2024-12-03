@@ -22,7 +22,7 @@ export default function CategorySelector({ selectedIndex, onSelect, categories }
                 : styles.textUnselected
             }
           >
-            {category}
+            {category.slice(0,1).toUpperCase()+category.slice(1)}
           </Text>
         </Pressable>
       ))}
