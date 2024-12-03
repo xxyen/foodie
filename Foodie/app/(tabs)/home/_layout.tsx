@@ -2,6 +2,7 @@ import { Stack, useRouter  } from "expo-router";
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
+
 export default function FoodTabLayout() {
 
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function FoodTabLayout() {
                 return {
                   headerShown: true,
                   title: "Recipe Detail",
-                  headerTintColor: "#007AFF",
+                  headerTintColor: "#000000",
                   headerBackTitle: route.params?.fromSearch ? "Search" : "Food",
                   headerBackTitleVisible: true,
                   headerStyle: { backgroundColor: "#ffffff" },

@@ -209,7 +209,11 @@ export default function Tab() {
             style={styles.shopping_list}
             onPress={() => router.push("profile/shopping-list")}
           >
-            <Text style={styles.title}>My Shopping List</Text>
+            <View style={styles.container_title}>
+              <Text style={styles.title}>My Shopping List</Text>
+            <MaterialCommunityIcons size={30} name="chevron-right" />
+            </View>
+            
             <ScrollView contentContainerStyle={styles.container_tag_row}>
               {userInfo?.ingredients.map((a: string, index: number) => (
               //    <StaticFoodTag
@@ -229,7 +233,7 @@ export default function Tab() {
 
           </Pressable>
           <View style={styles.intake}>
-            <View style={{ justifyContent: "flex-start" }}>
+            <View style={styles.container_title}>
               <Text style={styles.title}>Calorie Intake</Text>
             </View>
 
@@ -268,7 +272,11 @@ export default function Tab() {
               router.push("profile/allergy-list");
             }}
           >
-            <Text style={styles.title}>My Food Allergies</Text>
+            <View style={styles.container_title}>
+              <Text style={styles.title}>My Food Allergies</Text>
+            <MaterialCommunityIcons size={30} name="chevron-right" />
+            </View>
+            
             <ScrollView contentContainerStyle={styles.container_tag_row}>
               {allergies.length > 0 && allergies.map((a: string, index: number) => (
                 // <StaticFoodTag key={index} food={a} />
@@ -325,6 +333,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
+  },
+  container_title: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   container_row: {
     flexDirection: "row",

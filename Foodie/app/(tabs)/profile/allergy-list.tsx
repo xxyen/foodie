@@ -126,12 +126,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     padding: 20, 
   },
+  test: {
+    marginTop: 20,
+    gap: 10,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    flexGrow: 1,
+  },
   containerTitle: {
     width: "100%",
     justifyContent: "flex-start",
     alignItems: "flex-start",
     gap: 5,
     marginVertical: 10,
+    marginLeft: 15
   },
   title: {
     fontSize: 20,
