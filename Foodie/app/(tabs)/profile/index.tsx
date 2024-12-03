@@ -270,7 +270,7 @@ export default function Tab() {
           >
             <Text style={styles.title}>My Food Allergies</Text>
             <ScrollView contentContainerStyle={styles.container_tag_row}>
-              {allergies.map((a: string, index: number) => (
+              {allergies.length > 0 && allergies.map((a: string, index: number) => (
                 // <StaticFoodTag key={index} food={a} />
                 <FoodTag
                 key={index}

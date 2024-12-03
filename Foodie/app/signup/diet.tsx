@@ -17,10 +17,6 @@ import { useAppContext } from "@/context/contexts";
 
 export default function AllergyScreen() {
 
-  function onPressLater(event: GestureResponderEvent): void {
-    router.dismissAll();
-    router.push("home");
-  }
 
   const { username, email,password,allergies } = useLocalSearchParams();
   const {onChangeId} = useAppContext();
@@ -66,9 +62,6 @@ export default function AllergyScreen() {
 
   return (
     <SafeAreaView style={styles.safearea}>
-      <Pressable onPress={onPressLater}>
-        <Text style={styles.later}>Later</Text>
-      </Pressable>
       <View style={styles.container}>
         <View style={styles.container_header}>
           <Text style={styles.title}>Before we start</Text>
@@ -110,7 +103,7 @@ const styles = StyleSheet.create({
   },
   container_tag: {
     width: "100%",
-    height: "45%",
+    height: "40%",
     backgroundColor: "rgba(217, 217, 217, 0.2)",
     borderRadius: 20,
     alignItems: "center",

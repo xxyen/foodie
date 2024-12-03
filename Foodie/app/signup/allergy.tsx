@@ -22,11 +22,6 @@ export default function AllergyScreen({ }) {
   const [statues, setStatues] = useState<boolean[]>(Array(allergyFoods.length).fill(false));
 
 
-  function onPressLater(event: GestureResponderEvent): void {
-    router.dismissAll();
-    router.push("home");
-  }
-
   const img_path = "../../assets/dinner.png";
 
   function onPressNext(event: GestureResponderEvent): void {
@@ -47,9 +42,6 @@ export default function AllergyScreen({ }) {
 
   return (
     <SafeAreaView style={styles.safearea}>
-      <Pressable onPress={onPressLater}>
-        <Text style={styles.later}>Later</Text>
-      </Pressable>
       <View style={styles.container}>
         <View style={styles.container_header}>
           <Text style={styles.title}>Before we start</Text>
