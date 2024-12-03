@@ -13,13 +13,13 @@ export default function PasswordInput({password,onChangePassword}:
     
     return (
         <View style={styles.container_input}>
-            <Text style={styles.text}>Password</Text>
+            <Text style={styles.text}>New Password</Text>
             <View style={styles.container_password}>
             <TextInput
                 onChangeText={onChangePassword}
                 value={password}
                 secureTextEntry={!isPasswordVisible}
-                placeholder="Enter your password"
+                placeholder="Enter your new password"
                 style={{flex:1}}
             />
             <Pressable onPress={onChangePasswordVisibility}>

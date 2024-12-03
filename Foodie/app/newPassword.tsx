@@ -1,4 +1,6 @@
-import { Pressable, Text, TextInput, View, Alert, StyleSheet } from "react-native";
+import { Pressable, Text, TextInput, View, Alert, StyleSheet,ScrollView, Platform,
+  KeyboardAvoidingView, Keyboard,TouchableWithoutFeedback, ActivityIndicator
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -10,6 +12,7 @@ export default function newPasswordScreen(){
 
     const {email} = useLocalSearchParams();
     const [password, setPassword] = useState<string>('');
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     const onPressLater = ()=>{
@@ -21,11 +24,17 @@ export default function newPasswordScreen(){
 
     const onPressSubmit = async () => {
         if(validPassword(password)){
+            setLoading(true);
             if(typeof email==='string' && await setNewPassword(email,password)){
                 Alert.alert("Success", "Update Your Password Successfully!");
+                setLoading(false);
                 // router.back();
                 router.replace("/login");
             }
+            else{
+              setLoading(false);
+            }
+            setLoading(false);
         }
         else{
             alert("Invalid Password, please contain at least 8 characters including one lower/upper letter, one digit and one special character.");
@@ -35,22 +44,34 @@ export default function newPasswordScreen(){
     };
 
 
-
     return(
         <SafeAreaView style={styles.safearea}>
+            <KeyboardAvoidingView
+            style={styles.safearea}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
+              <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <ScrollView
+                keyboardShouldPersistTaps="handled"
+              >
             <Pressable onPress={onPressLater}>
                 <Text style={styles.later}>Later</Text>
             </Pressable>
             <View style={styles.container}>
-                <Text style={styles.title_welcome}>Enter Your New Password</Text>
+                <View style={styles.container_header_col}>
+                  <Text style={styles.title_login}>Reset Password</Text>
+                  <Text style={styles.login_text}>in Echos is simply</Text>
+                </View>
                 <PasswordInput password={password} onChangePassword={setPassword}/>
-                <View style={[styles.btn_login ,{backgroundColor:  "#042628"}]}>
-                    <Pressable onPress={onPressSubmit}>
+                <View style={[styles.btn_login ,{backgroundColor: loading ? "grey" : "#042628"}]}>
+                    <Pressable onPress={onPressSubmit} disabled={loading}>
                         <Text style={styles.btn_login_text}>Submit</Text>
                     </Pressable>
                 </View>
             </View>
-            
+            </ScrollView>
+          </TouchableWithoutFeedback>
+          </KeyboardAvoidingView>
         </SafeAreaView>
     );
 }
@@ -74,8 +95,8 @@ const styles = StyleSheet.create({
       height: 130,
     },
     container_header_col: {
-      justifyContent: "center",
-      width: "50%",
+      justifyContent: "flex-start",
+      width: "100%",
     },
     container_input: {
       width: "100%",
@@ -183,6 +204,11 @@ const styles = StyleSheet.create({
     icon_google: {
       height: 16,
       width: 16
-    }
+    },
+    loader: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
   });
   

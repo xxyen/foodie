@@ -1,4 +1,5 @@
-import { Pressable, Text, TextInput, View, Alert, StyleSheet } from "react-native";
+import { Pressable, Text, TextInput, View, Alert, StyleSheet, 
+  KeyboardAvoidingView, Keyboard, Platform, ScrollView,TouchableWithoutFeedback } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
 import { existingAccount, sendEmail } from "@/utils";
@@ -89,25 +90,37 @@ export default function forgetScreen(){
 
     return(
         <SafeAreaView style={styles.safearea}>
+          <KeyboardAvoidingView
+           style={styles.safearea}
+           behavior={Platform.OS === "ios" ? "padding" : "height"}
+          >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <ScrollView
+              keyboardShouldPersistTaps="handled"
+            >
             <Pressable onPress={onPressLater}>
                 <Text style={styles.later}>Later</Text>
             </Pressable>
             <View style={styles.container}>
-                <Text style={styles.title_welcome}>Verify your Email</Text>
-                <View style={styles.container_input}>
-                    <Text style={styles.text}>What is your Email Address</Text>
-                    <TextInput style={styles.input}
-                    onChangeText={setEmail} value={email}></TextInput>
+                <View style={styles.container_header_col}>
+                  <Text style={styles.title_login}>Reset Password</Text>
+                  <Text style={styles.login_text}>in Echos is simply</Text>
                 </View>
+                {/* <Text style={styles.title_welcome}>Verify your Email</Text> */}
                 <View style={styles.container_input}>
-                    <Text style={styles.text}>Verify Your Received Code</Text>
-                    <TextInput style={styles.input}
-                    onChangeText={setVerifyCode} value={verifyCode}></TextInput>
+                    <Text style={styles.text}>Email</Text>
+                    <TextInput style={styles.input} placeholder="Enter your registered Email Address"
+                    onChangeText={setEmail} value={email}></TextInput>
                 </View>
                 <View style={[styles.btn_login ,{backgroundColor: disabled ? "grey" : "#042628"}]}>
                     <Pressable onPress={onPressSubmit} disabled={disabled}>
                         <Text style={styles.btn_login_text}>{time<=0 ? 'Send Verification Code':'Send Again After ('+time+')'}</Text>
                     </Pressable>
+                </View>
+                <View style={styles.container_input}>
+                    <Text style={styles.text}>Verification Code</Text>
+                    <TextInput style={styles.input} placeholder="Enter your the verification code you received"
+                    onChangeText={setVerifyCode} value={verifyCode}></TextInput>
                 </View>
                 <View style={[styles.btn_login ,{backgroundColor:  "#042628"}]}>
                     <Pressable onPress={onPressVerify}>
@@ -115,7 +128,9 @@ export default function forgetScreen(){
                     </Pressable>
                 </View>
             </View>
-            
+            </ScrollView>
+          </TouchableWithoutFeedback>
+          </KeyboardAvoidingView>
         </SafeAreaView>
     );
 }
@@ -139,8 +154,9 @@ const styles = StyleSheet.create({
       height: 130,
     },
     container_header_col: {
-      justifyContent: "center",
-      width: "50%",
+      justifyContent: "flex-start",
+      alignItems: "flex-start",
+      width: "100%",
     },
     container_input: {
       width: "100%",
