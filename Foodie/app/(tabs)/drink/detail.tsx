@@ -66,7 +66,10 @@ export default function Tab() {
       setDrinkIngredients(ingredientsList);
 
       if (recipe.strInstructions) {
-        const parsedStep = recipe.strInstructions.split(".").slice(0, -1);
+        const parsedStep = recipe.strInstructions
+        .split(".")
+        .map((step) => step.trim()) 
+        .filter((step) => step !== ""); 
         setSteps(parsedStep);
         setLoading(false);
       }

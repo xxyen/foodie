@@ -57,7 +57,7 @@ npm start
 
 ### 5. User Signup and Login
 - **Signup**: Users could signup the app by providing valid unique Username as well as Email Address, and also a valid Password. 
-- **Login**: We provide two different methods for logging in: 1. signed up user through the signup page; 2. Google Authtication.
+- **Login**: We provide two different methods for logging in: 1. signed up user through the signup page; 2. Google OAuth2 Authentication.
 - **Forget Password**: If users remember their email address, our server will send to the user's given email address a 3 minute valid token. If the users input the correct token within 3 minute, it will lead to a password reset page.  
 
 ---
