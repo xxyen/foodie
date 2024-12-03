@@ -43,6 +43,7 @@ npm start
 
 ### 2. User Personalization
 - **Favorites**: Save favorite food or cocktail recipes for easy access.
+- **Profile**: Custom Icons for users, supporting both uploading pictures from album or taking images.
 - **Shopping List**: Add ingredients from recipes directly to a shopping list and manage it.
 - **Calorie Intake**: Track calorie intake by adding recipes to a daily diet plan.
 - **Allergy Settings**: Set allergy preferences to exclude specific ingredients from search results.
@@ -52,6 +53,11 @@ npm start
 
 ### 4. Chatbot Integration
 - **Dietary Advice**: Chat with an AI-powered bot for recipe suggestions or dietary advice.
+
+### 5. User Signup and Login
+- **Signup**: Users could signup the app by providing valid unique Username as well as Email Address, and also a valid Password. 
+- **Login**: We provide two different methods for logging in: 1. signed up user through the signup page; 2. Google Authtication.
+- **Forget Password**: If users remember their email address, our server will send to the user's given email address a 3 minute valid token. If the users input the correct token within 3 minute, it will lead to a password reset page.  
 
 ---
 
