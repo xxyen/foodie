@@ -47,6 +47,7 @@ npm start
 - **Shopping List**: Add ingredients from recipes directly to a shopping list and manage it.
 - **Calorie Intake**: Track calorie intake by adding recipes to a daily diet plan.
 - **Allergy Settings**: Set allergy preferences to exclude specific ingredients from search results.
+- **Diet Settings**: Set diet while signup.
 
 ### 3. Calorie Tracking
 - **Weekly Overview**: View daily calorie intake for the past week.
