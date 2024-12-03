@@ -119,10 +119,12 @@ export default function Tab() {
          return;
      }
     if (drinkIngredients) {
-      const existingIngredients = drinkIngredients.filter((ingredient) =>
+      const uniqueDrinkIngredients = Array.from(new Set(drinkIngredients));
+
+      const existingIngredients = uniqueDrinkIngredients.filter((ingredient) =>
         ingredients.includes(ingredient)
       );
-      const ingredientsToAdd = drinkIngredients.filter(
+      const ingredientsToAdd = uniqueDrinkIngredients.filter(
         (ingredient) => !ingredients.includes(ingredient)
       );
 

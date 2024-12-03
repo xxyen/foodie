@@ -101,13 +101,15 @@ export default function Tab() {
             return;
      }
     if (recipe) {
-      const newIngredients = recipe.extendedIngredients.map(
+      const allNewIngredients = recipe.extendedIngredients.map(
         (ingredient) => ingredient.name
       );
-      const existingIngredients = newIngredients.filter((ingredient) =>
+      const uniqueNewIngredients = Array.from(new Set(allNewIngredients));
+
+      const existingIngredients = uniqueNewIngredients.filter((ingredient) =>
         ingredients.includes(ingredient)
       );
-      const ingredientsToAdd = newIngredients.filter(
+      const ingredientsToAdd = uniqueNewIngredients.filter(
         (ingredient) => !ingredients.includes(ingredient)
       );
 
