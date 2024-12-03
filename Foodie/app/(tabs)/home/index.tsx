@@ -97,7 +97,10 @@ export default function Home() {
     }
 
     updateFavoriteFoods(id, updatedFavFoods)
-      .then(() => onChangeFavFoods(updatedFavFoods))
+      .then(() => {
+        onChangeFavFoods(updatedFavFoods);
+        Alert.alert("Success", alertMessage); 
+      })
       .catch(() => Alert.alert("Error", "Failed to update favorites."));
   };
 

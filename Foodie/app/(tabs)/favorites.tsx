@@ -84,7 +84,13 @@ export default function Tab() {
                     ? favFoods.filter((id) => id !== food.id)
                     : [...favFoods, food.id];
                   updateFavoriteFoods(id, updatedFavFoods)
-                    .then(() => onChangeFavFoods(updatedFavFoods))
+                  .then(() => {
+                    onChangeFavFoods(updatedFavFoods);
+                    Alert.alert(
+                      "Success",
+                      favFoods.includes(food.id) ? "Recipe removed from favorites." : "Recipe added to favorites."
+                    );
+                  })
                     .catch(() => Alert.alert("Error", "Failed to update favorite foods."));
                 }}
                 onPressDetail={() =>
@@ -112,7 +118,13 @@ export default function Tab() {
                             ? favDrinks.filter((id) => id !== Number(drinkObj.drinks[0].idDrink))
                             : [...favDrinks, drinkObj.drinks[0].idDrink];
                           updateFavoriteDrinks(id, updatedFavDrinks)
-                            .then(() => onChangeFavDrinks(updatedFavDrinks))
+                          .then(() => {
+                            onChangeFavDrinks(updatedFavDrinks);
+                            Alert.alert(
+                              "Success",
+                              favDrinks.includes(Number(drinkObj.drinks[0].idDrink)) ? "Drink removed from favorites." : "Drink added to favorites."
+                            );
+                          })
                             .catch(() => Alert.alert("Error", "Failed to update favorite drinks."));
                         }}
                         onPressDetail={() =>
