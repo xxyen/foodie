@@ -114,3 +114,25 @@ The app integrates several APIs to deliver a seamless experience:
   - Chatbot interactions.
   - Ingredient image fetching.
 - **TheCocktailDB API**: For cocktail recipes and ingredient images.
+
+---
+
+## App Screenshots
+
+Here’s a preview of some core features in the Foodie app.
+
+### Recipe Discovery
+| ![1-1](./screenshots/1-1.png) | ![1-2](./screenshots/1-2.png) | ![1-3](./screenshots/1-3.png) | ![1-4](./screenshots/1-4.png) | ![1-5](./screenshots/1-5.png) |
+|:--:|:--:|:--:|:--:|:--:|
+
+### User Personalization
+| ![2-1](./screenshots/2-1.png) | ![2-2](./screenshots/2-2.png) | ![2-3](./screenshots/2-3.png) | ![2-4](./screenshots/2-4.png) | ![2-5](./screenshots/2-5.png) | 
+|:--:|:--:|:--:|:--:|:--:|
+
+### AI-Powered Features
+| ![3-1](./screenshots/3-1.png) | ![3-2](./screenshots/3-2.png) | 
+|:--:|:--:|
+
+### User Signup and Login
+| ![4-1](./screenshots/4-1.png) | ![4-2](./screenshots/4-2.png) | ![4-3](./screenshots/4-3.png) | ![4-4](./screenshots/4-4.png) | ![4-5](./screenshots/4-5.png) |
+|:--:|:--:|:--:|:--:|:--:|
