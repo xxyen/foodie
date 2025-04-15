@@ -83,7 +83,8 @@ export default function WelcomeScreen() {
     event: GestureResponderEvent
   ): Promise<void> {
     console.log("user: press continue with google");
-    await Linking.openURL("https://foodie.zeus.wang/auth/google");
+    // await Linking.openURL("https://foodie.zeus.wang/auth/google");
+    await Linking.openURL("http://localhost:4000/auth/google");
   }
 
   return (

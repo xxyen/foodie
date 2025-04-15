@@ -14,7 +14,8 @@ export const API_CONFIG = {
     apiKEY: "1",
   },
   localServer: {
-    baseURL:  "https://foodie.zeus.wang/users",
+    // baseURL:  "https://foodie.zeus.wang/users",
+    baseURL: "http://localhost:4000/users",
   },
 };
 

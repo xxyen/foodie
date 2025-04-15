@@ -31,7 +31,8 @@ export default function LoginScreen() {
   // const baseUrl = Platform.OS === "android"
   //               ? "http://67.159.75.53:4123"
   //               : "http://67.159.75.53:4123"
-  const baseUrl = "https://foodie.zeus.wang";
+  // const baseUrl = "https://foodie.zeus.wang";
+  const baseUrl = "http://localhost:4000";
 
   // navigation
   const router = useRouter();
